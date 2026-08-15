@@ -38,7 +38,7 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           status: ${{ job.status }}
-          content: "<@&1538072597110063194> Dengarkan notifnya. :stuck_out_tongue_winking_eye:"
+          content: "<@&1538072597110063194> Dengarkan notifnya. :stuck_out_tongue_winking_eye: "
           nodetail: true
           title: "Update for ${{ github.event.repository.name }}"
           description: |
