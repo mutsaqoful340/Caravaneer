@@ -1,32 +1,61 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 [System.Serializable]
 public class PanelReference
 {
     public string name;
     public GameObject gameObject;
+    public bool hasAnimation;
 }
 
 public class Manager_UI : MonoBehaviour
 {
+    public static Manager_UI Instance { get; private set; }
     [Header("UI Panels")]
     [Tooltip("Panels to manage by name and GameObject reference.")]
     public PanelReference[] panels;
 
     private GameObject currentActivePanel;
 
-    // Show a specific panel by index, and then get the Animator component of the panel to play the animation.
-    public void OnShowPanel(int panelIndex)
+    private void Awake()
     {
-        if (panelIndex < 0 || panelIndex >= panels.Length)
+        if (Instance == null)
         {
-            Debug.LogError("Invalid panel index: " + panelIndex);
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+    }
+
+    // Show a specific panel by name.
+    public void OnShowPanel(string panelName)
+    {
+        Debug.Log($"Attempting to show panel: {panelName}");
+        PanelReference selectedPanel = null;
+
+        foreach (PanelReference panelReference in panels)
+        {
+            if (panelReference != null && panelReference.name == panelName)
+            {
+                selectedPanel = panelReference;
+                break;
+            }
+        }
+
+        if (selectedPanel == null || selectedPanel.gameObject == null)
+        {
+            Debug.LogError("No panel found with name: " + panelName);
             return;
         }
 
-        GameObject panel = panels[panelIndex].gameObject;
+        GameObject panel = selectedPanel.gameObject;
 
         if (currentActivePanel != null)
         {
@@ -34,24 +63,18 @@ public class Manager_UI : MonoBehaviour
         }
 
         currentActivePanel = panel;
-        currentActivePanel.SetActive(true);
-
-        Button firstButton = null;
-        Button[] buttons = currentActivePanel.GetComponentsInChildren<Button>(true);
-
-        foreach (Button button in buttons)
+        Animator animator = currentActivePanel.GetComponent<Animator>();
+        if (animator != null && !selectedPanel.hasAnimation)
         {
-            if (button != null && button.gameObject.activeInHierarchy && button.enabled && button.IsInteractable())
-            {
-                firstButton = button;
-                break;
-            }
+            currentActivePanel.SetActive(true);
+        }
+        else
+        {
+            currentActivePanel.SetActive(true);
+            animator?.SetTrigger("Open");
         }
 
-        if (firstButton != null && EventSystem.current != null)
-        {
-            EventSystem.current.SetSelectedGameObject(firstButton.gameObject);
-        }
+        SelectFirstButtonInPanel(currentActivePanel);
 
         // Animator animator = currentActivePanel.GetComponent<Animator>();
         // if (animator != null)
@@ -64,5 +87,57 @@ public class Manager_UI : MonoBehaviour
     {
         currentActivePanel?.SetActive(false);
         currentActivePanel = null;
+    }
+
+    public void OnCloseAllPanels()
+    {
+        foreach (PanelReference panelReference in panels)
+        {
+            if (panelReference == null || panelReference.gameObject == null)
+            {
+                continue;
+            }
+
+            GameObject panel = panelReference.gameObject;
+            Animator animator = panel.GetComponent<Animator>();
+            // UI_Panel uI_Panel = panel.GetComponent<UI_Panel>();
+
+            if (animator != null && panelReference.hasAnimation)
+            {
+                animator.ResetTrigger("Open");
+                animator.SetTrigger("Close");
+            }
+            else
+            {
+                panel.SetActive(false);
+            }
+        }
+
+        currentActivePanel = null;
+    }
+
+    // === Specific Panel Methods ===
+
+    private void SelectFirstButtonInPanel(GameObject panel)
+    {
+        if (panel == null)
+        {
+            return;
+        }
+
+        Button[] buttons = panel.GetComponentsInChildren<Button>(true);
+
+        foreach (Button button in buttons)
+        {
+            if (button != null && button.gameObject.activeInHierarchy && button.enabled && button.IsInteractable())
+            {
+                if (EventSystem.current != null)
+                {
+                    EventSystem.current.SetSelectedGameObject(button.gameObject);
+                }
+
+                return;
+            }
+        }
     }
 }

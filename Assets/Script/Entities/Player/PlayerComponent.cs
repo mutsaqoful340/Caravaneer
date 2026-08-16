@@ -113,8 +113,50 @@ public class PlayerComponent : MonoBehaviour
     {
         if (value.isPressed)
         {
-            Manager_Game.Instance.SetState(Manager_Game.Instance.currentGameState == GameState.UI ? GameState.Gameplay : GameState.UI);
-            // Debug.Log($"{gameObject.name} toggled game state to {Manager_Game.Instance.currentGameState}.");
+            if (Manager_Game.Instance.currentGameState == GameState.Gameplay)
+            {
+                Manager_Game.Instance.SetState(GameState.UI);
+                Manager_UI.Instance.OnShowPanel("Store");
+                return;
+            }
+        }
+    }
+
+    public void OnUINavigate(InputValue value)
+    {
+        if (Manager_Game.Instance.currentGameState == GameState.UI)
+        {
+            Vector2 navigationInput = value.Get<Vector2>();
+            // Handle UI navigation logic here
+            Debug.Log($"{gameObject.name} navigated UI with input: {navigationInput}");
+        }
+    }
+
+    public void OnUISubmit(InputValue value)
+    {
+        if (Manager_Game.Instance.currentGameState == GameState.UI && value.isPressed)
+        {
+            // Handle UI submit logic here
+            Debug.Log($"{gameObject.name} submitted UI action.");
+        }
+    }
+
+    public void OnUICancel(InputValue value)
+    {
+        if (Manager_Game.Instance.currentGameState == GameState.UI && value.isPressed)
+        {
+            // Handle UI cancel logic here
+            Debug.Log($"{gameObject.name} canceled UI action.");
+        }
+    }
+
+    public void OnUIPause(InputValue value)
+    {
+        if (Manager_Game.Instance.currentGameState == GameState.UI && value.isPressed)
+        {
+            Manager_Game.Instance.SetState(GameState.Gameplay);
+            Manager_UI.Instance.OnCloseAllPanels();
+            Debug.Log($"{gameObject.name} confirmed UI action.");
         }
     }
     #endregion

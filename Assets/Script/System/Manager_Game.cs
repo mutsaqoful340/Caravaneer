@@ -14,11 +14,9 @@ public class Manager_Game : MonoBehaviour
     public Manager_Input inputManager;
     public GameState currentGameState = GameState.Gameplay;
 
-    private Player_Input playerInput;
-
     private void Awake()
     {
-        playerInput = new Player_Input();
+        currentGameState = GameState.Gameplay;
 
         if (Instance == null)
         {
@@ -49,10 +47,10 @@ public class Manager_Game : MonoBehaviour
         switch (newState)
         {
             case GameState.UI:
-                inputManager.SwitchAllToUI();
+                inputManager.SwitchMode(GameState.UI);
                 break;
             case GameState.Gameplay:
-                inputManager.SwitchAllToGameplay();
+                inputManager.SwitchMode(GameState.Gameplay);
                 break;
         }
     }
