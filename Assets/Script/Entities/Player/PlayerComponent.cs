@@ -24,6 +24,7 @@ public class PlayerComponent : MonoBehaviour
     public GameObject playerStatUI;
     [Tooltip("The prefab for the heart icon representing health.")]
     public GameObject heartPrefab;
+    public PlayerInput playerInputComp;
 
 
     [Header("Debug")]
@@ -46,13 +47,23 @@ public class PlayerComponent : MonoBehaviour
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
+        if (playerInputComp == null)
+        {
+            playerInputComp = GetComponent<PlayerInput>();
+        }
     }
 
     private void Start()
     {
+        if (Manager_Input.Instance != null)
+        {
+            Manager_Input.Instance.RegisterPlayer(playerInputComp);
+        }
+
         // OnUpdateHealthUI();
     }
 
+    #region Input Callbacks
     public void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
@@ -97,6 +108,16 @@ public class PlayerComponent : MonoBehaviour
             interactObject.EndInteraction();
         }
     }
+
+    public void OnPause(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            Manager_Game.Instance.SetState(Manager_Game.Instance.currentGameState == GameState.UI ? GameState.Gameplay : GameState.UI);
+            // Debug.Log($"{gameObject.name} toggled game state to {Manager_Game.Instance.currentGameState}.");
+        }
+    }
+    #endregion
 
     public void OnTriggerEnter(Collider other)
     {
@@ -200,6 +221,12 @@ public class PlayerComponent : MonoBehaviour
     {
         // TODO - add death logic here (e.g., play death animation, disable player controls, etc.)
         Debug.Log($"{gameObject.name} has died!");
+    }
+
+    private void OnDestroy()
+    {
+        if (Manager_Input.Instance != null){
+            Manager_Input.Instance.UnregisterPlayer(playerInputComp);}
     }
     
     private void Update()

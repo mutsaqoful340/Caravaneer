@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[System.Serializable]
 public enum GameState
 {
     UI,
@@ -10,22 +11,10 @@ public enum GameState
 public class Manager_Game : MonoBehaviour
 {
     public static Manager_Game Instance { get; private set; }
-    public GameState currentGameState { get; set; }
+    public Manager_Input inputManager;
+    public GameState currentGameState = GameState.Gameplay;
 
     private Player_Input playerInput;
-
-    // Subscribe to player input
-    void OnEnable()
-    {
-        playerInput.Gameplay.Pause.performed += HandlePause;
-        playerInput.Gameplay.Enable();
-    }
-
-    void OnDisable()
-    {
-        playerInput.Gameplay.Pause.performed -= HandlePause;
-        playerInput.Gameplay.Disable();
-    }
 
     private void Awake()
     {
@@ -52,10 +41,19 @@ public class Manager_Game : MonoBehaviour
             return;
 
         currentGameState = newState;
+        OnGameStateChanged(newState);
     }
 
-    private void HandlePause(InputAction.CallbackContext context)
+    private void OnGameStateChanged(GameState newState)
     {
-        SetState(currentGameState == GameState.UI ? GameState.Gameplay : GameState.UI); 
+        switch (newState)
+        {
+            case GameState.UI:
+                inputManager.SwitchAllToUI();
+                break;
+            case GameState.Gameplay:
+                inputManager.SwitchAllToGameplay();
+                break;
+        }
     }
 }
