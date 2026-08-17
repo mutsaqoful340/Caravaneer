@@ -106,10 +106,12 @@ public class Manager_UI : MonoBehaviour
             {
                 animator.ResetTrigger("Open");
                 animator.SetTrigger("Close");
+                ClearSelectedButton();
             }
             else
             {
                 panel.SetActive(false);
+                ClearSelectedButton();
             }
         }
 
@@ -138,6 +140,14 @@ public class Manager_UI : MonoBehaviour
 
                 return;
             }
+        }
+    }
+
+    private void ClearSelectedButton()
+    {
+        if (EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
         }
     }
 }

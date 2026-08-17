@@ -128,7 +128,6 @@ public class PlayerComponent : MonoBehaviour
         {
             Vector2 navigationInput = value.Get<Vector2>();
             // Handle UI navigation logic here
-            Debug.Log($"{gameObject.name} navigated UI with input: {navigationInput}");
         }
     }
 
@@ -161,6 +160,7 @@ public class PlayerComponent : MonoBehaviour
     }
     #endregion
 
+    #region Game Mechanics
     public void OnTriggerEnter(Collider other)
     {
         // if (other.CompareTag("Enemy"))
@@ -264,6 +264,7 @@ public class PlayerComponent : MonoBehaviour
         // TODO - add death logic here (e.g., play death animation, disable player controls, etc.)
         Debug.Log($"{gameObject.name} has died!");
     }
+    #endregion
 
     private void OnDestroy()
     {

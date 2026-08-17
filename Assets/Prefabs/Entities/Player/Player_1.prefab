@@ -203,9 +203,9 @@ MonoBehaviour:
   m_XRTrackingOrigin: {fileID: 0}
   m_ActionsAsset: {fileID: -944628639613478452, guid: a293f27b8b2c80142898be9ddec04281, type: 3}
   m_PointAction: {fileID: 0}
-  m_MoveAction: {fileID: 0}
-  m_SubmitAction: {fileID: 0}
-  m_CancelAction: {fileID: 0}
+  m_MoveAction: {fileID: -6971496637565217775, guid: a293f27b8b2c80142898be9ddec04281, type: 3}
+  m_SubmitAction: {fileID: 1636691168112923943, guid: a293f27b8b2c80142898be9ddec04281, type: 3}
+  m_CancelAction: {fileID: -5063764739504041899, guid: a293f27b8b2c80142898be9ddec04281, type: 3}
   m_LeftClickAction: {fileID: 0}
   m_MiddleClickAction: {fileID: 0}
   m_RightClickAction: {fileID: 0}
