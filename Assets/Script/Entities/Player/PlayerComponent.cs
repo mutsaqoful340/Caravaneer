@@ -12,12 +12,15 @@ public class PlayerComponent : MonoBehaviour
     [Tooltip("True for Mercenary, False for Driver")]
     [SerializeField] private bool isMercenary = false;
     [SerializeField] private float facingInputDeadZone = 0.1f;
+    [SerializeField] private float groundY = 0f;
+    [SerializeField] private float gravity = -18f;
     [Tooltip("The cooldown duration in seconds for the player's attack.")]
     public float attackCooldown = 1f; // Cooldown duration in seconds
     [Tooltip("The cooldown duration in seconds for resetting the attack sequence.") ]
     public float attackSequenceResetCooldown = 2f; // Cooldown duration in seconds
 
     [Header("Player Referenes")]
+    public GameObject prevParent;
     public GameObject playerVisual;
     public Animator animator;
     [Tooltip("The UI element that displays the player's health.")]
@@ -34,6 +37,7 @@ public class PlayerComponent : MonoBehaviour
     [SerializeField] private Universal_Interact interactObject;
     [Tooltip("DO NOT ASSIGN THIS MANUALLY. This is a reference to the current enemy the player is attacking.")]
     [SerializeField] private bool isAttacking = false;
+    public bool isMounted = false;
     [SerializeField] private bool isMoveOpposDir = false;
     [SerializeField] private EnemyComponent currentEnemy;
 
@@ -43,6 +47,7 @@ public class PlayerComponent : MonoBehaviour
     private float nextAttackTime;
     private float lastAttackTime = float.NegativeInfinity;
     private CharacterController characterController;
+    private Vector3 verticalVelocity;
 
     private void Awake()
     {
@@ -51,6 +56,8 @@ public class PlayerComponent : MonoBehaviour
         {
             playerInputComp = GetComponent<PlayerInput>();
         }
+
+        prevParent = transform.parent != null ? transform.parent.gameObject : gameObject;
     }
 
     private void Start()
@@ -77,7 +84,7 @@ public class PlayerComponent : MonoBehaviour
             isMoveOpposDir = false;
         }
 
-        if (playerVisual != null)
+        if (playerVisual != null && !isMounted)
         {
             Vector3 visualScale = playerVisual.transform.localScale;
             float scaleX = Mathf.Abs(visualScale.x);
@@ -94,7 +101,7 @@ public class PlayerComponent : MonoBehaviour
         {
             if (interactObject)
             {
-                interactObject.BeginInteraction();
+                interactObject.BeginInteraction(this);
             }
 
             OnPerformAction();
@@ -163,20 +170,21 @@ public class PlayerComponent : MonoBehaviour
     #region Game Mechanics
     public void OnTriggerEnter(Collider other)
     {
-        // if (other.CompareTag("Enemy"))
-        // {
-        //     OnTakeDamage(1);
-        // }
-
-        if (other.CompareTag("Interactable"))
+        if (other.CompareTag("Interactable") || other.CompareTag("Wagon"))
         {
-            interactObject = other.GetComponent<Universal_Interact>();
+            Universal_Interact newInteractable = other.GetComponent<Universal_Interact>();
+
+            if (newInteractable != null &&
+                (interactObject == null || !interactObject.isActiveAndEnabled))
+            {
+                interactObject = newInteractable;
+            }
         }
     }
     
     public void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Interactable"))
+        if (other.CompareTag("Interactable") || other.CompareTag("Wagon"))
         {
             if (interactObject != null && other.gameObject == interactObject.gameObject)
             {
@@ -189,7 +197,7 @@ public class PlayerComponent : MonoBehaviour
     public void OnTakeDamage(int damage)
     {
         HP -= damage;
-        // TODO - add a knockback effect here
+        AddVerticalImpulse(1.5f);
         Debug.Log($"{gameObject.name} took {damage} damage! Remaining HP: {HP}");
         OnUpdateHealthUI();
 
@@ -197,6 +205,11 @@ public class PlayerComponent : MonoBehaviour
         {
             OnDie();
         }
+    }
+
+    public void AddVerticalImpulse(float amount)
+    {
+        verticalVelocity.y = Mathf.Max(verticalVelocity.y, amount);
     }
 
     private void RefreshInteractObjectReference()
@@ -266,6 +279,11 @@ public class PlayerComponent : MonoBehaviour
     }
     #endregion
 
+    public Vector2 GetMoveInput()
+    {
+        return moveInput;
+    }
+
     private void OnDestroy()
     {
         if (Manager_Input.Instance != null){
@@ -274,7 +292,27 @@ public class PlayerComponent : MonoBehaviour
     
     private void Update()
     {
-        Vector3 movement = new Vector3(moveInput.x, 0f, moveInput.y) * Time.deltaTime * moveSpeed;
+        if (isMounted) return;
+
+        if (characterController.isGrounded && verticalVelocity.y < 0f)
+        {
+            verticalVelocity.y = 0f;
+        }
+
+        verticalVelocity.y += gravity * Time.deltaTime;
+
+        Vector3 horizontalMovement = new Vector3(moveInput.x, 0f, moveInput.y) * moveSpeed;
+        Vector3 movement = horizontalMovement * Time.deltaTime;
+        movement.y = verticalVelocity.y * Time.deltaTime;
+
         characterController.Move(movement);
+
+        if (transform.position.y < groundY)
+        {
+            Vector3 groundedPosition = transform.position;
+            groundedPosition.y = groundY;
+            transform.position = groundedPosition;
+            verticalVelocity.y = 0f;
+        }
     }
 }

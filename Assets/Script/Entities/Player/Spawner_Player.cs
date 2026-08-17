@@ -23,25 +23,35 @@ public class Spawner_Player : MonoBehaviour
         }
 
         // Instantiate Player 1 using the P1 control scheme
-        var p1 = UnityEngine.InputSystem.PlayerInput.Instantiate(
+        var p1 = PlayerInput.Instantiate(
             playerPrefab_1,
             playerIndex: 0,
             controlScheme: "P1",
             pairWithDevice: Keyboard.current
         );
+        var p1Component = p1.GetComponent<PlayerComponent>();
+        if (p1Component != null)
+        {
+            p1Component.prevParent = folder != null ? folder : (p1.transform.parent != null ? p1.transform.parent.gameObject : p1.gameObject);
+        }
         if (folder != null) p1.transform.SetParent(folder.transform, true);
         p1.transform.position = spawnPointP1.position;
-        p1.gameObject.name = "Player_1";
+        p1.gameObject.name = "Player_Mechanic";
 
         // Instantiate Player 2 using the P2 control scheme
-        var p2 = UnityEngine.InputSystem.PlayerInput.Instantiate(
+        var p2 = PlayerInput.Instantiate(
             playerPrefab_2,
             playerIndex: 1,
             controlScheme: "P2",
             pairWithDevice: Keyboard.current
         );
+        var p2Component = p2.GetComponent<PlayerComponent>();
+        if (p2Component != null)
+        {
+            p2Component.prevParent = folder != null ? folder : (p2.transform.parent != null ? p2.transform.parent.gameObject : p2.gameObject);
+        }
         if (folder != null) p2.transform.SetParent(folder.transform, true);
         p2.transform.position = spawnPointP2.position;
-        p2.gameObject.name = "Player_2";
+        p2.gameObject.name = "Player_Mercenary";
     }
 }

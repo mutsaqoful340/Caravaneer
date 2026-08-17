@@ -7,6 +7,7 @@ TagManager:
   - Sword
   - Enemy
   - Interactable
+  - Wagon
   layers:
   - Default
   - TransparentFX

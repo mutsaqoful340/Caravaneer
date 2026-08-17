@@ -2740,12 +2740,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9108124e7a55fb44bd4bf0214dbcf35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Universal_Interact
-  animator: {fileID: 0}
   isInteractable: 1
-  isHoldInteract: 0
-  holdDuration: 2
   destroyAfterInteract: 1
+  isHoldInteract: 0
+  animator: {fileID: 0}
   destroyDelay: 0
+  holdDuration: 2
   onInteract:
     m_PersistentCalls:
       m_Calls: []
