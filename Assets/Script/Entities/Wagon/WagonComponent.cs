@@ -25,12 +25,19 @@ public class WagonComponent : MonoBehaviour
     public Transform slotMercenary;
     public bool isMercenaryMounted = false;
 
+    [Header("Debug")]
+    [SerializeField] private CharacterController mechanicCC;
+    [SerializeField] private Rigidbody mechanicRB;
+    [SerializeField] private CharacterController mercenaryCC;
+    [SerializeField] private Rigidbody mercenaryRB;
+
     private Universal_Interact interactComponent;
 
     void Awake()
     {
         interactComponent = GetComponent<Universal_Interact>();
         if (interactComponent != null) interactComponent.enabled = false;
+        if (animator == null) animator = GetComponent<Animator>();
     }
 
     public void OnTriggerEnter(Collider other)
@@ -45,10 +52,14 @@ public class WagonComponent : MonoBehaviour
             if (other.name.Contains("Player_Mechanic"))
             {
                 mechanic = other.GetComponent<PlayerComponent>();
+                mechanicCC = mechanic.GetComponent<CharacterController>();
+                mechanicRB = mechanic.GetComponent<Rigidbody>();
             }
             else if (other.name.Contains("Player_Mercenary"))
             {
                 mercenary = other.GetComponent<PlayerComponent>();
+                mercenaryCC = mercenary.GetComponent<CharacterController>();
+                mercenaryRB = mercenary.GetComponent<Rigidbody>();
             }
         }
     }
@@ -57,13 +68,17 @@ public class WagonComponent : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            if (other.name.Contains("Player_Mechanic"))
+            if (other.name.Contains("Player_Mechanic") && !isMechanicMounted)
             {
                 mechanic = null;
+                mechanicCC = null;
+                mechanicRB = null;
             }
-            else if (other.name.Contains("Player_Mercenary"))
+            else if (other.name.Contains("Player_Mercenary") && !isMercenaryMounted)
             {
                 mercenary = null;
+                mercenaryCC = null;
+                mercenaryRB = null;
             }
 
             if (interactComponent != null && mechanic == null && mercenary == null)
@@ -123,13 +138,10 @@ public class WagonComponent : MonoBehaviour
     private void OnMechanicMount()
     {
         isMechanicMounted = true;
-        CharacterController mechanicController = mechanic.GetComponent<CharacterController>();
-        Rigidbody mechanicRigidbody = mechanic.GetComponent<Rigidbody>();
-        GameObject prviousParent = mechanic.gameObject.transform.parent != null ? mechanic.gameObject.transform.parent.gameObject : null;
-        if (mechanicController != null && mechanicRigidbody != null)
+        if (mechanicCC != null && mechanicRB != null)
         {
-            mechanicController.enabled = false;
-            mechanicRigidbody.isKinematic = true; // Make the Rigidbody kinematic to prevent physics interactions
+            mechanicCC.enabled = false;
+            mechanicRB.isKinematic = true; // Make the Rigidbody kinematic to prevent physics interactions
             mechanic.isMounted = true;
         }
         else
@@ -144,12 +156,10 @@ public class WagonComponent : MonoBehaviour
     private void OnMercenaryMount()
     {
         isMercenaryMounted = true;
-        CharacterController mercenaryController = mercenary.GetComponent<CharacterController>();
-        Rigidbody mercenaryRigidbody = mercenary.GetComponent<Rigidbody>();
-        if (mercenaryController != null)
+        if (mercenaryCC != null && mercenaryRB != null)
         {
-            mercenaryController.enabled = false;
-            mercenaryRigidbody.isKinematic = true; // Make the Rigidbody kinematic to prevent physics interactions
+            mercenaryCC.enabled = false;
+            mercenaryRB.isKinematic = true; // Make the Rigidbody kinematic to prevent physics interactions
             mercenary.isMounted = true;
         }
         else
@@ -163,12 +173,10 @@ public class WagonComponent : MonoBehaviour
     private void OnMechanicDismount()
     {
         isMechanicMounted = false;
-        CharacterController mechanicController = mechanic.GetComponent<CharacterController>();
-        Rigidbody mechanicRigidbody = mechanic.GetComponent<Rigidbody>();
-        if (mechanicController != null)
+        if (mechanicCC != null)
         {
-            mechanicController.enabled = true;
-            mechanicRigidbody.isKinematic = false; // Make the Rigidbody non-kinematic to allow physics interactions
+            mechanicCC.enabled = true;
+            mechanicRB.isKinematic = false; // Make the Rigidbody non-kinematic to allow physics interactions
             mechanic.isMounted = false;
         }
         else
@@ -189,12 +197,10 @@ public class WagonComponent : MonoBehaviour
     private void OnMercenaryDismount()
     {
         isMercenaryMounted = false;
-        CharacterController mercenaryController = mercenary.GetComponent<CharacterController>();
-        Rigidbody mercenaryRigidbody = mercenary.GetComponent<Rigidbody>();
-        if (mercenaryController != null)
+        if (mercenaryCC != null)
         {
-            mercenaryController.enabled = true;
-            mercenaryRigidbody.isKinematic = false; // Make the Rigidbody non-kinematic to allow physics interactions
+            mercenaryCC.enabled = true;
+            mercenaryRB.isKinematic = false; // Make the Rigidbody non-kinematic to allow physics interactions
             mercenary.isMounted = false;
         }
         else
@@ -233,12 +239,9 @@ public class WagonComponent : MonoBehaviour
     {
         // TODO - add wagon destruction logic here (e.g., play destruction animation, disable wagon, etc.)
         Debug.Log($"{gameObject.name} has been destroyed!");
+        OnMechanicDismount();
+        OnMercenaryDismount();
         animator.SetTrigger("Destroy");
-    }
-
-    private void DestroyWagon()
-    {
-        Destroy(gameObject);
     }
 
     private void Update()

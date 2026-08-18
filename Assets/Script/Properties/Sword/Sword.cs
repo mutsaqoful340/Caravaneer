@@ -1,21 +1,51 @@
 using UnityEngine;
+using System;
 
 public class Sword : MonoBehaviour
 {
+    [Header("Sword Properties")]
     public int damage = 1;
+    public bool isEnemySword = false; // Flag to determine if the sword belongs to an enemy
 
     [Header("Debug")]
-    [SerializeField] private EnemyComponent currentEnemy;
+    [SerializeField] private EnemyComponent enemyTarget;
+    [SerializeField] private PlayerComponent playerTarget;
+    [SerializeField] private WagonComponent wagonTarget;
+
+    private void OnDisable()
+    {
+        enemyTarget = null;
+        playerTarget = null;
+        wagonTarget = null;
+    }
 
     public void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Enemy"))
+        if (other.CompareTag("Enemy") && !isEnemySword)
         {
-            currentEnemy = other.GetComponent<EnemyComponent>();
-            if (currentEnemy != null)
+            enemyTarget = other.GetComponent<EnemyComponent>();
+            if (enemyTarget != null)
             {
-                currentEnemy.OnTakeDamage(damage);
-                Debug.Log($"{gameObject.name} dealt {damage} damage to {currentEnemy.gameObject.name}!");
+                enemyTarget.OnTakeDamage(damage);
+                Debug.Log($"{gameObject.name} dealt {damage} damage to {enemyTarget.gameObject.name}!");
+            }
+        }
+        else if (other.CompareTag("Player") && isEnemySword)
+        {
+            playerTarget = other.GetComponent<PlayerComponent>();
+            if (playerTarget != null)
+            {
+                playerTarget.OnTakeDamage(damage);
+                Debug.Log($"{gameObject.name} dealt {damage} damage to {playerTarget.gameObject.name}!");
+            }
+        }
+        else if (other.CompareTag("Wagon") && !isEnemySword)
+        {
+            wagonTarget = other.GetComponent<WagonComponent>();
+            if (wagonTarget != null)
+            {
+                wagonTarget.OnTakeDamage(damage);
+                Debug.Log($"{gameObject.name} dealt {damage} damage to {wagonTarget.gameObject.name}!");
             }
         }
     }
@@ -24,7 +54,15 @@ public class Sword : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            currentEnemy = null;
+            enemyTarget = null;
+        }
+        else if (other.CompareTag("Player"))
+        {
+            playerTarget = null;
+        }
+        else if (other.CompareTag("Wagon"))
+        {
+            wagonTarget = null;
         }
     }
 }

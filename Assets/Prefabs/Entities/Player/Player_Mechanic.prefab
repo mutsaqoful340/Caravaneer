@@ -55,8 +55,11 @@ MonoBehaviour:
   HP: 3
   isMercenary: 0
   facingInputDeadZone: 0.1
+  groundY: 0
+  gravity: -18
   attackCooldown: 1
   attackSequenceResetCooldown: 2
+  prevParent: {fileID: 0}
   playerVisual: {fileID: 7173148089158892649}
   animator: {fileID: 2003184519605994075}
   playerStatUI: {fileID: 1743004827363687211}
@@ -65,6 +68,7 @@ MonoBehaviour:
   currentInteractable: {fileID: 0}
   interactObject: {fileID: 0}
   isAttacking: 0
+  isMounted: 0
   isMoveOpposDir: 0
   currentEnemy: {fileID: 0}
 --- !u!114 &6872265538902852116
@@ -130,7 +134,7 @@ CharacterController:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_LayerOverridePriority: 0
   m_ProvidesContacts: 1
   m_Enabled: 1

@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerConstraint : MonoBehaviour
+public class CameraConstraint : MonoBehaviour
 {
     [Header("Camera Reference & Settings")]
     public Camera mainCamera;
+    public bool isFreeezeZ = false;
     public Vector3 cameraOffset = new Vector3(0, 10, -10);
     public Vector3 cameraDamping = new Vector3(0.1f, 0.1f, 0.1f);
     public bool isMainMenu = true;
@@ -13,38 +14,43 @@ public class PlayerConstraint : MonoBehaviour
     private float velocityX;
     private float velocityY;
     private float velocityZ;
+    private float startingZ;
 
     [Header("Player References")]
-    [SerializeField] private GameObject player1;
-    [SerializeField] private GameObject player2;
+    [SerializeField] private GameObject[] targets;
 
     public void Start()
     {
-
+        Transform targetTransform = mainCamera != null ? mainCamera.transform : transform;
+        startingZ = targetTransform.position.z;
     }
 
     private void LateUpdate()
     {
         if (isMainMenu) return;
 
-        if (player1 == null)
+        if (targets == null || targets.Length == 0) return;
+
+        Vector3 targetCenter = Vector3.zero;
+        int validTargetCount = 0;
+
+        foreach (GameObject target in targets)
         {
-            player1 = FindPlayer();
-            Debug.Log("Player 1 found: " + player1?.name);
+            if (target == null) continue;
+
+            targetCenter += target.transform.position;
+            validTargetCount++;
         }
 
-        if (player2 == null)
-        {
-            player2 = FindPlayer(player1);
-            Debug.Log("Player 2 found: " + player2?.name);
-        }
-        
-        if (player1 == null || player2 == null) return;
+        if (validTargetCount == 0) return;
 
-        Vector3 midpoint = (player1.transform.position + player2.transform.position) / 2f;
+        Vector3 midpoint = targetCenter / validTargetCount;
         Transform targetTransform = mainCamera != null ? mainCamera.transform : transform;
         Vector3 targetPosition = midpoint + cameraOffset;
-        // targetPosition.z = targetTransform.position.z;
+        if (isFreeezeZ)
+        {
+            targetPosition.z = startingZ;
+        }
 
         Vector3 currentPosition = targetTransform.position;
         float smoothX = Mathf.Max(0.0001f, cameraDamping.x);
@@ -58,16 +64,4 @@ public class PlayerConstraint : MonoBehaviour
         );
     }
 
-    private GameObject FindPlayer(GameObject excluded = null)
-    {
-        foreach (PlayerComponent player in FindObjectsByType<PlayerComponent>())
-        {
-            if (player.gameObject != excluded)
-            {
-                return player.gameObject;
-            }
-        }
-
-        return null;
-    }
 }
