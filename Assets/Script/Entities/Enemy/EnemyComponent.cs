@@ -56,6 +56,12 @@ public class EnemyComponent : MonoBehaviour
 
     public void OnTakeDamage(int damage)
     {
+        if (damage <= 0)
+        {
+            return;
+        }
+
+        CameraConstraint.Instance?.CameraShake();
         HP -= damage;
 
         Vector3 knockbackDirection = Vector3.zero;

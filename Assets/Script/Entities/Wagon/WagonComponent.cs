@@ -13,11 +13,17 @@ public class WagonComponent : MonoBehaviour
 {
     [Header("Wagon Settings")]
     [SerializeField] private float moveSpeed = 3f;
-    [SerializeField] private int HPFunctional = 5;
-    [SerializeField] private int HPBroken = 8;
+    [SerializeField] private int startHPFunctional = 5;
+    [SerializeField] private int startHPBroken = 8;
+    public WagonState currentWagonState = WagonState.Functional;
 
     [Header("Wagon References")]
     public Animator animator;
+    public Canvas wagonHPCanvas;
+    public GameObject heartFunctionalPrefab;
+    public GameObject heartBrokenPrefab;
+
+    [Header("Player References")]
     public PlayerComponent mechanic;
     public Transform slotMechanic;
     public bool isMechanicMounted = false;
@@ -26,6 +32,10 @@ public class WagonComponent : MonoBehaviour
     public bool isMercenaryMounted = false;
 
     [Header("Debug")]
+    [SerializeField] private int currHPBroken = 8;
+    [SerializeField] private int currHPFunctional = 5;
+    [SerializeField] private bool isBroken = false;
+    [SerializeField] private bool isDestroyed = false;
     [SerializeField] private CharacterController mechanicCC;
     [SerializeField] private Rigidbody mechanicRB;
     [SerializeField] private CharacterController mercenaryCC;
@@ -38,6 +48,10 @@ public class WagonComponent : MonoBehaviour
         interactComponent = GetComponent<Universal_Interact>();
         if (interactComponent != null) interactComponent.enabled = false;
         if (animator == null) animator = GetComponent<Animator>();
+        currHPFunctional = startHPFunctional;
+        currHPBroken = startHPBroken;
+        // UpdateWagonStateAnimation();
+        UpdateHPUI();
     }
 
     public void OnTriggerEnter(Collider other)
@@ -102,6 +116,10 @@ public class WagonComponent : MonoBehaviour
             {
                 OnMechanicDismount();
             }
+            else if (!CanOperate())
+            {
+                Debug.LogWarning($"{gameObject.name} cannot mount until it is fully repaired.");
+            }
             else
             {
                 OnMechanicMount();
@@ -112,6 +130,10 @@ public class WagonComponent : MonoBehaviour
             if (isMercenaryMounted)
             {
                 OnMercenaryDismount();
+            }
+            else if (!CanOperate())
+            {
+                Debug.LogWarning($"{gameObject.name} cannot mount until it is fully repaired.");
             }
             else
             {
@@ -124,20 +146,94 @@ public class WagonComponent : MonoBehaviour
         }
     }
 
+    private bool CanOperate()
+    {
+        return currentWagonState == WagonState.Functional
+            && !isBroken
+            && currHPFunctional > 0;
+    }
+
     public void OnTakeDamage(int damage)
     {
-        HPBroken -= damage;
-        Debug.Log($"{gameObject.name} took {damage} damage! Remaining HP: {HPBroken}");
-
-        if (HPBroken <= 0)
+        if (isDestroyed || damage <= 0)
         {
-            OnWagonDestroyed();
+            return;
+        }
+
+        CameraConstraint.Instance?.CameraShake();
+
+        if (currentWagonState == WagonState.Functional)
+        {
+            currHPFunctional = Mathf.Max(0, currHPFunctional - damage);
+            if (currHPFunctional <= 0)
+            {
+                currHPFunctional = 1;
+                currHPBroken = 6;
+                isBroken = true;
+                SetWagonState(WagonState.Broken);
+            }
+
+            UpdateHPUI();
+        }
+        else if (currentWagonState == WagonState.Broken)
+        {
+            currHPBroken = Mathf.Max(0, currHPBroken - damage);
+            if (currHPBroken <= 0)
+            {
+                OnWagonDestroyed();
+            }
+
+            UpdateHPUI();
+        }
+    }
+
+    public void OnRepair(int repairAmount)
+    {
+        if (isDestroyed || repairAmount <= 0)
+        {
+            return;
+        }
+
+        if (currentWagonState == WagonState.Broken)
+        {
+            currHPBroken = Mathf.Min(currHPBroken + repairAmount, startHPBroken);
+
+            if (currHPBroken < startHPBroken)
+            {
+                return;
+            }
+
+            currHPFunctional = Mathf.Clamp(currHPFunctional, 1, startHPFunctional);
+
+            currHPFunctional = Mathf.Clamp(
+                currHPFunctional + repairAmount,
+                1,
+                startHPFunctional);
+
+            if (currHPFunctional >= startHPFunctional)
+            {
+                SetWagonState(WagonState.Functional);
+                isBroken = false;
+            }
+
+            UpdateHPUI();
+            return;
+        }
+
+        if (currentWagonState == WagonState.Functional && !isBroken)
+        {
+            currHPFunctional = Mathf.Clamp(
+                currHPFunctional + repairAmount,
+                1,
+                startHPFunctional);
+            UpdateHPUI();
         }
     }
 
     private void OnMechanicMount()
     {
         isMechanicMounted = true;
+        mechanic.playerVisual.SetActive(false);
         if (mechanicCC != null && mechanicRB != null)
         {
             mechanicCC.enabled = false;
@@ -146,7 +242,7 @@ public class WagonComponent : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"{mechanic.gameObject.name} does not have a CharacterController component.");
+            Debug.LogWarning($"{mechanic.gameObject.name} does not have a CharacterController & RigidBody component.");
         }
         // mechanicController.enabled = true; // Re-enable the CharacterController to reset its state
         mechanic.gameObject.transform.SetParent(slotMechanic);
@@ -156,6 +252,7 @@ public class WagonComponent : MonoBehaviour
     private void OnMercenaryMount()
     {
         isMercenaryMounted = true;
+        mercenary.playerVisual.SetActive(false);
         if (mercenaryCC != null && mercenaryRB != null)
         {
             mercenaryCC.enabled = false;
@@ -173,7 +270,8 @@ public class WagonComponent : MonoBehaviour
     private void OnMechanicDismount()
     {
         isMechanicMounted = false;
-        if (mechanicCC != null)
+        mechanic.playerVisual.SetActive(true);
+        if (mechanicCC != null && mechanicRB != null)
         {
             mechanicCC.enabled = true;
             mechanicRB.isKinematic = false; // Make the Rigidbody non-kinematic to allow physics interactions
@@ -197,7 +295,8 @@ public class WagonComponent : MonoBehaviour
     private void OnMercenaryDismount()
     {
         isMercenaryMounted = false;
-        if (mercenaryCC != null)
+        mercenary.playerVisual.SetActive(true);
+        if (mercenaryCC != null && mercenaryRB != null)
         {
             mercenaryCC.enabled = true;
             mercenaryRB.isKinematic = false; // Make the Rigidbody non-kinematic to allow physics interactions
@@ -220,37 +319,104 @@ public class WagonComponent : MonoBehaviour
 
     public void ApplyDriverInput(Vector2 input)
     {
-        float x = Mathf.Max(0f, input.x);
-        float z = input.y;
+        float forwardInput = Mathf.Max(0f, input.x);
 
-        float maxLateralOffset = x * 0.75f;
-        z = Mathf.Clamp(z, -maxLateralOffset, maxLateralOffset);
+        Vector3 movement =
+            Vector3.right * forwardInput * moveSpeed * Time.deltaTime;
 
-        if (x <= 0f)
-        {
-            z = 0f;
-        }
-
-        Vector3 movement = new Vector3(x, 0f, z) * moveSpeed * Time.deltaTime;
         transform.position += movement;
     }
 
     private void OnWagonDestroyed()
     {
+        if (isDestroyed) return; // Prevent multiple destruction calls
+        isDestroyed = true;
         // TODO - add wagon destruction logic here (e.g., play destruction animation, disable wagon, etc.)
         Debug.Log($"{gameObject.name} has been destroyed!");
-        OnMechanicDismount();
-        OnMercenaryDismount();
-        animator.SetTrigger("Destroy");
+        if (isMechanicMounted && mechanic != null)
+        {
+            OnMechanicDismount();
+        }
+
+        if (isMercenaryMounted && mercenary != null)
+        {
+            OnMercenaryDismount();
+        }
+        animator.SetTrigger("OnDestroyed");
     }
 
-    private void Update()
+    private void SetWagonState(WagonState newState)
     {
-        if (!isMechanicMounted || mechanic == null)
+        if (currentWagonState == newState)
         {
             return;
         }
 
+        currentWagonState = newState;
+        UpdateWagonStateAnimation();
+    }
+
+    private void UpdateWagonStateAnimation()
+    {
+        if (animator == null)
+        {
+            return;
+        }
+
+        switch (currentWagonState)
+        {
+            case WagonState.Functional:
+                animator.SetTrigger("OnFunctional");
+                break;
+            case WagonState.Broken:
+                animator.SetTrigger("OnBroken");
+                break;
+            default:
+                Debug.LogWarning($"{gameObject.name} has an unknown wagon state.");
+                break;
+        }
+    }
+
+    private void UpdateHPUI()
+    {
+        if (wagonHPCanvas == null)
+        {
+            Debug.LogWarning($"{gameObject.name} is missing a wagon HP Canvas reference.");
+            return;
+        }
+
+        bool repairingBrokenHP = currentWagonState == WagonState.Broken
+            && currHPBroken < startHPBroken;
+        GameObject heartPrefab = repairingBrokenHP
+            ? heartBrokenPrefab
+            : heartFunctionalPrefab;
+        int displayedHP = repairingBrokenHP ? currHPBroken : currHPFunctional;
+
+        if (heartPrefab == null)
+        {
+            Debug.LogWarning($"{gameObject.name} is missing the required wagon HP heart prefab.");
+            return;
+        }
+
+        Transform uiRoot = wagonHPCanvas.transform;
+        for (int i = uiRoot.childCount - 1; i >= 0; i--)
+        {
+            Destroy(uiRoot.GetChild(i).gameObject);
+        }
+
+        for (int i = 0; i < displayedHP; i++)
+        {
+            Instantiate(heartPrefab, uiRoot);
+        }
+    }
+
+    // Supposedly call by the destroy animation event
+    public void DestroyWagon(){Destroy(gameObject);}
+
+    private void Update()
+    {
+        if (!isMechanicMounted || mechanic == null || !CanOperate()) return;
+        
         ApplyDriverInput(mechanic.GetMoveInput());
     }
 }

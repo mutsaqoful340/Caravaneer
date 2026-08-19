@@ -1,5 +1,132 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2228472329565831873
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4721099997037261093}
+  - component: {fileID: 7378532109480050907}
+  - component: {fileID: 2379229707558874124}
+  - component: {fileID: 9135936931982442662}
+  - component: {fileID: 5037683464769768662}
+  m_Layer: 12
+  m_Name: Canvas_HP
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4721099997037261093
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2228472329565831873}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 8101428499223464733}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -2.837, y: 4.776}
+  m_SizeDelta: {x: 573.132, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!223 &7378532109480050907
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2228472329565831873}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!114 &2379229707558874124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2228472329565831873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 1
+--- !u!114 &9135936931982442662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2228472329565831873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &5037683464769768662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2228472329565831873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GridLayoutGroup
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 50, y: 50}
+  m_Spacing: {x: 0, y: 0}
+  m_Constraint: 0
+  m_ConstraintCount: 2
 --- !u!1 &6669699844020099792
 GameObject:
   m_ObjectHideFlags: 0
@@ -25,7 +152,7 @@ Transform:
   m_GameObject: {fileID: 6669699844020099792}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.663, y: 1.843, z: 0}
+  m_LocalPosition: {x: -1.791, y: 1.843, z: -0.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -56,7 +183,7 @@ Transform:
   m_GameObject: {fileID: 6985948370310912147}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.92, y: 1.71, z: 0}
+  m_LocalPosition: {x: -3.295, y: 1.71, z: -0.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -187,10 +314,10 @@ GameObject:
   - component: {fileID: 8101428499223464733}
   - component: {fileID: 4433639501399694365}
   - component: {fileID: 5713482515961547749}
-  - component: {fileID: 9001997794232083138}
+  - component: {fileID: 1331201875356970170}
+  - component: {fileID: 8505634444576343140}
   - component: {fileID: 1685490767955513281}
   - component: {fileID: 3267680524662287922}
-  - component: {fileID: 8505634444576343140}
   m_Layer: 12
   m_Name: Wagon
   m_TagString: Wagon
@@ -214,6 +341,7 @@ Transform:
   - {fileID: 3322041966619348332}
   - {fileID: 8283601357128667503}
   - {fileID: 5703871534850005523}
+  - {fileID: 4721099997037261093}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &4433639501399694365
@@ -235,8 +363,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 10, y: 4, z: 0.3}
-  m_Center: {x: -0.5, y: 2, z: -0.15}
+  m_Size: {x: 10, y: 4, z: 0.2}
+  m_Center: {x: -0.5, y: 2, z: 0}
 --- !u!54 &5713482515961547749
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -264,8 +392,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!135 &9001997794232083138
-SphereCollider:
+--- !u!65 &1331201875356970170
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -283,8 +411,24 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 4
-  m_Center: {x: -3.31, y: 0, z: 0}
+  m_Size: {x: 2.4, y: 2, z: 1}
+  m_Center: {x: -2.3, y: 1, z: 0}
+--- !u!208 &8505634444576343140
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8894524907553929642}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5, y: 2, z: 0.1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: -0.5, y: 2, z: 0}
+  m_TimeToStationary: 0.1
 --- !u!114 &1685490767955513281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -298,15 +442,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WagonComponent
   moveSpeed: 3
-  HPFunctional: 5
-  HPBroken: 8
+  startHPFunctional: 5
+  startHPBroken: 8
+  currentWagonState: 0
   animator: {fileID: 6855065107031828465}
+  wagonHPCanvas: {fileID: 7378532109480050907}
+  heartFunctionalPrefab: {fileID: 2319628780638901486, guid: d85d119eccfef23479a9cfdbb5b576f3, type: 3}
+  heartBrokenPrefab: {fileID: 2319628780638901486, guid: aa906bf8dd1a2894da9837033c29383c, type: 3}
   mechanic: {fileID: 0}
   slotMechanic: {fileID: 8283601357128667503}
   isMechanicMounted: 0
   mercenary: {fileID: 0}
   slotMercenary: {fileID: 5703871534850005523}
   isMercenaryMounted: 0
+  currHPBroken: 8
+  currHPFunctional: 5
+  isBroken: 0
+  isDestroyed: 0
   mechanicCC: {fileID: 0}
   mechanicRB: {fileID: 0}
   mercenaryCC: {fileID: 0}
@@ -345,19 +497,3 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   isInteracting: 0
---- !u!208 &8505634444576343140
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8894524907553929642}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 5, y: 2, z: 0.15}
-  m_MoveThreshold: 0.1
-  m_Carve: 1
-  m_CarveOnlyStationary: 0
-  m_Center: {x: -0.5, y: 2, z: -0.15}
-  m_TimeToStationary: 0.1

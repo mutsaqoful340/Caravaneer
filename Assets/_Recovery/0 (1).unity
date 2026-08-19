@@ -1804,10 +1804,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1093936899}
     m_Modifications:
-    - target: {fileID: 1685490767955513281, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-      propertyPath: animator
-      value: 
-      objectReference: {fileID: 924395747}
     - target: {fileID: 7378532109480050907, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
       propertyPath: m_Camera
       value: 
@@ -1856,14 +1852,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wagon
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 6855065107031828465, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8894524907553929642, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 924395747}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
 --- !u!1 &626844451
 GameObject:
@@ -1959,7 +1951,7 @@ MonoBehaviour:
     m_Bits: 2049
   m_UseGeometry: 0
   m_DefaultArea: 0
-  m_GenerateLinks: 1
+  m_GenerateLinks: 0
   m_IgnoreNavMeshAgent: 1
   m_IgnoreNavMeshObstacle: 1
   m_OverrideTileSize: 0
@@ -2550,28 +2542,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8101428499223464733, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
   m_PrefabInstance: {fileID: 598344223}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &924395747
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 711577226}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 99e18506610ca7e4fad195521de9aff1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &984114170
 GameObject:
   m_ObjectHideFlags: 0
@@ -3867,15 +3837,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fce19d6c469c9094287c9aac1a020e32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 123944336}
+  mainCamera: {fileID: 123944340}
   isFreeezeZ: 1
   cameraOffset: {x: 0, y: 10, z: -10}
   cameraDamping: {x: 0.5, y: 0.1, z: 0.1}
   isMainMenu: 0
-  shakeDuration: 0.5
-  shakeMagnitude: 1
-  shakeFrequency: 25
-  shakeAxisMultiplier: {x: 1.5, y: 0.5, z: 0}
   targets:
   - {fileID: 711577226}
 --- !u!1 &1396405072

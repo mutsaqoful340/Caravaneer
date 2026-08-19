@@ -196,6 +196,12 @@ public class PlayerComponent : MonoBehaviour
 
     public void OnTakeDamage(int damage)
     {
+        if (damage <= 0)
+        {
+            return;
+        }
+
+        CameraConstraint.Instance?.CameraShake();
         HP -= damage;
         AddVerticalImpulse(1.5f);
         Debug.Log($"{gameObject.name} took {damage} damage! Remaining HP: {HP}");
