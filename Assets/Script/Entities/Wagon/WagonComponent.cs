@@ -11,6 +11,7 @@ public enum WagonState // Two-stage wagon state: Functional and Broken
 
 public class WagonComponent : MonoBehaviour
 {
+    public static WagonComponent Instance { get; private set; }
     [Header("Wagon Settings")]
     [SerializeField] private float moveSpeed = 3f;
     [SerializeField] private int startHPFunctional = 5;
@@ -45,6 +46,12 @@ public class WagonComponent : MonoBehaviour
 
     void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;       
         interactComponent = GetComponent<Universal_Interact>();
         if (interactComponent != null) interactComponent.enabled = false;
         if (animator == null) animator = GetComponent<Animator>();
@@ -52,6 +59,12 @@ public class WagonComponent : MonoBehaviour
         currHPBroken = startHPBroken;
         // UpdateWagonStateAnimation();
         UpdateHPUI();
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
     }
 
     public void OnTriggerEnter(Collider other)
@@ -74,6 +87,16 @@ public class WagonComponent : MonoBehaviour
                 mercenary = other.GetComponent<PlayerComponent>();
                 mercenaryCC = mercenary.GetComponent<CharacterController>();
                 mercenaryRB = mercenary.GetComponent<Rigidbody>();
+            }
+        }
+
+        if (other.CompareTag("RepairMaterial"))
+        {
+            RepairMaterial repairMaterial = other.GetComponent<RepairMaterial>();
+            if (repairMaterial != null)
+            {
+                OnRepair(repairMaterial.repairValue);
+                Destroy(other.gameObject);
             }
         }
     }

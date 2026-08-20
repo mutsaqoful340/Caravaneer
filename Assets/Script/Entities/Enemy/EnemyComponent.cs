@@ -108,6 +108,7 @@ public class EnemyComponent : MonoBehaviour
 
     public void OnDie()
     {
+        Spawner_RepairMaterial.Instance?.SpawnRepairMaterial(transform.position);
         Destroy(gameObject);
         Debug.Log($"{gameObject.name} has died!");
     }

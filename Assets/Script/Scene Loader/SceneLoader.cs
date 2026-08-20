@@ -2,9 +2,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneLoader_Advanced : MonoBehaviour
+public class SceneLoader : MonoBehaviour
 {
-    public static SceneLoader_Advanced Instance { get; private set; }
+    public static SceneLoader Instance { get; private set; }
 
     [Header("Loading Settings")]
     [SerializeField, Min(0f)] private float minimumLoadingDuration = 5f;

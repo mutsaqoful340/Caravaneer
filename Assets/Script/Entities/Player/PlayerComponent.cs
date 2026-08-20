@@ -28,6 +28,8 @@ public class PlayerComponent : MonoBehaviour
     [Tooltip("The prefab for the heart icon representing health.")]
     public GameObject heartPrefab;
     public PlayerInput playerInputComp;
+    [Tooltip("The inventory component that manages the player's collective items and resources.")]
+    public PlayerInventory inventory;
 
 
     [Header("Debug")]

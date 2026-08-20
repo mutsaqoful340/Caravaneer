@@ -6,7 +6,7 @@ public class System_Bootsrap : MonoBehaviour
 
     private void Start()
     {
-        if (SceneLoader_Advanced.Instance == null)
+        if (SceneLoader.Instance == null)
         {
             Debug.LogError("System_Bootsrap: No SceneLoader_Advanced exists in the Bootstrap scene.");
             return;
@@ -18,6 +18,6 @@ public class System_Bootsrap : MonoBehaviour
             return;
         }
 
-        SceneLoader_Advanced.Instance.LoadScene(firstSceneName);
+        SceneLoader.Instance.LoadScene(firstSceneName);
     }
 }
