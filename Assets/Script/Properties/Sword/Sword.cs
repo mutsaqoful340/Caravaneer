@@ -29,7 +29,7 @@ public class Sword : MonoBehaviour
             if (enemyTarget != null && !isDamaging)
             {
                 isDamaging = true;
-                enemyTarget.OnTakeDamage(damage);
+                enemyTarget.OnTakeDamage(damage, transform);
                 Debug.Log($"{gameObject.name} dealt {damage} damage to {enemyTarget.gameObject.name}!");
             }
         }

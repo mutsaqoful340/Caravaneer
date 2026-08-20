@@ -9,12 +9,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4934811289626676961}
-  - component: {fileID: 2672642793070571287}
+  - component: {fileID: 1879299602176091336}
+  - component: {fileID: -922975555649688868}
   - component: {fileID: 6872265538902852116}
   - component: {fileID: 6119853018108988024}
   - component: {fileID: -2877977303542438586}
-  - component: {fileID: 1879299602176091336}
-  - component: {fileID: -922975555649688868}
+  - component: {fileID: 2672642793070571287}
+  - component: {fileID: 5680246285842591190}
   m_Layer: 6
   m_Name: Player_Mechanic
   m_TagString: Player
@@ -39,7 +40,7 @@ Transform:
   - {fileID: 4701897831448138687}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2672642793070571287
+--- !u!114 &1879299602176091336
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -48,29 +49,44 @@ MonoBehaviour:
   m_GameObject: {fileID: 378271028069150149}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43214a41ce8ad554fad6231214b746ec, type: 3}
+  m_Script: {fileID: 11500000, guid: b16c6f78230fa4964a222622d8aae332, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 5
-  HP: 3
-  isMercenary: 0
-  facingInputDeadZone: 0.1
-  groundY: 0
-  gravity: -18
-  attackCooldown: 1
-  attackSequenceResetCooldown: 2
-  prevParent: {fileID: 0}
-  playerVisual: {fileID: 7173148089158892649}
-  animator: {fileID: 2003184519605994075}
-  playerStatUI: {fileID: 1743004827363687211}
-  heartPrefab: {fileID: 2319628780638901486, guid: 99ae8cea45e07124994d4fd03e802439, type: 3}
-  playerInputComp: {fileID: 6872265538902852116}
-  currentInteractable: {fileID: 0}
-  interactObject: {fileID: 0}
-  isAttacking: 0
-  isMounted: 0
-  isMoveOpposDir: 0
-  currentEnemy: {fileID: 0}
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.MultiplayerEventSystem
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
+  m_PlayerRoot: {fileID: 0}
+--- !u!114 &-922975555649688868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 378271028069150149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.InputSystemUIInputModule
+  m_SendPointerHoverToParent: 1
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: a293f27b8b2c80142898be9ddec04281, type: 3}
+  m_PointAction: {fileID: 0}
+  m_MoveAction: {fileID: -6971496637565217775, guid: a293f27b8b2c80142898be9ddec04281, type: 3}
+  m_SubmitAction: {fileID: 1636691168112923943, guid: a293f27b8b2c80142898be9ddec04281, type: 3}
+  m_CancelAction: {fileID: -5063764739504041899, guid: a293f27b8b2c80142898be9ddec04281, type: 3}
+  m_LeftClickAction: {fileID: 0}
+  m_MiddleClickAction: {fileID: 0}
+  m_RightClickAction: {fileID: 0}
+  m_ScrollWheelAction: {fileID: 0}
+  m_TrackedDevicePositionAction: {fileID: 0}
+  m_TrackedDeviceOrientationAction: {fileID: 0}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
+  m_ScrollDeltaPerTick: 6
 --- !u!114 &6872265538902852116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,7 +150,7 @@ CharacterController:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 192
   m_LayerOverridePriority: 0
   m_ProvidesContacts: 1
   m_Enabled: 1
@@ -173,7 +189,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &1879299602176091336
+--- !u!114 &2672642793070571287
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -182,14 +198,31 @@ MonoBehaviour:
   m_GameObject: {fileID: 378271028069150149}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b16c6f78230fa4964a222622d8aae332, type: 3}
+  m_Script: {fileID: 11500000, guid: 43214a41ce8ad554fad6231214b746ec, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.MultiplayerEventSystem
-  m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
-  m_DragThreshold: 10
-  m_PlayerRoot: {fileID: 0}
---- !u!114 &-922975555649688868
+  m_EditorClassIdentifier: 
+  moveSpeed: 5
+  HP: 3
+  isMercenary: 0
+  facingInputDeadZone: 0.1
+  groundY: 0
+  gravity: -18
+  attackCooldown: 1
+  attackSequenceResetCooldown: 2
+  prevParent: {fileID: 0}
+  playerVisual: {fileID: 7173148089158892649}
+  animator: {fileID: 2003184519605994075}
+  playerStatUI: {fileID: 1743004827363687211}
+  heartPrefab: {fileID: 2319628780638901486, guid: 99ae8cea45e07124994d4fd03e802439, type: 3}
+  playerInputComp: {fileID: 6872265538902852116}
+  inventory: {fileID: 0}
+  currentInteractable: {fileID: 0}
+  interactObject: {fileID: 0}
+  isAttacking: 0
+  isMounted: 0
+  isMoveOpposDir: 0
+  currentEnemy: {fileID: 0}
+--- !u!114 &5680246285842591190
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -198,28 +231,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 378271028069150149}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
+  m_Script: {fileID: 11500000, guid: 05811174932325f42b2c6ac8721d287c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.InputSystemUIInputModule
-  m_SendPointerHoverToParent: 1
-  m_MoveRepeatDelay: 0.5
-  m_MoveRepeatRate: 0.1
-  m_XRTrackingOrigin: {fileID: 0}
-  m_ActionsAsset: {fileID: -944628639613478452, guid: a293f27b8b2c80142898be9ddec04281, type: 3}
-  m_PointAction: {fileID: 0}
-  m_MoveAction: {fileID: -6971496637565217775, guid: a293f27b8b2c80142898be9ddec04281, type: 3}
-  m_SubmitAction: {fileID: 1636691168112923943, guid: a293f27b8b2c80142898be9ddec04281, type: 3}
-  m_CancelAction: {fileID: -5063764739504041899, guid: a293f27b8b2c80142898be9ddec04281, type: 3}
-  m_LeftClickAction: {fileID: 0}
-  m_MiddleClickAction: {fileID: 0}
-  m_RightClickAction: {fileID: 0}
-  m_ScrollWheelAction: {fileID: 0}
-  m_TrackedDevicePositionAction: {fileID: 0}
-  m_TrackedDeviceOrientationAction: {fileID: 0}
-  m_DeselectOnBackgroundClick: 1
-  m_PointerBehavior: 0
-  m_CursorLockBehavior: 0
-  m_ScrollDeltaPerTick: 6
+  m_EditorClassIdentifier: Assembly-CSharp::WagonRepairManager
+  repairRadius: 5
+  repairInterval: 1
+  wagonComponent: {fileID: 0}
+  repairMaterialVisualPrefab: {fileID: 719458099140218483, guid: 9c66e28f916a53f46862c29e37d8be84, type: 3}
 --- !u!1 &1743004827363687211
 GameObject:
   m_ObjectHideFlags: 0

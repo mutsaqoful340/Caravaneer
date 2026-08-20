@@ -175,6 +175,26 @@ public class WagonComponent : MonoBehaviour
             && !isBroken
             && currHPFunctional > 0;
     }
+    
+    public bool NeedsRepair()
+    {
+        if (isDestroyed)
+        {
+            return false;
+        }
+
+        // Broken covers two repair phases: filling currHPBroken, then currHPFunctional.
+        return currentWagonState == WagonState.Broken
+            ? currHPBroken < startHPBroken || currHPFunctional < startHPFunctional
+            : currHPFunctional < startHPFunctional;
+    }
+
+    // True while still repairing the broken HP pool (phase 1); false during the functional repair phase (phase 2), even though currentWagonState is still Broken.
+    private bool IsRepairingBrokenHP()
+    {
+        return currentWagonState == WagonState.Broken
+            && currHPBroken < startHPBroken;
+    }
 
     public void OnTakeDamage(int damage)
     {
@@ -194,20 +214,31 @@ public class WagonComponent : MonoBehaviour
                 currHPBroken = 6;
                 isBroken = true;
                 SetWagonState(WagonState.Broken);
+                DismountAllPlayers();
             }
 
             UpdateHPUI();
+            return;
         }
-        else if (currentWagonState == WagonState.Broken)
+
+        if (IsRepairingBrokenHP())
         {
             currHPBroken = Mathf.Max(0, currHPBroken - damage);
             if (currHPBroken <= 0)
             {
                 OnWagonDestroyed();
             }
-
-            UpdateHPUI();
         }
+        else
+        {
+            currHPFunctional = Mathf.Max(0, currHPFunctional - damage);
+            if (currHPFunctional <= 0)
+            {
+                OnWagonDestroyed();
+            }
+        }
+
+        UpdateHPUI();
     }
 
     public void OnRepair(int repairAmount)
@@ -223,10 +254,9 @@ public class WagonComponent : MonoBehaviour
 
             if (currHPBroken < startHPBroken)
             {
+                UpdateHPUI();
                 return;
             }
-
-            currHPFunctional = Mathf.Clamp(currHPFunctional, 1, startHPFunctional);
 
             currHPFunctional = Mathf.Clamp(
                 currHPFunctional + repairAmount,
@@ -356,6 +386,12 @@ public class WagonComponent : MonoBehaviour
         isDestroyed = true;
         // TODO - add wagon destruction logic here (e.g., play destruction animation, disable wagon, etc.)
         Debug.Log($"{gameObject.name} has been destroyed!");
+        DismountAllPlayers();
+        animator.SetTrigger("OnDestroyed");
+    }
+
+    private void DismountAllPlayers()
+    {
         if (isMechanicMounted && mechanic != null)
         {
             OnMechanicDismount();
@@ -365,7 +401,6 @@ public class WagonComponent : MonoBehaviour
         {
             OnMercenaryDismount();
         }
-        animator.SetTrigger("OnDestroyed");
     }
 
     private void SetWagonState(WagonState newState)
@@ -408,8 +443,7 @@ public class WagonComponent : MonoBehaviour
             return;
         }
 
-        bool repairingBrokenHP = currentWagonState == WagonState.Broken
-            && currHPBroken < startHPBroken;
+        bool repairingBrokenHP = IsRepairingBrokenHP();
         GameObject heartPrefab = repairingBrokenHP
             ? heartBrokenPrefab
             : heartFunctionalPrefab;

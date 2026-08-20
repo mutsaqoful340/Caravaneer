@@ -29,6 +29,7 @@ public class PlayerInventory : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        UpdateHUD();
     }
 
     public void AddCoins(int amount)
@@ -41,6 +42,18 @@ public class PlayerInventory : MonoBehaviour
     {
         repairMaterials += amount;
         UpdateHUD();
+    }
+    
+    public bool TrySpendRepairMaterials(int amount)
+    {
+        if (amount <= 0 || repairMaterials < amount)
+        {
+            return false;
+        }
+        
+        repairMaterials -= amount;
+        UpdateHUD();
+        return true;
     }
 
     private void UpdateHUD()

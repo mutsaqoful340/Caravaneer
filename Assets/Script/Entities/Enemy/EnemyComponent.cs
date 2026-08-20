@@ -8,7 +8,8 @@ public class EnemyComponent : MonoBehaviour
     [SerializeField] private float moveSpeed = 3f;
     [SerializeField] private int HP = 3;
     [SerializeField] private float knockbackForce = 5f;
-    [SerializeField] private float knockbackDuration = 0.2f;
+    [SerializeField] private float knockbackUpwardForce = 3f;
+    [SerializeField] private float knockbackDuration = 0.4f;
     [SerializeField] private float attackCooldown = 1f;
     [SerializeField] private float attackRange = 1.5f;
 
@@ -22,11 +23,12 @@ public class EnemyComponent : MonoBehaviour
     [SerializeField] private Transform targetTransform;
     [SerializeField] private GameObject sword;
     [SerializeField] private bool isDead = false;
+    [SerializeField] private bool hasSpawnerMaterial = false;
     private Coroutine knockbackRoutine;
-        private Coroutine attackCooldownRoutine;
+    private Coroutine attackCooldownRoutine;
     private Quaternion rootRotation;
 
-    void Awake()
+    private void Awake()
     {
         targetTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
         agent = GetComponent<NavMeshAgent>();
@@ -38,23 +40,29 @@ public class EnemyComponent : MonoBehaviour
             agent.speed = moveSpeed;
             agent.updateRotation = false;
         }
+
+        // kinematic while navigating so gravity/physics never fights the NavMeshAgent
+        if (rb != null)
+        {
+            rb.isKinematic = true;
+        }
     }
 
     // === Enemy Actions ===
     #region Enemy Actions
     private void OnAttack()
     {
-            if (isDead || targetTransform == null ||
-                Vector3.Distance(transform.position, targetTransform.position) > attackRange)
-            {
-                return;
-            }
+        if (isDead || targetTransform == null ||
+            Vector3.Distance(transform.position, targetTransform.position) > attackRange)
+        {
+            return;
+        }
 
-            animator.SetTrigger("Attack");
-            Debug.Log($"{gameObject.name} attacked {targetTransform.name}!");
+        animator.SetTrigger("Attack");
+        Debug.Log($"{gameObject.name} attacked {targetTransform.name}!");
     }
 
-    public void OnTakeDamage(int damage)
+    public void OnTakeDamage(int damage, Transform damageSource = null)
     {
         if (damage <= 0)
         {
@@ -66,7 +74,11 @@ public class EnemyComponent : MonoBehaviour
 
         Vector3 knockbackDirection = Vector3.zero;
 
-        if (sword != null)
+        if (damageSource != null)
+        {
+            knockbackDirection = (transform.position - damageSource.position).normalized;
+        }
+        else if (sword != null)
         {
             knockbackDirection = (transform.position - sword.transform.position).normalized;
         }
@@ -75,21 +87,25 @@ public class EnemyComponent : MonoBehaviour
             knockbackDirection = (transform.position - targetTransform.position).normalized;
         }
 
-        OnKnockback(knockbackDirection, knockbackForce);
+        OnKnockback(knockbackDirection);
         sword = null;
 
         if (HP <= 0)
         {
+            if (!hasSpawnerMaterial)
+            {
+                hasSpawnerMaterial = true;
+                Spawner_RepairMaterial.Instance?.SpawnRepairMaterial(transform.position);
+            }
+            else
+            {
+                Debug.LogWarning($"{gameObject.name} has no repair material to spawn.");
+            }
+
             if (attackCooldownRoutine != null)
             {
                 StopCoroutine(attackCooldownRoutine);
                 attackCooldownRoutine = null;
-            }
-
-            if (knockbackRoutine != null)
-            {
-                StopCoroutine(knockbackRoutine);
-                knockbackRoutine = null;
             }
 
             if (agent != null && agent.enabled && agent.isOnNavMesh)
@@ -108,7 +124,6 @@ public class EnemyComponent : MonoBehaviour
 
     public void OnDie()
     {
-        Spawner_RepairMaterial.Instance?.SpawnRepairMaterial(transform.position);
         Destroy(gameObject);
         Debug.Log($"{gameObject.name} has died!");
     }
@@ -119,11 +134,11 @@ public class EnemyComponent : MonoBehaviour
     }
     #endregion
 
-    // === Method Helpers ===
-    #region Method Helpers
-    private void OnKnockback(Vector3 knockbackDirection, float knockbackForce)
+    // === Knockback & Bounce ===
+    #region Knockback & Bounce
+    private void OnKnockback(Vector3 knockbackDirection)
     {
-        if (knockbackDirection == Vector3.zero) return;
+        if (knockbackDirection == Vector3.zero || rb == null) return;
 
         if (agent != null && agent.enabled)
         {
@@ -132,21 +147,72 @@ public class EnemyComponent : MonoBehaviour
             agent.enabled = false;
         }
 
-        if (rb != null)
-        {
-            rb.AddForce(knockbackDirection * knockbackForce, ForceMode.Impulse);
-        }
-        else
-        {
-            transform.position += knockbackDirection * knockbackForce * Time.deltaTime;
-        }
+        // hand movement over to physics so the Enemy physic material's bounciness can kick in
+        rb.isKinematic = false;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        Vector3 horizontalDirection = new Vector3(knockbackDirection.x, 0f, knockbackDirection.z).normalized;
+        Vector3 knockbackImpulse = horizontalDirection * knockbackForce + Vector3.up * knockbackUpwardForce;
+        rb.AddForce(knockbackImpulse, ForceMode.Impulse);
 
         if (knockbackRoutine != null)
         {
             StopCoroutine(knockbackRoutine);
         }
 
-        knockbackRoutine = StartCoroutine(ResumeNavigationAfterKnockback());
+        if (!isDead)
+        {
+            knockbackRoutine = StartCoroutine(ResumeNavigationAfterKnockback());
+        }
+        else
+        {
+            knockbackRoutine = StartCoroutine(SettleAfterDeath());
+        }
+    }
+
+    private IEnumerator ResumeNavigationAfterKnockback()
+    {
+        // let physics bounce/settle for a fixed window before handing control back to the agent
+        yield return new WaitForSeconds(knockbackDuration);
+
+        if (isDead || agent == null)
+        {
+            knockbackRoutine = null;
+            yield break;
+        }
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
+        }
+
+        if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+        {
+            transform.position = hit.position;
+            agent.enabled = true;
+            agent.Warp(hit.position);
+            agent.isStopped = false;
+        }
+
+        knockbackRoutine = null;
+    }
+
+    private IEnumerator SettleAfterDeath()
+    {
+        // let the death knockback bounce play out, then lock the corpse in place
+        yield return new WaitForSeconds(knockbackDuration);
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
+        }
+
+        knockbackRoutine = null;
     }
     #endregion
 
@@ -162,26 +228,26 @@ public class EnemyComponent : MonoBehaviour
         {
             transform.rotation = rootRotation;
 
-                float distanceToTarget = Vector3.Distance(transform.position, targetTransform.position);
-                bool isInAttackRange = distanceToTarget <= attackRange;
+            float distanceToTarget = Vector3.Distance(transform.position, targetTransform.position);
+            bool isInAttackRange = distanceToTarget <= attackRange;
 
-                if (isInAttackRange)
+            if (isInAttackRange)
             {
-                    if (agent != null && agent.enabled && agent.isOnNavMesh)
-                    {
-                        agent.isStopped = true;
-                        agent.ResetPath();
-                    }
-
-                    if (attackCooldownRoutine == null)
-                    {
-                        attackCooldownRoutine = StartCoroutine(OnAttackCooldown());
-                    }
-                }
-                else if (agent != null && agent.enabled && agent.isOnNavMesh)
+                if (agent != null && agent.enabled && agent.isOnNavMesh)
                 {
-                    agent.isStopped = false;
-                    agent.SetDestination(targetTransform.position);
+                    agent.isStopped = true;
+                    agent.ResetPath();
+                }
+
+                if (attackCooldownRoutine == null)
+                {
+                    attackCooldownRoutine = StartCoroutine(OnAttackCooldown());
+                }
+            }
+            else if (agent != null && agent.enabled && agent.isOnNavMesh)
+            {
+                agent.isStopped = false;
+                agent.SetDestination(targetTransform.position);
             }
 
             UpdateFacing();
@@ -207,34 +273,13 @@ public class EnemyComponent : MonoBehaviour
     private IEnumerator OnAttackCooldown()
     {
         yield return new WaitForSeconds(attackCooldown);
-            attackCooldownRoutine = null;
+        attackCooldownRoutine = null;
 
-            if (!isDead && targetTransform != null &&
-                Vector3.Distance(transform.position, targetTransform.position) <= attackRange)
-            {
-                OnAttack();
-            }
-    }
-
-    private IEnumerator ResumeNavigationAfterKnockback()
-    {
-        yield return new WaitForSeconds(knockbackDuration);
-
-        if (isDead || agent == null)
+        if (!isDead && targetTransform != null &&
+            Vector3.Distance(transform.position, targetTransform.position) <= attackRange)
         {
-            knockbackRoutine = null;
-            yield break;
+            OnAttack();
         }
-
-        if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
-        {
-            transform.position = hit.position;
-            agent.enabled = true;
-            agent.Warp(hit.position);
-            agent.isStopped = false;
-        }
-
-        knockbackRoutine = null;
     }
     #endregion
 }

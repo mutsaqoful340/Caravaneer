@@ -23,6 +23,7 @@ public class PlayerComponent : MonoBehaviour
     public GameObject prevParent;
     public GameObject playerVisual;
     public Animator animator;
+    public Sword sword;
     [Tooltip("The UI element that displays the player's health.")]
     public GameObject playerStatUI;
     [Tooltip("The prefab for the heart icon representing health.")]
@@ -67,6 +68,11 @@ public class PlayerComponent : MonoBehaviour
         if (Manager_Input.Instance != null)
         {
             Manager_Input.Instance.RegisterPlayer(playerInputComp);
+        }
+
+        if (inventory == null)
+        {
+            inventory = PlayerInventory.Instance;
         }
 
         // OnUpdateHealthUI();
@@ -174,6 +180,8 @@ public class PlayerComponent : MonoBehaviour
     {
         if (other.CompareTag("Interactable") || other.CompareTag("Wagon"))
         {
+            if (isMercenary && sword.isEnemySword) return; // Ignore if the sword is an enemy sword
+            
             Universal_Interact newInteractable = other.GetComponent<Universal_Interact>();
 
             if (newInteractable != null &&

@@ -6,6 +6,7 @@ public class Spawner_RepairMaterial : MonoBehaviour
 
     [Header("Repair Material Settings")]
     public GameObject repairMaterialPrefab;
+    public float spawnYOffset = 1f;
 
     private void Awake()
     {
@@ -37,12 +38,18 @@ public class Spawner_RepairMaterial : MonoBehaviour
         if (repairMaterial == null)
         {
             Debug.LogWarning("Spawner_RepairMaterial: 'repairMaterialPrefab' does not contain a RepairMaterial component.");
-        }
-        else if (Random.value > Mathf.Clamp01(repairMaterial.spawnPercentage))
-        {
             return;
         }
 
-        Instantiate(repairMaterialPrefab, position, Quaternion.identity);
+        float spawnChance = Mathf.Clamp01(repairMaterial.spawnPercentage);
+        if (Random.value > spawnChance)
+        {
+            Debug.Log($"Repair material did not spawn. Roll failed against spawn chance {spawnChance:P0}.");
+            return;
+        }
+
+        Vector3 spawnPosition = position + Vector3.up * spawnYOffset;
+        Instantiate(repairMaterialPrefab, spawnPosition, Quaternion.identity);
+        Debug.Log($"Repair material spawned at {spawnPosition}.");
     }
 }

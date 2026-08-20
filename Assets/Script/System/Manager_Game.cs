@@ -26,7 +26,7 @@ public class Manager_Game : MonoBehaviour
     private void Awake()
     {
         currentGameState = GameState.Gameplay;
-        currentGameScene = GameScene.MainMenu;
+        // currentGameScene = GameScene.MainMenu;
 
         if (Instance == null)
         {
