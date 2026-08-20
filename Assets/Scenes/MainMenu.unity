@@ -217,7 +217,7 @@ MonoBehaviour:
   playerPrefab_2: {fileID: 577214779032996936, guid: 901ee2a5262da894b9b9e88cc9003a45, type: 3}
   spawnPointP1: {fileID: 1903896784}
   spawnPointP2: {fileID: 1263293705}
-  folder: {fileID: 0}
+  folder: {fileID: 1093936898}
 --- !u!1 &83109452
 GameObject:
   m_ObjectHideFlags: 0
@@ -272,7 +272,7 @@ GameObject:
   m_Component:
   - component: {fileID: 103416222}
   m_Layer: 0
-  m_Name: Camera >>>
+  m_Name: <<< Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1655,7 +1655,7 @@ GameObject:
   m_Component:
   - component: {fileID: 472513126}
   m_Layer: 0
-  m_Name: Environment >>>
+  m_Name: <<< Environment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2626,7 +2626,7 @@ MonoBehaviour:
   spawnRayHeight: 50
   spawnRayDistance: 200
   enemySpawnHeightOffset: 0.5
-  folder: {fileID: 0}
+  folder: {fileID: 1093936898}
   isSpawning: 0
   enemies: []
 --- !u!1 &802516268
@@ -3158,7 +3158,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1093936899}
   m_Layer: 0
-  m_Name: Entities >>>
+  m_Name: <<< Entities
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4449,7 +4449,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1838931179}
   m_Layer: 0
-  m_Name: Render >>>
+  m_Name: <<< Render
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

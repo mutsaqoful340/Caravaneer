@@ -253,7 +253,7 @@ public class PlayerComponent : MonoBehaviour
 
     private void OnPerformAction()
     {
-        if (!isMercenary || interactObject) return;
+        if (!isMercenary || interactObject || Manager_Game.Instance.currentGameScene == GameScene.MainMenu) return;
 
         if (animator == null)
         {
