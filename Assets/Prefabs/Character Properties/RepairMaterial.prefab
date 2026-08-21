@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RepairMaterial
   repairValue: 1
-  spawnPercentage: 1
+  spawnPercentage: 0.4
   isCollected: 0
 --- !u!114 &-4638125089281408346
 MonoBehaviour:

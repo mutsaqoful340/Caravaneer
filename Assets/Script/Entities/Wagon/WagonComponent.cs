@@ -317,7 +317,7 @@ public class WagonComponent : MonoBehaviour
 
     public void OnRepair(int repairAmount)
     {
-        if (isDestroyed || repairAmount <= 0)
+        if (isDestroyed || repairAmount <= 0 || isMercenaryMounted)
         {
             return;
         }

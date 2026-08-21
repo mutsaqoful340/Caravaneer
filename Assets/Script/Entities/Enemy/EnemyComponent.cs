@@ -27,10 +27,12 @@ public class EnemyComponent : MonoBehaviour
     private Coroutine knockbackRoutine;
     private Coroutine attackCooldownRoutine;
     private Quaternion rootRotation;
+    private Vector3 spawnPosition;
+    private Transform[] potentialTargets;
 
     private void Awake()
     {
-        targetTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
+        spawnPosition = transform.position;
         agent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
         rootRotation = transform.rotation;
@@ -46,6 +48,10 @@ public class EnemyComponent : MonoBehaviour
         {
             rb.isKinematic = true;
         }
+    }
+
+    private void Start(){
+        StartCoroutine(OnSpawnScale());
     }
 
     // === Enemy Actions ===
@@ -134,6 +140,40 @@ public class EnemyComponent : MonoBehaviour
     }
     #endregion
 
+    public void SetPotentialTargets(Transform[] targets)
+    {
+        potentialTargets = targets;
+        targetTransform = GetClosestTargetFromSpawn();
+    }
+
+    private Transform GetClosestTargetFromSpawn()
+    {
+        if (potentialTargets == null)
+        {
+            return null;
+        }
+
+        Transform closestTarget = null;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (Transform potentialTarget in potentialTargets)
+        {
+            if (potentialTarget == null)
+            {
+                continue;
+            }
+
+            float distance = Vector3.Distance(spawnPosition, potentialTarget.position);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestTarget = potentialTarget;
+            }
+        }
+
+        return closestTarget;
+    }
+
     // === Knockback & Bounce ===
     #region Knockback & Bounce
     private void OnKnockback(Vector3 knockbackDirection)
@@ -170,61 +210,13 @@ public class EnemyComponent : MonoBehaviour
             knockbackRoutine = StartCoroutine(SettleAfterDeath());
         }
     }
-
-    private IEnumerator ResumeNavigationAfterKnockback()
-    {
-        // let physics bounce/settle for a fixed window before handing control back to the agent
-        yield return new WaitForSeconds(knockbackDuration);
-
-        if (isDead || agent == null)
-        {
-            knockbackRoutine = null;
-            yield break;
-        }
-
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-            rb.isKinematic = true;
-        }
-
-        if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
-        {
-            transform.position = hit.position;
-            agent.enabled = true;
-            agent.Warp(hit.position);
-            agent.isStopped = false;
-        }
-
-        knockbackRoutine = null;
-    }
-
-    private IEnumerator SettleAfterDeath()
-    {
-        // let the death knockback bounce play out, then lock the corpse in place
-        yield return new WaitForSeconds(knockbackDuration);
-
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-            rb.isKinematic = true;
-        }
-
-        knockbackRoutine = null;
-    }
     #endregion
 
     // === Updates & Coroutines ===
     #region Updates & Coroutines
     private void Update()
     {
-        if (targetTransform == null)
-        {
-            targetTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
-        }
-        else if (!isDead)
+        if (targetTransform != null && !isDead)
         {
             transform.rotation = rootRotation;
 
@@ -270,6 +262,23 @@ public class EnemyComponent : MonoBehaviour
         enemyVisual.transform.localScale = visualScale;
     }
 
+    private IEnumerator OnSpawnScale(){
+        float elapsedTime = 0f;
+        float duration = 0.5f;
+        Vector3 initialScale = Vector3.zero;
+        Vector3 targetScale = Vector3.one;
+
+        while (elapsedTime < duration)
+        {
+            float t = elapsedTime / duration;
+            transform.localScale = Vector3.Lerp(initialScale, targetScale, t);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.localScale = targetScale;
+    }
+
     private IEnumerator OnAttackCooldown()
     {
         yield return new WaitForSeconds(attackCooldown);
@@ -281,5 +290,49 @@ public class EnemyComponent : MonoBehaviour
             OnAttack();
         }
     }
+
+    private IEnumerator SettleAfterDeath()
+    {
+        // let the death knockback bounce play out, then lock the corpse in place
+        yield return new WaitForSeconds(knockbackDuration);
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
+        }
+
+        knockbackRoutine = null;
+    }
+
+    private IEnumerator ResumeNavigationAfterKnockback()
+    {
+        // let physics bounce/settle for a fixed window before handing control back to the agent
+        yield return new WaitForSeconds(knockbackDuration);
+
+        if (isDead || agent == null)
+        {
+            knockbackRoutine = null;
+            yield break;
+        }
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
+        }
+
+        if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+        {
+            transform.position = hit.position;
+            agent.enabled = true;
+            agent.Warp(hit.position);
+            agent.isStopped = false;
+        }
+
+        knockbackRoutine = null;
+    }        
     #endregion
 }

@@ -78,7 +78,7 @@ CapsuleCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
@@ -101,7 +101,7 @@ CapsuleCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
@@ -148,17 +148,18 @@ MonoBehaviour:
   moveSpeed: 3
   HP: 1
   knockbackForce: 10
+  knockbackUpwardForce: 3
   knockbackDuration: 0.2
   attackCooldown: 1
   attackRange: 1.5
   animator: {fileID: 3167588916961159080}
   rb: {fileID: 5027559247834516238}
-  deadCollider: {fileID: 8191845963755956407}
   enemyVisual: {fileID: 9059877048891822878}
   agent: {fileID: 5952952764979066444}
   targetTransform: {fileID: 0}
   sword: {fileID: 9060339951369706698}
   isDead: 0
+  hasSpawnerMaterial: 0
 --- !u!195 &5952952764979066444
 NavMeshAgent:
   m_ObjectHideFlags: 0

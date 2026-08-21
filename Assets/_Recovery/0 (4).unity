@@ -3355,7 +3355,7 @@ GameObject:
   - component: {fileID: 1052128763}
   - component: {fileID: 1052128762}
   - component: {fileID: 1052128761}
-  - component: {fileID: 1052128765}
+  - component: {fileID: 1052128760}
   - component: {fileID: 1052128764}
   m_Layer: 0
   m_Name: Cube
@@ -3379,6 +3379,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 472513126}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1052128760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1052128758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9108124e7a55fb44bd4bf0214dbcf35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Universal_Interact
+  isInteractable: 1
+  destroyAfterInteract: 1
+  isHoldInteract: 0
+  animator: {fileID: 0}
+  destroyDelay: 0
+  holdDuration: 2
+  onInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  isInteracting: 0
 --- !u!65 &1052128761
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3466,70 +3488,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1052128758}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ede4041f8b350624fb4021ba2f596cba, type: 3}
+  m_Script: {fileID: 11500000, guid: c2f8dd905dce8434ea067a8f4dcec1c5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Spawner_Enemy
-  playerConstraint: {fileID: 1052128758}
-  enemyPrefab:
-  - {fileID: 4608767214350957727, guid: 0e662fad5d748bf40ba748821c690a1e, type: 3}
-  minSpawnRadius: 2
-  maxSpawnRadius: 4
-  enemiesToSpawnA: 3
-  enemiesToSpawnB: 5
-  spawnInterval: 1
-  maxEnemyAlive: 5
-  groundLayerMask:
-    serializedVersion: 2
-    m_Bits: 2048
-  spawnRayHeight: 50
-  spawnRayDistance: 200
-  enemySpawnHeightOffset: 0.5
-  isSpawnZoneTrigger: 1
-  poolSize: 10
-  isSpawnAtOnce: 1
-  folder: {fileID: 1093936898}
-  isSpawning: 1
-  hasSpawning: 0
-  enemies: []
-  targetTransforms:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
---- !u!114 &1052128765
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1052128758}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 249f47dce227e784987fe69e8844a3d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Universal_TriggerZone
-  onTriggerEnterEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1052128764}
-        m_TargetAssemblyTypeName: Spawner_Enemy, Assembly-CSharp
-        m_MethodName: TriggerSpawnZone
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  onTriggerExitEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  playerInside:
-  - {fileID: 0}
-  - {fileID: 0}
-  isTriggerActive: 0
-  twoPlayerMode: 0
+  m_EditorClassIdentifier: Assembly-CSharp::Item
+  parentCanvas: {fileID: 0}
+  itemData: {fileID: 0}
+  confirmPanel: {fileID: 0}
 --- !u!1 &1060276216
 GameObject:
   m_ObjectHideFlags: 0
@@ -6244,19 +6208,18 @@ MonoBehaviour:
   enemiesToSpawnA: 1
   enemiesToSpawnB: 2
   spawnInterval: 3
-  maxEnemyAlive: 50
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 2048
   spawnRayHeight: 50
   spawnRayDistance: 200
   enemySpawnHeightOffset: 0.5
-  isSpawnZoneTrigger: 0
+  isSpawnPool: 0
   poolSize: 10
+  isSpawnZoneTrigger: 0
   isSpawnAtOnce: 0
   folder: {fileID: 1093936898}
   isSpawning: 0
-  hasSpawning: 0
   enemies: []
   targetTransforms:
   - {fileID: 0}

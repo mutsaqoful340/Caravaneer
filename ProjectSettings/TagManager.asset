@@ -46,6 +46,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Cihuy
+    uniqueID: 1391810565
+    locked: 0
   m_RenderingLayers:
   - Default
   - Light Layer 1

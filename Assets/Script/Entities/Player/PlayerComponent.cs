@@ -106,6 +106,11 @@ public class PlayerComponent : MonoBehaviour
             visualScale.x = isMoveOpposDir ? -scaleX : scaleX;
             playerVisual.transform.localScale = visualScale;
         }
+
+        if (animator != null)
+        {
+            animator.SetBool("IsMoving", moveInput.sqrMagnitude > 0f);
+        }
     }
 
     public void OnAction(InputValue value)
