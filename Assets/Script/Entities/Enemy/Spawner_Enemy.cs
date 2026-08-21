@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Spawner_Enemy : MonoBehaviour
 {
+    public static Spawner_Enemy Instance { get; private set; }
     [Header("Enemy Settings")]
     public GameObject playerConstraint;
     [SerializeField] private GameObject[] enemyPrefab;
@@ -25,16 +26,36 @@ public class Spawner_Enemy : MonoBehaviour
     [SerializeField] private bool isSpawning = true;
     [SerializeField] private GameObject[] enemies;
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
+
     void Start()
     {
         if (folder == null)
         {
             Debug.LogWarning("Spawner_Enemy: 'folder' is not assigned. Enemies will be spawned at root level.");
         }
+
+        NotifyEnemyPresence();
     }
 
     private void Update()
     {
+        OnClearEnemyFromTheList();
+
         if (!isSpawning) return;
 
         _spawnTimer -= Time.deltaTime;
@@ -109,5 +130,35 @@ public class Spawner_Enemy : MonoBehaviour
         List<GameObject> trackedEnemies = enemies == null ? new List<GameObject>() : new List<GameObject>(enemies);
         trackedEnemies.AddRange(newlySpawnedEnemies);
         enemies = trackedEnemies.ToArray();
+        NotifyEnemyPresence();
+    }
+
+    private void OnClearEnemyFromTheList()
+    {
+        if (enemies == null || enemies.Length == 0)
+        {
+            return;
+        }
+
+        List<GameObject> aliveEnemies = new List<GameObject>(enemies.Length);
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            if (enemies[i] != null)
+            {
+                aliveEnemies.Add(enemies[i]);
+            }
+        }
+
+        if (aliveEnemies.Count != enemies.Length)
+        {
+            enemies = aliveEnemies.ToArray();
+            NotifyEnemyPresence();
+        }
+    }
+
+    private void NotifyEnemyPresence()
+    {
+        bool hasEnemies = enemies != null && enemies.Length > 0;
+        CameraConstraint.Instance?.OnEnemyPresent(hasEnemies);
     }
 }

@@ -10,7 +10,7 @@ public class PlayerComponent : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private int HP = 3;
     [Tooltip("True for Mercenary, False for Driver")]
-    [SerializeField] private bool isMercenary = false;
+    [SerializeField] public bool isMercenary = false;
     [SerializeField] private float facingInputDeadZone = 0.1f;
     [SerializeField] private float groundY = 0f;
     [SerializeField] private float gravity = -18f;
@@ -34,10 +34,13 @@ public class PlayerComponent : MonoBehaviour
 
 
     [Header("Debug")]
-    [Tooltip("DO NOT ASSIGN THIS MANUALLY. This is a reference to the current interactable object the player is interacting with.")]
-    [SerializeField] private Universal_Interact currentInteractable;
+    [Tooltip("DO NOT ASSIGN THIS MANUALLY. Reference to the wagon currently in range, if any.")]
+    [SerializeField] private WagonComponent wagonInteractObject;
     [Tooltip("DO NOT ASSIGN THIS MANUALLY. This is a reference to the current enemy the player is interacting.")]
     [SerializeField] private Universal_Interact interactObject;
+    // Locks the release event to whichever target actually received the press, so a target change mid-hold can't hijack the release.
+    private enum PressedTarget { None, Generic, Wagon }
+    private PressedTarget pressedTarget = PressedTarget.None;
     [Tooltip("DO NOT ASSIGN THIS MANUALLY. This is a reference to the current enemy the player is attacking.")]
     [SerializeField] private bool isAttacking = false;
     public bool isMounted = false;
@@ -51,6 +54,8 @@ public class PlayerComponent : MonoBehaviour
     private float lastAttackTime = float.NegativeInfinity;
     private CharacterController characterController;
     private Vector3 verticalVelocity;
+    // Release detection falls back to polling because the Input System's canceled message isn't reaching OnAction.
+    private UnityEngine.InputSystem.InputAction actionInput;
 
     private void Awake()
     {
@@ -59,6 +64,8 @@ public class PlayerComponent : MonoBehaviour
         {
             playerInputComp = GetComponent<PlayerInput>();
         }
+
+        actionInput = playerInputComp?.actions?.FindAction("Action");
 
         prevParent = transform.parent != null ? transform.parent.gameObject : gameObject;
     }
@@ -103,13 +110,25 @@ public class PlayerComponent : MonoBehaviour
 
     public void OnAction(InputValue value)
     {
+        Debug.Log($"[WagonInteract] OnAction invoked, isPressed={value.isPressed}, t={Time.time:F2}");
+
         RefreshInteractObjectReference();
 
         if (value.isPressed)
         {
             if (interactObject)
             {
+                pressedTarget = PressedTarget.Generic;
                 interactObject.BeginInteraction(this);
+            }
+            else if (wagonInteractObject)
+            {
+                pressedTarget = PressedTarget.Wagon;
+                wagonInteractObject.BeginInteraction(this);
+            }
+            else
+            {
+                pressedTarget = PressedTarget.None;
             }
 
             OnPerformAction();
@@ -118,10 +137,37 @@ public class PlayerComponent : MonoBehaviour
             return;
         }
 
-        if (interactObject)
+        switch (pressedTarget)
         {
-            interactObject.EndInteraction();
+            case PressedTarget.Generic:
+                interactObject?.EndInteraction();
+                break;
+            case PressedTarget.Wagon:
+                Debug.Log($"[WagonInteract] {gameObject.name} released action at t={Time.time:F2}");
+                wagonInteractObject?.EndInteraction(this);
+                break;
         }
+
+        pressedTarget = PressedTarget.None;
+    }
+
+    private void HandleActionReleasedByPolling()
+    {
+        if (pressedTarget == PressedTarget.None) return;
+
+        Debug.Log($"[WagonInteract] {gameObject.name} release detected by polling at t={Time.time:F2}");
+
+        switch (pressedTarget)
+        {
+            case PressedTarget.Generic:
+                interactObject?.EndInteraction();
+                break;
+            case PressedTarget.Wagon:
+                wagonInteractObject?.EndInteraction(this);
+                break;
+        }
+
+        pressedTarget = PressedTarget.None;
     }
 
     public void OnPause(InputValue value)
@@ -178,10 +224,20 @@ public class PlayerComponent : MonoBehaviour
     #region Game Mechanics
     public void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Interactable") || other.CompareTag("Wagon"))
+        if (isMercenary && sword.isEnemySword) return; // Ignore if the sword is an enemy sword
+
+        if (other.CompareTag("Wagon"))
         {
-            if (isMercenary && sword.isEnemySword) return; // Ignore if the sword is an enemy sword
-            
+            WagonComponent wagon = other.GetComponent<WagonComponent>();
+            if (wagon != null && wagonInteractObject == null)
+            {
+                wagonInteractObject = wagon;
+            }
+            return;
+        }
+
+        if (other.CompareTag("Interactable"))
+        {
             Universal_Interact newInteractable = other.GetComponent<Universal_Interact>();
 
             if (newInteractable != null &&
@@ -194,12 +250,24 @@ public class PlayerComponent : MonoBehaviour
     
     public void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Interactable") || other.CompareTag("Wagon"))
+        if (other.CompareTag("Wagon"))
+        {
+            if (wagonInteractObject != null && other.gameObject == wagonInteractObject.gameObject)
+            {
+                wagonInteractObject.EndInteraction(this);
+                wagonInteractObject = null;
+                if (pressedTarget == PressedTarget.Wagon) pressedTarget = PressedTarget.None;
+            }
+            return;
+        }
+
+        if (other.CompareTag("Interactable"))
         {
             if (interactObject != null && other.gameObject == interactObject.gameObject)
             {
                 interactObject.EndInteraction();
                 interactObject = null;
+                if (pressedTarget == PressedTarget.Generic) pressedTarget = PressedTarget.None;
             }
         }
     }
@@ -233,6 +301,11 @@ public class PlayerComponent : MonoBehaviour
         if (!interactObject || !interactObject.isActiveAndEnabled)
         {
             interactObject = null;
+        }
+
+        if (!wagonInteractObject)
+        {
+            wagonInteractObject = null;
         }
     }
 
@@ -308,6 +381,11 @@ public class PlayerComponent : MonoBehaviour
     
     private void Update()
     {
+        if (actionInput != null && pressedTarget != PressedTarget.None && !actionInput.IsPressed())
+        {
+            HandleActionReleasedByPolling();
+        }
+
         if (isMounted) return;
 
         if (characterController.isGrounded && verticalVelocity.y < 0f)

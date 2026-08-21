@@ -199,7 +199,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3322041966619348332}
   - component: {fileID: 3710761483622538023}
-  - component: {fileID: 6855065107031828465}
   m_Layer: 12
   m_Name: Wagon_Visual
   m_TagString: Untagged
@@ -281,28 +280,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!95 &6855065107031828465
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8864115956960861276}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 99e18506610ca7e4fad195521de9aff1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8894524907553929642
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,7 +294,7 @@ GameObject:
   - component: {fileID: 1331201875356970170}
   - component: {fileID: 8505634444576343140}
   - component: {fileID: 1685490767955513281}
-  - component: {fileID: 3267680524662287922}
+  - component: {fileID: 8966391445210196481}
   m_Layer: 12
   m_Name: Wagon
   m_TagString: Wagon
@@ -445,10 +422,12 @@ MonoBehaviour:
   startHPFunctional: 5
   startHPBroken: 8
   currentWagonState: 0
-  animator: {fileID: 6855065107031828465}
+  animator: {fileID: 8966391445210196481}
   wagonHPCanvas: {fileID: 7378532109480050907}
   heartFunctionalPrefab: {fileID: 2319628780638901486, guid: d85d119eccfef23479a9cfdbb5b576f3, type: 3}
   heartBrokenPrefab: {fileID: 2319628780638901486, guid: aa906bf8dd1a2894da9837033c29383c, type: 3}
+  repairHoldThreshold: 0.5
+  repairCost: 1
   mechanic: {fileID: 0}
   slotMechanic: {fileID: 8283601357128667503}
   isMechanicMounted: 0
@@ -463,37 +442,25 @@ MonoBehaviour:
   mechanicRB: {fileID: 0}
   mercenaryCC: {fileID: 0}
   mercenaryRB: {fileID: 0}
---- !u!114 &3267680524662287922
-MonoBehaviour:
+--- !u!95 &8966391445210196481
+Animator:
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8894524907553929642}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9108124e7a55fb44bd4bf0214dbcf35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Universal_Interact
-  isInteractable: 1
-  destroyAfterInteract: 0
-  isHoldInteract: 0
-  animator: {fileID: 0}
-  destroyDelay: 0
-  holdDuration: 2
-  onInteract:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1685490767955513281}
-        m_TargetAssemblyTypeName: WagonComponent, Assembly-CSharp
-        m_MethodName: OnPlayerMount
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  isInteracting: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 99e18506610ca7e4fad195521de9aff1, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

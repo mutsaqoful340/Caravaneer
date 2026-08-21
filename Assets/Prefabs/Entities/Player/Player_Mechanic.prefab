@@ -212,11 +212,12 @@ MonoBehaviour:
   prevParent: {fileID: 0}
   playerVisual: {fileID: 7173148089158892649}
   animator: {fileID: 2003184519605994075}
+  sword: {fileID: 0}
   playerStatUI: {fileID: 1743004827363687211}
   heartPrefab: {fileID: 2319628780638901486, guid: 99ae8cea45e07124994d4fd03e802439, type: 3}
   playerInputComp: {fileID: 6872265538902852116}
   inventory: {fileID: 0}
-  currentInteractable: {fileID: 0}
+  wagonInteractObject: {fileID: 0}
   interactObject: {fileID: 0}
   isAttacking: 0
   isMounted: 0
@@ -234,6 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05811174932325f42b2c6ac8721d287c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WagonRepairManager
+  isSystemEnabled: 0
   repairRadius: 5
   repairInterval: 1
   wagonComponent: {fileID: 0}

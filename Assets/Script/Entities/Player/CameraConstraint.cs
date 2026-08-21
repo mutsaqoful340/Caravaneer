@@ -6,11 +6,15 @@ public class CameraConstraint : MonoBehaviour
 {
     public static CameraConstraint Instance { get; private set; }
     [Header("Camera Reference & Settings")]
-    public GameObject mainCamera;
+    public Camera mainCamera;
     public bool isFreeezeZ = false;
     public Vector3 cameraOffset = new Vector3(0, 10, -10);
     public Vector3 cameraDamping = new Vector3(0.1f, 0.1f, 0.1f);
     public bool isMainMenu = true;
+    [Min(1f)] public float FOVonEnemyPresent = 60f;
+    [Min(0.01f)] public float fovSmoothTime = 0.25f;
+    public bool isEnemyPresent = false;
+
     [Header("Camera Shake")]
     [Min(0f)] public float shakeDuration = 0.15f;
     [Min(0f)] public float shakeMagnitude = 0.05f;
@@ -21,6 +25,8 @@ public class CameraConstraint : MonoBehaviour
     private float velocityY;
     private float velocityZ;
     private float startingZ;
+    private float defaultFOV;
+    private float fovVelocity;
     private Vector3 shakeOffset;
     private Coroutine shakeCoroutine;
 
@@ -49,6 +55,12 @@ public class CameraConstraint : MonoBehaviour
     {
         Transform targetTransform = mainCamera != null ? mainCamera.transform : transform;
         startingZ = targetTransform.position.z;
+
+        if (mainCamera != null)
+        {
+            defaultFOV = mainCamera.fieldOfView;
+            OnEnemyPresent(isEnemyPresent);
+        }
     }
 
     private void LateUpdate()
@@ -91,6 +103,16 @@ public class CameraConstraint : MonoBehaviour
         }
 
         targetTransform.position = currentPosition + shakeOffset;
+
+        if (mainCamera != null)
+        {
+            float targetFOV = isEnemyPresent ? FOVonEnemyPresent : defaultFOV;
+            mainCamera.fieldOfView = Mathf.SmoothDamp(
+                mainCamera.fieldOfView,
+                targetFOV,
+                ref fovVelocity,
+                fovSmoothTime);
+        }
     }
 
     public void CameraShake()
@@ -108,6 +130,17 @@ public class CameraConstraint : MonoBehaviour
         }
 
         shakeCoroutine = StartCoroutine(Shake(duration, magnitude));
+    }
+
+    public void OnEnemyPresent(bool isPresent)
+    {
+        isEnemyPresent = isPresent;
+        if (mainCamera == null)
+        {
+            return;
+        }
+
+        fovVelocity = 0f;
     }
 
     private IEnumerator Shake(float duration, float magnitude)

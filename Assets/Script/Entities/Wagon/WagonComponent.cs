@@ -24,6 +24,12 @@ public class WagonComponent : MonoBehaviour
     public GameObject heartFunctionalPrefab;
     public GameObject heartBrokenPrefab;
 
+    [Header("Interaction Settings")]
+    [Tooltip("Holding the action button for at least this long triggers a repair instead of mounting.")]
+    public float repairHoldThreshold = 0.5f;
+    [Tooltip("Repair materials consumed and HP restored per long-press repair.")]
+    public int repairCost = 1;
+
     [Header("Player References")]
     public PlayerComponent mechanic;
     public Transform slotMechanic;
@@ -42,7 +48,10 @@ public class WagonComponent : MonoBehaviour
     [SerializeField] private CharacterController mercenaryCC;
     [SerializeField] private Rigidbody mercenaryRB;
 
-    private Universal_Interact interactComponent;
+    private PlayerComponent pressingPlayer;
+    private float pressStartTime;
+    private Coroutine holdRepairRoutine;
+    private bool repairTriggeredThisPress;
 
     void Awake()
     {
@@ -51,9 +60,7 @@ public class WagonComponent : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        Instance = this;       
-        interactComponent = GetComponent<Universal_Interact>();
-        if (interactComponent != null) interactComponent.enabled = false;
+        Instance = this;
         if (animator == null) animator = GetComponent<Animator>();
         currHPFunctional = startHPFunctional;
         currHPBroken = startHPBroken;
@@ -71,11 +78,6 @@ public class WagonComponent : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            if (interactComponent != null)
-            {
-                interactComponent.enabled = true;
-            }
-
             if (other.name.Contains("Player_Mechanic"))
             {
                 mechanic = other.GetComponent<PlayerComponent>();
@@ -117,23 +119,72 @@ public class WagonComponent : MonoBehaviour
                 mercenaryCC = null;
                 mercenaryRB = null;
             }
-
-            if (interactComponent != null && mechanic == null && mercenary == null)
-            {
-                interactComponent.enabled = false;
-            }
         }
     }
 
-    public void OnPlayerMount()
+    public void BeginInteraction(PlayerComponent interactor)
     {
-        PlayerComponent interactor = interactComponent.CurrentInteractor;
-
-        if (interactor == null)
+        if (interactor != mechanic && interactor != mercenary)
         {
-            Debug.LogWarning($"{gameObject.name} was interacted with without a player interactor.");
+            Debug.LogWarning($"{interactor.gameObject.name} is not assigned to this wagon.");
+            return;
         }
-        else if (interactor == mechanic)
+
+        pressingPlayer = interactor;
+        pressStartTime = Time.time;
+        repairTriggeredThisPress = false;
+        Debug.Log($"[WagonInteract] BeginInteraction by {interactor.gameObject.name} at t={Time.time:F2}");
+
+        if (holdRepairRoutine != null)
+        {
+            StopCoroutine(holdRepairRoutine);
+        }
+        holdRepairRoutine = StartCoroutine(HoldRepairRoutine(interactor));
+    }
+
+    private IEnumerator HoldRepairRoutine(PlayerComponent interactor)
+    {
+        yield return new WaitForSeconds(repairHoldThreshold);
+
+        Debug.Log($"[WagonInteract] HoldRepairRoutine threshold reached at t={Time.time:F2}, pressingPlayer={(pressingPlayer ? pressingPlayer.gameObject.name : "null")}");
+
+        if (pressingPlayer == interactor)
+        {
+            repairTriggeredThisPress = true;
+            TryRepairFromInventory(interactor);
+        }
+
+        holdRepairRoutine = null;
+    }
+
+    public void EndInteraction(PlayerComponent interactor)
+    {
+        Debug.Log($"[WagonInteract] EndInteraction called by {interactor.gameObject.name} at t={Time.time:F2}, pressingPlayer={(pressingPlayer ? pressingPlayer.gameObject.name : "null")}");
+
+        if (pressingPlayer != interactor)
+        {
+            Debug.Log("[WagonInteract] EndInteraction ignored - pressingPlayer mismatch.");
+            return;
+        }
+
+        pressingPlayer = null;
+
+        if (holdRepairRoutine != null)
+        {
+            StopCoroutine(holdRepairRoutine);
+            holdRepairRoutine = null;
+            Debug.Log("[WagonInteract] Hold routine stopped by EndInteraction.");
+        }
+
+        if (!repairTriggeredThisPress)
+        {
+            TogglePlayerMount(interactor);
+        }
+    }
+
+    private void TogglePlayerMount(PlayerComponent interactor)
+    {
+        if (interactor == mechanic)
         {
             if (isMechanicMounted)
             {
@@ -163,10 +214,33 @@ public class WagonComponent : MonoBehaviour
                 OnMercenaryMount();
             }
         }
-        else
+    }
+
+    private void TryRepairFromInventory(PlayerComponent interactor)
+    {
+        bool interactorMounted =
+            (interactor == mechanic && isMechanicMounted) ||
+            (interactor == mercenary && isMercenaryMounted);
+
+        if (interactorMounted)
         {
-            Debug.LogWarning($"{interactor.gameObject.name} is not assigned to this wagon.");
+            Debug.LogWarning($"{interactor.gameObject.name} cannot repair the wagon while mounted.");
+            return;
         }
+
+        if (!NeedsRepair())
+        {
+            Debug.LogWarning($"{gameObject.name} does not need repair right now.");
+            return;
+        }
+
+        if (PlayerInventory.Instance == null || !PlayerInventory.Instance.TrySpendRepairMaterials(repairCost))
+        {
+            Debug.LogWarning($"{interactor.gameObject.name} does not have enough repair materials.");
+            return;
+        }
+
+        OnRepair(repairCost);
     }
 
     private bool CanOperate()

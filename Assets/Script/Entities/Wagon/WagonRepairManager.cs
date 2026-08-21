@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class WagonRepairManager : MonoBehaviour
 {
+    [Tooltip("Disabled in favor of the wagon's direct long-press repair interaction. Kept for reference/possible reuse.")]
+    public bool isSystemEnabled = false;
     public float repairRadius = 5f; // The radius within which the wagon can be repaired
     public float repairInterval = 1f; // The interval at which the the material will be consumed for repair
     public WagonComponent wagonComponent; // Reference to the wagon component
@@ -24,6 +26,11 @@ public class WagonRepairManager : MonoBehaviour
 
     private void Update()
     {
+        if (!isSystemEnabled)
+        {
+            return;
+        }
+
         if (wagonComponent == null)
         {
             wagonComponent = WagonComponent.Instance;

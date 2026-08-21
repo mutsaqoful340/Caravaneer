@@ -10,10 +10,15 @@ public class RepairMaterial : MonoBehaviour
     {
         if (other.CompareTag("Player") && !isCollected)
         {
-            isCollected = true; // Mark as collected to prevent multiple collections
-            PlayerInventory.Instance.AddRepairMaterials(repairValue);
-            Debug.Log($"Player collected a repair material. Total repair materials: {PlayerInventory.Instance.repairMaterials}");
-            Destroy(gameObject); // Destroy the repair material after collection
+            PlayerComponent playerComponent = other.GetComponent<PlayerComponent>();
+            if (playerComponent != null && !playerComponent.isMercenary)
+            {
+                isCollected = true; // Mark as collected to prevent multiple collections
+                PlayerInventory.Instance.AddRepairMaterials(repairValue);
+                Debug.Log($"Player collected a repair material. Total repair materials: {PlayerInventory.Instance.repairMaterials}");
+                Destroy(gameObject); // Destroy the repair material after collection
+            }
+            else return;
         }
     }
 }
