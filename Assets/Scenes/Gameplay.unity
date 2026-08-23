@@ -2114,6 +2114,7 @@ GameObject:
   m_Component:
   - component: {fileID: 481217302}
   - component: {fileID: 481217303}
+  - component: {fileID: 481217304}
   m_Layer: 5
   m_Name: Char_Panel_Left
   m_TagString: Untagged
@@ -2166,6 +2167,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &481217304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 481217301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0da0d292d4fd9354d8b7bcf01868be34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VNPanel
+  dialogueSystem: {fileID: 1251399262}
+  animator: {fileID: 481217303}
 --- !u!1 &510120655
 GameObject:
   m_ObjectHideFlags: 0
@@ -2871,6 +2886,7 @@ GameObject:
   m_Component:
   - component: {fileID: 799084616}
   - component: {fileID: 799084617}
+  - component: {fileID: 799084618}
   m_Layer: 5
   m_Name: Char_Panel_Right
   m_TagString: Untagged
@@ -2923,6 +2939,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &799084618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 799084615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0da0d292d4fd9354d8b7bcf01868be34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VNPanel
+  dialogueSystem: {fileID: 1251399262}
+  animator: {fileID: 799084617}
 --- !u!1 &818945831
 GameObject:
   m_ObjectHideFlags: 0
@@ -5070,6 +5100,7 @@ GameObject:
   - component: {fileID: 1251399264}
   - component: {fileID: 1251399263}
   - component: {fileID: 1251399262}
+  - component: {fileID: 1251399266}
   m_Layer: 5
   m_Name: Canvas_Popup
   m_TagString: Untagged
@@ -5114,27 +5145,30 @@ MonoBehaviour:
   - characterData: {fileID: 11400000, guid: 56634d6766626a145ac939ae1ac240e4, type: 2}
     dialogueText: Cihuuyy
     displayMode: 0
-    dialogueDuration: 1
+    dialogueDuration: 2
   - characterData: {fileID: 11400000, guid: 79db6588c8ca21e4183b74ab465bd1cb, type: 2}
     dialogueText: qieoqweiwqoeiwqoe
     displayMode: 1
-    dialogueDuration: 1
+    dialogueDuration: 2
   - characterData: {fileID: 11400000, guid: 56634d6766626a145ac939ae1ac240e4, type: 2}
     dialogueText: Apalah ni orang
     displayMode: 0
-    dialogueDuration: 1
+    dialogueDuration: 2
   isDialogueActive: 0
   showDialogue: 0
+  animator: {fileID: 1251399266}
   leftPanel: {fileID: 481217301}
   leftPanelAnimator: {fileID: 481217303}
   leftCharacterSprite: {fileID: 23306765}
   leftCharacterName: {fileID: 446162852}
   leftCharacterDialogue: {fileID: 1130308998}
+  isLeftSide: 0
   rightPanel: {fileID: 799084615}
   rightPanelAnimator: {fileID: 799084617}
   rightCharacterSprite: {fileID: 919468936}
   rightCharacterName: {fileID: 1481022087}
   rightCharacterDialogue: {fileID: 1173330629}
+  isRightSide: 0
 --- !u!114 &1251399263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5199,6 +5233,28 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!95 &1251399266
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1251399260}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d459d7590dc123a46882ffcff12a30ee, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1298028219
 GameObject:
   m_ObjectHideFlags: 0

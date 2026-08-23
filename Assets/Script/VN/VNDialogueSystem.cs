@@ -23,26 +23,34 @@ public class VNDialogueSystem : MonoBehaviour
     public CharacterDialogue[] characterDatas;
     public bool isDialogueActive = false;
     public bool showDialogue = false;
+    public Animator animator;
 
     // Serves as reference to the current character data being displayed
     [Header("Left Side Panel Settings")]
     public GameObject leftPanel;
+    public Animator leftPanelAnimator;
     public Image leftCharacterSprite;
     public TextMeshProUGUI leftCharacterName;
     public TextMeshProUGUI leftCharacterDialogue;
+    public bool isLeftSide = false; // Determines if the dialogue should be displayed on the left side
 
     // Serves as reference to the current character data being displayed
     [Header("Right Side Panel Settings")]
     public GameObject rightPanel;
+    public Animator rightPanelAnimator;
     public Image rightCharacterSprite;
     public TextMeshProUGUI rightCharacterName;
     public TextMeshProUGUI rightCharacterDialogue;
+    public bool isRightSide = false; // Determines if the dialogue should be displayed on the right side
 
     private void Start()
     {
         // Ensure panels are inactive at the start
         if (leftPanel != null) leftPanel.SetActive(false);
         if (rightPanel != null) rightPanel.SetActive(false);
+        if (animator == null) animator = GetComponent<Animator>();
+        if (leftPanelAnimator == null) leftPanelAnimator = leftPanel.GetComponent<Animator>();
+        if (rightPanelAnimator == null) rightPanelAnimator = rightPanel.GetComponent<Animator>();
     }
 
     public void OnPlayDialogue()
@@ -78,8 +86,8 @@ public class VNDialogueSystem : MonoBehaviour
 
             if (characterData.displayMode == DisplayMode.LeftSide)
             {
-                rightPanel.SetActive(false);
-                leftPanel.SetActive(true);
+                isLeftSide = true;
+                PrvPanelToggle_Left();
                 if (leftCharacterSprite != null && leftCharacterName != null && leftCharacterDialogue != null)
                 {
                     leftCharacterSprite.sprite = characterData.characterData.characterSprite;
@@ -94,8 +102,8 @@ public class VNDialogueSystem : MonoBehaviour
             }
             else if (characterData.displayMode == DisplayMode.RightSide)
             {
-                leftPanel.SetActive(false);
-                rightPanel.SetActive(true);
+                isRightSide = true;
+                PrvPanelToggle_Right();
                 if (rightCharacterSprite != null && rightCharacterName != null && rightCharacterDialogue != null)
                 {
                     rightCharacterSprite.sprite = characterData.characterData.characterSprite;
@@ -113,11 +121,10 @@ public class VNDialogueSystem : MonoBehaviour
             yield return new WaitForSeconds(characterData.dialogueDuration);
         }
 
+        PrvPanelHide_All();
         Debug.Log("Dialogue sequence finished!");
         isDialogueActive = false;
         showDialogue = false;
-        leftPanel.SetActive(false);
-        rightPanel.SetActive(false);
     }
 
     private void Update()
@@ -134,5 +141,62 @@ public class VNDialogueSystem : MonoBehaviour
         //     StopAllCoroutines();
         //     StartCoroutine(DisplayDialogue());
         // }
+    }
+
+    private void PrvPanelToggle_Right()
+    {
+        rightPanel.SetActive(true);
+        rightPanelAnimator.SetTrigger("Show");
+
+        if (isLeftSide)
+        {
+            leftPanelAnimator.SetTrigger("Hide");
+            isLeftSide = false; // Reset left side flag when right side is active
+        }
+    }
+
+    private void PrvPanelToggle_Left()
+    {
+        leftPanel.SetActive(true);
+        leftPanelAnimator.SetTrigger("Show");
+
+        if (isRightSide)
+        {
+            rightPanelAnimator.SetTrigger("Hide");
+            isRightSide = false; // Reset right side flag when left side is active
+        }
+    }
+
+    private void PrvPanelHide_All()
+    {
+        if (leftPanel)
+        {
+            leftPanelAnimator.SetTrigger("Hide");
+            isLeftSide = false;
+        }
+        if (rightPanel)
+        {
+            rightPanelAnimator.SetTrigger("Hide");
+            isRightSide = false;
+        }
+
+    }
+
+    public void PrvPanelDisable_Left()
+    {
+        if (leftPanel)
+        {
+            leftPanel.SetActive(false);
+            isLeftSide = false;
+        }
+    }
+
+    public void PrvPanelDisable_Right()
+    {
+        if (rightPanel)
+        {
+            rightPanel.SetActive(false);
+            isRightSide = false;
+        }
     }
 }

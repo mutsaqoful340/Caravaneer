@@ -5,14 +5,16 @@ using System.Collections;
 
 public class VNPanel : MonoBehaviour
 {
-    public bool isLeftSide = true;
+    public VNDialogueSystem dialogueSystem;
+    public Animator animator;
 
-    public Sprite characterSprite;
-    public string characterName;
-    
-    
-    private void Start()
+    public void OnPanelDisable_Left()
     {
-        
+        dialogueSystem.PrvPanelDisable_Left();
+    }
+
+        public void OnPanelDisable_Right()
+    {
+        dialogueSystem.PrvPanelDisable_Right();
     }
 }
