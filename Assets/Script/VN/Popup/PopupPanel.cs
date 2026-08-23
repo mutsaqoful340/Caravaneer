@@ -3,18 +3,18 @@ using TMPro;
 using UnityEngine.UI;
 using System.Collections;
 
-public class VNPanel : MonoBehaviour
+public class PopupPanel : MonoBehaviour
 {
-    public VNDialogueSystem dialogueSystem;
+    public PopupDialogueSystem dialogueSystem;
     public Animator animator;
 
     public void OnPanelDisable_Left()
     {
-        dialogueSystem.PrvPanelDisable_Left();
+        dialogueSystem.PrvPanelHide_Left();
     }
 
         public void OnPanelDisable_Right()
     {
-        dialogueSystem.PrvPanelDisable_Right();
+        dialogueSystem.PrvPanelHide_Right();
     }
 }

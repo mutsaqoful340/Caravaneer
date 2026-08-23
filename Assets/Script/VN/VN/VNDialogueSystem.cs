@@ -4,15 +4,16 @@ using TMPro;
 using UnityEngine.UI;
 
 [System.Serializable]
-public class CharacterDialogue
+public class VNCharacterDialogue
 {
-    public VNData characterData;
+    public PopupData characterData;
     public string dialogueText;
-    public DisplayMode displayMode = DisplayMode.LeftSide;
+    public VNDisplayMode displayMode = VNDisplayMode.LeftSide;
+    public float dialogueDelay = 0.5f; // Delay before the dialogue is displayed
     public float dialogueDuration = 2f; // Duration for which the dialogue is displayed
 }
 
-public enum DisplayMode
+public enum VNDisplayMode
 {
     LeftSide,
     RightSide
@@ -20,14 +21,15 @@ public enum DisplayMode
 
 public class VNDialogueSystem : MonoBehaviour
 {
-    public CharacterDialogue[] characterDatas;
+    public static VNDialogueSystem Instance { get; set; }
+    
+    public VNCharacterDialogue[] characterDatas;
     public bool isDialogueActive = false;
     public bool showDialogue = false;
-    public Animator animator;
 
     // Serves as reference to the current character data being displayed
     [Header("Left Side Panel Settings")]
-    public GameObject leftPanel;
+    public Canvas leftPanel;
     public Animator leftPanelAnimator;
     public Image leftCharacterSprite;
     public TextMeshProUGUI leftCharacterName;
@@ -36,7 +38,7 @@ public class VNDialogueSystem : MonoBehaviour
 
     // Serves as reference to the current character data being displayed
     [Header("Right Side Panel Settings")]
-    public GameObject rightPanel;
+    public Canvas rightPanel;
     public Animator rightPanelAnimator;
     public Image rightCharacterSprite;
     public TextMeshProUGUI rightCharacterName;
@@ -46,9 +48,8 @@ public class VNDialogueSystem : MonoBehaviour
     private void Start()
     {
         // Ensure panels are inactive at the start
-        if (leftPanel != null) leftPanel.SetActive(false);
-        if (rightPanel != null) rightPanel.SetActive(false);
-        if (animator == null) animator = GetComponent<Animator>();
+        if (leftPanel != null) leftPanel.gameObject.SetActive(false);
+        if (rightPanel != null) rightPanel.gameObject.SetActive(false);
         if (leftPanelAnimator == null) leftPanelAnimator = leftPanel.GetComponent<Animator>();
         if (rightPanelAnimator == null) rightPanelAnimator = rightPanel.GetComponent<Animator>();
     }
@@ -72,7 +73,9 @@ public class VNDialogueSystem : MonoBehaviour
     private IEnumerator DisplayDialogue()
     {
         int dialogueIndex = 0;
-        foreach (CharacterDialogue characterData in characterDatas)
+        VNDisplayMode? lastMode = null; // Tracks the previously shown panel to detect consecutive same-side dialogue
+
+        foreach (VNCharacterDialogue characterData in characterDatas)
         {
             Debug.Log($"Displaying dialogue {dialogueIndex} of {characterDatas.Length}");
             dialogueIndex++;
@@ -83,11 +86,28 @@ public class VNDialogueSystem : MonoBehaviour
                 Debug.LogWarning("Character data or VNData is null, skipping dialogue entry!");
                 continue;
             }
+               
+               yield return new WaitForSeconds(characterData.dialogueDelay);
 
-            if (characterData.displayMode == DisplayMode.LeftSide)
+            bool isSamePanelAsLast = lastMode.HasValue && lastMode.Value == characterData.displayMode;
+
+            if (characterData.displayMode == VNDisplayMode.LeftSide)
             {
                 isLeftSide = true;
-                PrvPanelToggle_Left();
+                if (!isSamePanelAsLast)
+                {
+                    leftPanel.sortingOrder = 4;
+                    rightPanel.sortingOrder = 3;
+
+                    if (lastMode == VNDisplayMode.RightSide)
+                    {
+                        isRightSide = false;
+                        rightPanelAnimator.SetTrigger("Hide");
+                    }
+
+                    PrvPanelShow_Left();
+                }
+
                 if (leftCharacterSprite != null && leftCharacterName != null && leftCharacterDialogue != null)
                 {
                     leftCharacterSprite.sprite = characterData.characterData.characterSprite;
@@ -100,10 +120,23 @@ public class VNDialogueSystem : MonoBehaviour
                     Debug.LogWarning("Left panel UI elements are not assigned!");
                 }
             }
-            else if (characterData.displayMode == DisplayMode.RightSide)
+            else if (characterData.displayMode == VNDisplayMode.RightSide)
             {
                 isRightSide = true;
-                PrvPanelToggle_Right();
+                if (!isSamePanelAsLast)
+                {
+                    rightPanel.sortingOrder = 4;
+                    leftPanel.sortingOrder = 3;
+
+                    if (lastMode == VNDisplayMode.LeftSide)
+                    {
+                        isLeftSide = false;
+                        leftPanelAnimator.SetTrigger("Hide");
+                    }
+
+                    PrvPanelShow_Right();
+                }
+
                 if (rightCharacterSprite != null && rightCharacterName != null && rightCharacterDialogue != null)
                 {
                     rightCharacterSprite.sprite = characterData.characterData.characterSprite;
@@ -116,6 +149,8 @@ public class VNDialogueSystem : MonoBehaviour
                     Debug.LogWarning("Right panel UI elements are not assigned!");
                 }
             }
+
+            lastMode = characterData.displayMode;
 
             // Wait for a short duration before displaying the next dialogue
             yield return new WaitForSeconds(characterData.dialogueDuration);
@@ -134,36 +169,35 @@ public class VNDialogueSystem : MonoBehaviour
             showDialogue = false;
             OnPlayDialogue();
         }
-
-        // // Press Spacebar to advance or restart dialogue
-        // if (isDialogueActive)
-        // {
-        //     StopAllCoroutines();
-        //     StartCoroutine(DisplayDialogue());
-        // }
     }
 
-    private void PrvPanelToggle_Right()
+    private void PrvPanelShow_Right()
     {
-        rightPanel.SetActive(true);
+        rightPanel.gameObject.SetActive(true);
         rightPanelAnimator.SetTrigger("Show");
+    }
 
-        if (isLeftSide)
+    private void PrvPanelShow_Left()
+    {
+        leftPanel.gameObject.SetActive(true);
+        leftPanelAnimator.SetTrigger("Show");
+    }
+
+    public void PrvPanelHide_Left()
+    {
+        if (leftPanel)
         {
-            leftPanelAnimator.SetTrigger("Hide");
-            isLeftSide = false; // Reset left side flag when right side is active
+            leftPanel.gameObject.SetActive(false);
+            isLeftSide = false;
         }
     }
 
-    private void PrvPanelToggle_Left()
+    public void PrvPanelHide_Right()
     {
-        leftPanel.SetActive(true);
-        leftPanelAnimator.SetTrigger("Show");
-
-        if (isRightSide)
+        if (rightPanel)
         {
-            rightPanelAnimator.SetTrigger("Hide");
-            isRightSide = false; // Reset right side flag when left side is active
+            rightPanel.gameObject.SetActive(false);
+            isRightSide = false;
         }
     }
 
@@ -177,25 +211,6 @@ public class VNDialogueSystem : MonoBehaviour
         if (rightPanel)
         {
             rightPanelAnimator.SetTrigger("Hide");
-            isRightSide = false;
-        }
-
-    }
-
-    public void PrvPanelDisable_Left()
-    {
-        if (leftPanel)
-        {
-            leftPanel.SetActive(false);
-            isLeftSide = false;
-        }
-    }
-
-    public void PrvPanelDisable_Right()
-    {
-        if (rightPanel)
-        {
-            rightPanel.SetActive(false);
             isRightSide = false;
         }
     }

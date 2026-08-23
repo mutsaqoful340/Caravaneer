@@ -224,6 +224,15 @@ public class PlayerComponent : MonoBehaviour
             Debug.Log($"{gameObject.name} confirmed UI action.");
         }
     }
+
+    public void OnUISkip(InputValue value)
+    {
+        if (Manager_Game.Instance.currentGameState == GameState.UI && value.isPressed)
+        {
+            // Handle UI skip logic here
+            Debug.Log($"{gameObject.name} skipped UI action.");
+        }
+    }
     #endregion
 
     #region Game Mechanics

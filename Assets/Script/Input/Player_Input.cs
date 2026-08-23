@@ -327,6 +327,15 @@ public partial class @Player_Input: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UISkip"",
+                    ""type"": ""Button"",
+                    ""id"": ""0cb6dc30-c46f-48ef-93b0-df82e3979064"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -483,6 +492,17 @@ public partial class @Player_Input: IInputActionCollection2, IDisposable
                     ""action"": ""UIPause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a5a0d1c2-cfae-4017-975f-000517baaa50"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UISkip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -523,6 +543,7 @@ public partial class @Player_Input: IInputActionCollection2, IDisposable
         m_UI_UISubmit = m_UI.FindAction("UISubmit", throwIfNotFound: true);
         m_UI_UICancel = m_UI.FindAction("UICancel", throwIfNotFound: true);
         m_UI_UIPause = m_UI.FindAction("UIPause", throwIfNotFound: true);
+        m_UI_UISkip = m_UI.FindAction("UISkip", throwIfNotFound: true);
     }
 
     ~@Player_Input()
@@ -726,6 +747,7 @@ public partial class @Player_Input: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_UISubmit;
     private readonly InputAction m_UI_UICancel;
     private readonly InputAction m_UI_UIPause;
+    private readonly InputAction m_UI_UISkip;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI".
     /// </summary>
@@ -753,6 +775,10 @@ public partial class @Player_Input: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "UI/UIPause".
         /// </summary>
         public InputAction @UIPause => m_Wrapper.m_UI_UIPause;
+        /// <summary>
+        /// Provides access to the underlying input action "UI/UISkip".
+        /// </summary>
+        public InputAction @UISkip => m_Wrapper.m_UI_UISkip;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -791,6 +817,9 @@ public partial class @Player_Input: IInputActionCollection2, IDisposable
             @UIPause.started += instance.OnUIPause;
             @UIPause.performed += instance.OnUIPause;
             @UIPause.canceled += instance.OnUIPause;
+            @UISkip.started += instance.OnUISkip;
+            @UISkip.performed += instance.OnUISkip;
+            @UISkip.canceled += instance.OnUISkip;
         }
 
         /// <summary>
@@ -814,6 +843,9 @@ public partial class @Player_Input: IInputActionCollection2, IDisposable
             @UIPause.started -= instance.OnUIPause;
             @UIPause.performed -= instance.OnUIPause;
             @UIPause.canceled -= instance.OnUIPause;
+            @UISkip.started -= instance.OnUISkip;
+            @UISkip.performed -= instance.OnUISkip;
+            @UISkip.canceled -= instance.OnUISkip;
         }
 
         /// <summary>
@@ -937,5 +969,12 @@ public partial class @Player_Input: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnUIPause(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "UISkip" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnUISkip(InputAction.CallbackContext context);
     }
 }
