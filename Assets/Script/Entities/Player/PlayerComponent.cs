@@ -1,5 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
+
+public enum PlayerHPStage
+{
+    Alive,
+    KnockedOut
+}
 
 [RequireComponent(typeof(PlayerInput), typeof(CharacterController))]
 public class PlayerComponent : MonoBehaviour
@@ -7,8 +14,11 @@ public class PlayerComponent : MonoBehaviour
     private static readonly string[] AttackTriggers = { "Attack1", "Attack2", "Attack3" };
 
     [Header("Player Settings")]
+    public PlayerHPStage currentHPStage = PlayerHPStage.Alive;
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private int HP = 3;
+    [SerializeField] private int currHP = 3;
+    [SerializeField] private int startHP = 3;
+    [SerializeField] private float knockOutDuration = 10f;
     [Tooltip("True for Mercenary, False for Driver")]
     [SerializeField] public bool isMercenary = false;
     [SerializeField] private float facingInputDeadZone = 0.1f;
@@ -31,6 +41,8 @@ public class PlayerComponent : MonoBehaviour
     public PlayerInput playerInputComp;
     [Tooltip("The inventory component that manages the player's collective items and resources.")]
     public PlayerInventory inventory;
+    public PlayerReviveManager reviveManager;
+    public GameObject reviveManagerPrefab;
 
 
     [Header("Debug")]
@@ -81,13 +93,14 @@ public class PlayerComponent : MonoBehaviour
         {
             inventory = PlayerInventory.Instance;
         }
-
+        startHP = currHP; // Initialize startHP with the current HP value
         // OnUpdateHealthUI();
     }
 
     #region Input Callbacks
     public void OnMove(InputValue value)
     {
+        if (currentHPStage == PlayerHPStage.KnockedOut) return;
         moveInput = value.Get<Vector2>();
 
         if (moveInput.x < -facingInputDeadZone)
@@ -115,6 +128,7 @@ public class PlayerComponent : MonoBehaviour
 
     public void OnAction(InputValue value)
     {
+        if (currentHPStage == PlayerHPStage.KnockedOut) return;
         Debug.Log($"[WagonInteract] OnAction invoked, isPressed={value.isPressed}, t={Time.time:F2}");
 
         RefreshInteractObjectReference();
@@ -130,6 +144,11 @@ public class PlayerComponent : MonoBehaviour
             {
                 pressedTarget = PressedTarget.Wagon;
                 wagonInteractObject.BeginInteraction(this);
+            }
+            else if (reviveManager)
+            {
+                pressedTarget = PressedTarget.Generic; // Assuming reviveManager is treated as a generic interaction
+                // reviveManager.OnRevivePlayer();
             }
             else
             {
@@ -235,7 +254,7 @@ public class PlayerComponent : MonoBehaviour
     }
     #endregion
 
-    #region Game Mechanics
+    #region Player Mechanics
     public void OnTriggerEnter(Collider other)
     {
         if (isMercenary && sword.isEnemySword) return; // Ignore if the sword is an enemy sword
@@ -259,6 +278,11 @@ public class PlayerComponent : MonoBehaviour
             {
                 interactObject = newInteractable;
             }
+        }
+
+        if (other.CompareTag("ReviveManager"))
+        {
+            reviveManager = other.GetComponent<PlayerReviveManager>();
         }
     }
     
@@ -284,6 +308,11 @@ public class PlayerComponent : MonoBehaviour
                 if (pressedTarget == PressedTarget.Generic) pressedTarget = PressedTarget.None;
             }
         }
+
+        if (other.CompareTag("ReviveManager"))
+        {
+            reviveManager = null;
+        }
     }
 
     public void OnTakeDamage(int damage)
@@ -294,14 +323,52 @@ public class PlayerComponent : MonoBehaviour
         }
 
         CameraConstraint.Instance?.CameraShake();
-        HP -= damage;
+        currHP -= damage;
         AddVerticalImpulse(1.5f);
-        Debug.Log($"{gameObject.name} took {damage} damage! Remaining HP: {HP}");
+        Debug.Log($"{gameObject.name} took {damage} damage! Remaining HP: {currHP}");
         OnUpdateHealthUI();
 
-        if (HP <= 0)
+        if (currHP <= 0)
         {
-            OnDie();
+            if (currentHPStage == PlayerHPStage.Alive)
+            {
+                OnKnockOut();
+            }
+        }
+    }
+
+    private void OnKnockOut()
+    {
+        if (currentHPStage == PlayerHPStage.Alive)
+        {
+            currentHPStage = PlayerHPStage.KnockedOut;
+            GameObject reviveManagerObject = Instantiate(reviveManagerPrefab, transform.position, Quaternion.identity, transform);
+            reviveManager = reviveManagerObject.GetComponent<PlayerReviveManager>();
+            animator?.SetTrigger("KnockOut");
+            StartCoroutine(KnockOutCoroutine());
+        }
+        // TODO - add death logic here (e.g., play death animation, disable player controls, etc.)
+        Debug.Log($"{gameObject.name} has died!");
+    }
+
+    private void OnDie()
+    {
+        if (currentHPStage == PlayerHPStage.KnockedOut)
+        {
+            animator?.SetTrigger("Die");
+            Debug.Log($"{gameObject.name} has died!");
+        }
+    }
+
+    public void OnRevive()
+    {
+        if (currentHPStage == PlayerHPStage.KnockedOut)
+        {
+            currentHPStage = PlayerHPStage.Alive;
+            currHP = startHP; // Revive with full health
+            animator?.SetTrigger("Revive");
+            OnUpdateHealthUI();
+            Debug.Log($"{gameObject.name} has been revived!");
         }
     }
 
@@ -338,19 +405,19 @@ public class PlayerComponent : MonoBehaviour
             Destroy(uiRoot.GetChild(i).gameObject);
         }
 
-        int currentHealth = Mathf.Max(0, HP);
+        int currentHealth = Mathf.Max(0, currHP);
 
         for (int i = 0; i < currentHealth; i++)
         {
             Instantiate(heartPrefab, uiRoot);
         }
 
-        Debug.Log($"{gameObject.name} has {HP} HP remaining.");
+        Debug.Log($"{gameObject.name} has {currHP} HP remaining.");
     }
 
     private void OnPerformAction()
     {
-        if (!isMercenary || interactObject || Manager_Game.Instance.currentGameScene == GameScene.MainMenu) return;
+        if (!isMercenary || interactObject || reviveManager || Manager_Game.Instance.currentGameScene == GameScene.MainMenu) return;
 
         if (animator == null)
         {
@@ -374,12 +441,6 @@ public class PlayerComponent : MonoBehaviour
 
         Debug.Log($"{gameObject.name} performed mercenary combo step {currentAttackIndex}.");
     }
-
-    private void OnDie()
-    {
-        // TODO - add death logic here (e.g., play death animation, disable player controls, etc.)
-        Debug.Log($"{gameObject.name} has died!");
-    }
     #endregion
 
     public Vector2 GetMoveInput()
@@ -392,7 +453,14 @@ public class PlayerComponent : MonoBehaviour
         if (Manager_Input.Instance != null){
             Manager_Input.Instance.UnregisterPlayer(playerInputComp);}
     }
-    
+
+    #region Updates & Coroutines
+    private IEnumerator KnockOutCoroutine()
+    {
+        yield return new WaitForSeconds(knockOutDuration);
+        OnDie();
+    }
+
     private void Update()
     {
         if (actionInput != null && pressedTarget != PressedTarget.None && !actionInput.IsPressed())
@@ -423,4 +491,5 @@ public class PlayerComponent : MonoBehaviour
             verticalVelocity.y = 0f;
         }
     }
+    #endregion
 }

@@ -21,6 +21,10 @@ public class Universal_Interact : MonoBehaviour
     [Tooltip("Duration in seconds for hold interaction.")]
     public float holdDuration = 2f; // Duration in seconds for hold interaction
 
+    [Header("Interaction References")]
+    public GameObject interactVisualPrefab; // Prefab for the interaction visual
+    public UI_InteractVisual interactVisualComponent; // Reference to the UI_InteractVisual component
+
     [Header("Interaction Events")]
     public UnityEvent onInteract;
 
@@ -32,6 +36,13 @@ public class Universal_Interact : MonoBehaviour
 
     private Coroutine holdInteractionRoutine;
     private float interactionCurrentTime;
+
+    private void Start()
+    {
+        GameObject visual = Instantiate(interactVisualPrefab, transform.position, Quaternion.identity);
+        interactVisualComponent = visual.GetComponentInChildren<UI_InteractVisual>();
+        visual.transform.SetParent(transform);
+    }
 
     public void Interact()
     {
@@ -50,9 +61,12 @@ public class Universal_Interact : MonoBehaviour
         CurrentInteractor = interactor;
         isInteracting = true;
         interactionCurrentTime = 0f;
+        interactVisualComponent.interactHintIcon.SetActive(false);
+        interactVisualComponent.interactIcon.SetActive(true);
 
         if (isHoldInteract)
         {
+            interactVisualComponent?.SetHoldProgress(0f);
             holdInteractionRoutine = StartCoroutine(HoldInteractionRoutine());
             Debug.Log($"{gameObject.name} is being held for interaction.");
             return;
@@ -75,9 +89,12 @@ public class Universal_Interact : MonoBehaviour
             holdInteractionRoutine = null;
         }
 
+        interactVisualComponent.interactHintIcon.SetActive(true);
+        interactVisualComponent.interactIcon.SetActive(false);
         isInteracting = false;
         interactionCurrentTime = 0f;
         CurrentInteractor = null;
+        interactVisualComponent?.SetHoldProgress(0f);
 
         if (isHoldInteract)
         {
@@ -90,6 +107,8 @@ public class Universal_Interact : MonoBehaviour
         while (isInteracting && interactionCurrentTime < holdDuration)
         {
             interactionCurrentTime += Time.deltaTime;
+            float progress = holdDuration > 0f ? interactionCurrentTime / holdDuration : 1f;
+            interactVisualComponent?.SetHoldProgress(progress);
             Debug.Log($"{gameObject.name} hold timer: {interactionCurrentTime:F2}s / {holdDuration:F2}s");
             yield return null;
         }
@@ -101,6 +120,7 @@ public class Universal_Interact : MonoBehaviour
             yield break;
         }
 
+        interactVisualComponent?.SetHoldProgress(1f);
         onInteract.Invoke();
         TryDestroyAfterInteract();
         Debug.Log($"{gameObject.name} hold interaction completed.");

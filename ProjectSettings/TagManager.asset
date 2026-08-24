@@ -9,6 +9,7 @@ TagManager:
   - Interactable
   - Wagon
   - RepairMaterial
+  - ReviveManager
   layers:
   - Default
   - TransparentFX

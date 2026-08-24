@@ -201,8 +201,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43214a41ce8ad554fad6231214b746ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentHPStage: 0
   moveSpeed: 5
-  HP: 3
+  currHP: 1
+  startHP: 1
+  knockOutDuration: 10
   isMercenary: 0
   facingInputDeadZone: 0.1
   groundY: 0
@@ -217,6 +220,8 @@ MonoBehaviour:
   heartPrefab: {fileID: 2319628780638901486, guid: 99ae8cea45e07124994d4fd03e802439, type: 3}
   playerInputComp: {fileID: 6872265538902852116}
   inventory: {fileID: 0}
+  reviveManager: {fileID: 0}
+  reviveManagerPrefab: {fileID: 4650216304066145115, guid: b6202b4693e194348b5c9c45a9c24d3b, type: 3}
   wagonInteractObject: {fileID: 0}
   interactObject: {fileID: 0}
   isAttacking: 0

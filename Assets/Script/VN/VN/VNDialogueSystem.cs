@@ -74,6 +74,8 @@ public class VNDialogueSystem : MonoBehaviour
     {
         int dialogueIndex = 0;
         VNDisplayMode? lastMode = null; // Tracks the previously shown panel to detect consecutive same-side dialogue
+        bool hasLeftAppeared = false;
+        bool hasRightAppeared = false;
 
         foreach (VNCharacterDialogue characterData in characterDatas)
         {
@@ -105,7 +107,8 @@ public class VNDialogueSystem : MonoBehaviour
                         rightPanelAnimator.SetTrigger("Hide");
                     }
 
-                    PrvPanelShow_Left();
+                    OnPanelShow_Left(!hasLeftAppeared);
+                    hasLeftAppeared = true;
                 }
 
                 if (leftCharacterSprite != null && leftCharacterName != null && leftCharacterDialogue != null)
@@ -134,7 +137,8 @@ public class VNDialogueSystem : MonoBehaviour
                         leftPanelAnimator.SetTrigger("Hide");
                     }
 
-                    PrvPanelShow_Right();
+                    OnPanelShow_Right(!hasRightAppeared);
+                    hasRightAppeared = true;
                 }
 
                 if (rightCharacterSprite != null && rightCharacterName != null && rightCharacterDialogue != null)
@@ -156,7 +160,7 @@ public class VNDialogueSystem : MonoBehaviour
             yield return new WaitForSeconds(characterData.dialogueDuration);
         }
 
-        PrvPanelHide_All();
+        OnPanelHide_All();
         Debug.Log("Dialogue sequence finished!");
         isDialogueActive = false;
         showDialogue = false;
@@ -171,19 +175,19 @@ public class VNDialogueSystem : MonoBehaviour
         }
     }
 
-    private void PrvPanelShow_Right()
+    private void OnPanelShow_Right(bool isFirstAppearance = false)
     {
         rightPanel.gameObject.SetActive(true);
-        rightPanelAnimator.SetTrigger("Show");
+        rightPanelAnimator.SetTrigger(isFirstAppearance ? "Enable" : "Show");
     }
 
-    private void PrvPanelShow_Left()
+    private void OnPanelShow_Left(bool isFirstAppearance = false)
     {
         leftPanel.gameObject.SetActive(true);
-        leftPanelAnimator.SetTrigger("Show");
+        leftPanelAnimator.SetTrigger(isFirstAppearance ? "Enable" : "Show");
     }
 
-    public void PrvPanelHide_Left()
+    public void OnPanelDisable_Left()
     {
         if (leftPanel)
         {
@@ -192,7 +196,7 @@ public class VNDialogueSystem : MonoBehaviour
         }
     }
 
-    public void PrvPanelHide_Right()
+    public void OnPanelDisable_Right()
     {
         if (rightPanel)
         {
@@ -201,16 +205,16 @@ public class VNDialogueSystem : MonoBehaviour
         }
     }
 
-    private void PrvPanelHide_All()
+    public void OnPanelHide_All()
     {
         if (leftPanel)
         {
-            leftPanelAnimator.SetTrigger("Hide");
+            leftPanelAnimator.SetTrigger("Disable");
             isLeftSide = false;
         }
         if (rightPanel)
         {
-            rightPanelAnimator.SetTrigger("Hide");
+            rightPanelAnimator.SetTrigger("Disable");
             isRightSide = false;
         }
     }
