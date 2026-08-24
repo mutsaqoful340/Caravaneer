@@ -2,9 +2,6 @@ using UnityEngine;
 
 public class PlayerReviveManager : MonoBehaviour
 {
-    [Header("Revive Properties")]
-    [SerializeField] private LayerMask playerLayer; // Layer mask to identify players
-
     private bool isReviving = false;
     private PlayerComponent targetPlayer;
 

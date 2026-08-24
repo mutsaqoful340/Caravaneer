@@ -164,7 +164,7 @@ public class PlayerComponent : MonoBehaviour
         switch (pressedTarget)
         {
             case PressedTarget.Generic:
-                interactObject?.EndInteraction();
+                interactObject?.EndInteraction(this);
                 break;
             case PressedTarget.Wagon:
                 Debug.Log($"[WagonInteract] {gameObject.name} released action at t={Time.time:F2}");
@@ -184,7 +184,7 @@ public class PlayerComponent : MonoBehaviour
         switch (pressedTarget)
         {
             case PressedTarget.Generic:
-                interactObject?.EndInteraction();
+                interactObject?.EndInteraction(this);
                 break;
             case PressedTarget.Wagon:
                 wagonInteractObject?.EndInteraction(this);

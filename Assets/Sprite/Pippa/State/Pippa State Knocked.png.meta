@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 34c148fa539a4c844bd1a7263c4b1811
+guid: b709c0cded7e9404391ea8d66fafb227
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 4096
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -110,13 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Pia Idle Sample_0
+      name: Pippa State Knocked_0
       rect:
         serializedVersion: 2
-        x: 110
-        y: 67
-        width: 507
-        height: 858
+        x: 60
+        y: 86
+        width: 450
+        height: 460
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -125,20 +125,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 522ba2cebb537ce41ade04315e428e2c
-      internalID: 1186925170
+      spriteID: fbb9426121e794248b934b2afa462ffa
+      internalID: 575353022
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Pia Idle Sample_1
+      name: Pippa State Knocked_1
       rect:
         serializedVersion: 2
-        x: 668
-        y: 72
-        width: 505
-        height: 853
+        x: 510
+        y: 86
+        width: 450
+        height: 460
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -147,20 +147,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ddc2cbc59fd27a14f901f3fe1c273dcc
-      internalID: 2017809682
+      spriteID: 045dbffe141194c4a942290502c4def9
+      internalID: 974224779
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Pia Idle Sample_2
+      name: Pippa State Knocked_2
       rect:
         serializedVersion: 2
-        x: 1248
-        y: 70
-        width: 502
-        height: 855
+        x: 960
+        y: 86
+        width: 450
+        height: 460
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -169,20 +169,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 80822becd4348e54f910877487367a7e
-      internalID: 27953566
+      spriteID: 42f8acc50a3770e42804656844e47428
+      internalID: 394766442
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Pia Idle Sample_3
+      name: Pippa State Knocked_3
       rect:
         serializedVersion: 2
-        x: 1817
-        y: 70
-        width: 500
-        height: 855
+        x: 1410
+        y: 86
+        width: 450
+        height: 460
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -191,20 +191,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5a807794f373f59448f2b9ba9214c90c
-      internalID: 1158285043
+      spriteID: 64fb944b93fd6944c902c0b91021fa36
+      internalID: -1411557398
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Pia Idle Sample_4
+      name: Pippa State Knocked_4
       rect:
         serializedVersion: 2
-        x: 2397
-        y: 72
-        width: 494
-        height: 850
+        x: 1860
+        y: 86
+        width: 450
+        height: 460
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -213,20 +213,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5e7f0e419794bbe4883f2d9b993fd085
-      internalID: 933648297
+      spriteID: 6d7663f1520c4d1428706412c6952fc3
+      internalID: 919990389
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Pia Idle Sample_5
+      name: Pippa State Knocked_5
       rect:
         serializedVersion: 2
-        x: 2980
-        y: 70
-        width: 494
-        height: 855
+        x: 2310
+        y: 86
+        width: 450
+        height: 460
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -235,74 +235,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3bf470887ef9a7b48af8156b1a5db378
-      internalID: -1022175847
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Pia Idle Sample_6
-      rect:
-        serializedVersion: 2
-        x: 3560
-        y: 72
-        width: 494
-        height: 850
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 597bd677d7c6b154496e1a6996aaa90b
-      internalID: 75488417
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Pia Idle Sample_7
-      rect:
-        serializedVersion: 2
-        x: 4161
-        y: 70
-        width: 497
-        height: 855
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a446f22585bfad54f91e54d236ef7b4b
-      internalID: 1682283274
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Pia Idle Sample_8
-      rect:
-        serializedVersion: 2
-        x: 4797
-        y: 70
-        width: 502
-        height: 855
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9c980c94a3de15b40824adaf953645af
-      internalID: -1193587522
+      spriteID: 4e4686fb63d691d489df5666c45d870d
+      internalID: -1997888394
       vertices: []
       indices: 
       edges: []
@@ -311,7 +245,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 362c89d7d68395741832b3d9d9fa6f0a
+    spriteID: 0550310d4c588734280445c3ef935c4c
     internalID: 0
     vertices: []
     indices: 
@@ -321,17 +255,14 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":1.0},"gridSpriteSize":{"x":450.0,"y":460.0},"gridSpriteOffset":{"x":60.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Pia Idle Sample_0: 1186925170
-      Pia Idle Sample_1: 2017809682
-      Pia Idle Sample_2: 27953566
-      Pia Idle Sample_3: 1158285043
-      Pia Idle Sample_4: 933648297
-      Pia Idle Sample_5: -1022175847
-      Pia Idle Sample_6: 75488417
-      Pia Idle Sample_7: 1682283274
-      Pia Idle Sample_8: -1193587522
+      Pippa State Knocked_0: 575353022
+      Pippa State Knocked_1: 974224779
+      Pippa State Knocked_2: 394766442
+      Pippa State Knocked_3: -1411557398
+      Pippa State Knocked_4: 919990389
+      Pippa State Knocked_5: -1997888394
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
