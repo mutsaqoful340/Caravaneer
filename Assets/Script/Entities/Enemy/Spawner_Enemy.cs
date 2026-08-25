@@ -5,7 +5,7 @@ using UnityEngine;
 public class Spawner_Enemy : MonoBehaviour
 {
     public static Spawner_Enemy Instance { get; private set; }
-    [Header("Enemy Settings")]
+    [Header("Enemy Spawner Settings")]
     public GameObject playerConstraint;
     [SerializeField] private GameObject[] enemyPrefab;
     [SerializeField] private float minSpawnRadius = 10f;
@@ -18,6 +18,10 @@ public class Spawner_Enemy : MonoBehaviour
     [SerializeField] private float spawnRayHeight = 50f;
     [SerializeField] private float spawnRayDistance = 200f;
     [SerializeField] private float enemySpawnHeightOffset = 0.5f;
+    
+    [Header("Enemy Settings")]
+    public float minEnemyMoveSpeed = 3f;
+    public float maxEnemyMoveSpeed = 5f;
     
     [Header("Spawn Mode Settings")]
     [Tooltip("If true, enemies will only spawn when the player is within a designated trigger zone.")]
@@ -156,7 +160,13 @@ public class Spawner_Enemy : MonoBehaviour
 
                 GameObject prefab = enemyPrefab[Random.Range(0, enemyPrefab.Length)];
                 GameObject enemy = Instantiate(prefab, spawnPos, Quaternion.identity, folder.transform);
-                enemy.GetComponent<EnemyComponent>()?.SetPotentialTargets(targetTransforms);
+                EnemyComponent enemyComponent = enemy.GetComponent<EnemyComponent>();
+                if (enemyComponent != null)
+                {
+                    enemyComponent.SetMoveSpeed(Random.Range(minEnemyMoveSpeed, maxEnemyMoveSpeed));
+                    enemyComponent.SetPotentialTargets(targetTransforms);
+                }
+
                 spawnedEnemies.Add(enemy);
             }
         }

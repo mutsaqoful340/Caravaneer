@@ -2304,6 +2304,7 @@ Transform:
   - {fileID: 1651472664}
   - {fileID: 543450651924333920}
   - {fileID: 1052128759}
+  - {fileID: 585093278}
   - {fileID: 659179437}
   - {fileID: 1954957632}
   m_Father: {fileID: 0}
@@ -2688,6 +2689,110 @@ MonoBehaviour:
   Wagon: {fileID: 0}
   progressSlider: {fileID: 1865484648}
   progressPercentageText: 'Wagon Progress: '
+--- !u!1001 &585093277
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 472513126}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+      propertyPath: m_Name
+      value: GroundCihuy
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 585093280}
+  m_SourcePrefab: {fileID: 100100000, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+--- !u!4 &585093278 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+  m_PrefabInstance: {fileID: 585093277}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &585093279 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d36381d6685a18544b33938e3f97b306, type: 3}
+  m_PrefabInstance: {fileID: 585093277}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &585093280
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 585093279}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -7147341944787386517, guid: d36381d6685a18544b33938e3f97b306, type: 3}
 --- !u!1001 &598344223
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2743,6 +2848,10 @@ PrefabInstance:
     - target: {fileID: 8894524907553929642, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
       propertyPath: m_Name
       value: Wagon
+      objectReference: {fileID: 0}
+    - target: {fileID: 8894524907553929642, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3026,7 +3135,7 @@ MonoBehaviour:
   m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
     serializedVersion: 2
-    m_Bits: 2049
+    m_Bits: 2048
   m_UseGeometry: 0
   m_DefaultArea: 0
   m_GenerateLinks: 1
@@ -4453,6 +4562,7 @@ GameObject:
   - component: {fileID: 1052128763}
   - component: {fileID: 1052128762}
   - component: {fileID: 1052128761}
+  - component: {fileID: 1052128765}
   - component: {fileID: 1052128764}
   m_Layer: 0
   m_Name: Cube
@@ -4563,22 +4673,72 @@ MonoBehaviour:
   m_GameObject: {fileID: 1052128758}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9108124e7a55fb44bd4bf0214dbcf35, type: 3}
+  m_Script: {fileID: 11500000, guid: 249f47dce227e784987fe69e8844a3d7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Universal_Interact
-  isInteractable: 1
-  destroyAfterInteract: 1
-  interactionType: 1
-  isHoldInteract: 1
-  animator: {fileID: 0}
-  destroyDelay: 0
-  holdDuration: 3
-  interactVisualPrefab: {fileID: 7266190346334905339, guid: 6fd5860cf4df4ae4caf0e6232765b018, type: 3}
-  interactVisualComponent: {fileID: 0}
-  onInteract:
+  m_EditorClassIdentifier: Assembly-CSharp::Universal_TriggerZone
+  onTriggerEnterEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1052128765}
+        m_TargetAssemblyTypeName: Spawner_Enemy, Assembly-CSharp
+        m_MethodName: TriggerSpawnZone
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onTriggerExitEvent:
     m_PersistentCalls:
       m_Calls: []
-  isInteracting: 0
+  playerInside:
+  - {fileID: 0}
+  - {fileID: 0}
+  isTriggerActive: 0
+  twoPlayerMode: 0
+--- !u!114 &1052128765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1052128758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ede4041f8b350624fb4021ba2f596cba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Spawner_Enemy
+  playerConstraint: {fileID: 1052128758}
+  enemyPrefab:
+  - {fileID: 4608767214350957727, guid: 0e662fad5d748bf40ba748821c690a1e, type: 3}
+  minSpawnRadius: 1
+  maxSpawnRadius: 1
+  enemiesToSpawnA: 3
+  enemiesToSpawnB: 5
+  spawnInterval: 3
+  maxEnemyAlive: 5
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 2048
+  spawnRayHeight: 50
+  spawnRayDistance: 200
+  enemySpawnHeightOffset: 0.5
+  minEnemyMoveSpeed: 3
+  maxEnemyMoveSpeed: 5
+  isSpawnZoneTrigger: 1
+  poolSize: 5
+  isSpawnAtOnce: 1
+  folder: {fileID: 1093936898}
+  isSpawning: 1
+  hasSpawning: 0
+  enemies: []
+  targetTransforms:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &1060276216
 GameObject:
   m_ObjectHideFlags: 0
@@ -8282,6 +8442,8 @@ MonoBehaviour:
   spawnRayHeight: 50
   spawnRayDistance: 200
   enemySpawnHeightOffset: 0.5
+  minEnemyMoveSpeed: 1
+  maxEnemyMoveSpeed: 4
   isSpawnZoneTrigger: 0
   poolSize: 10
   isSpawnAtOnce: 0
@@ -9632,7 +9794,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &1711813855203065359
 MeshRenderer:
   m_ObjectHideFlags: 0

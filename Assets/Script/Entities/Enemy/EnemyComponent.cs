@@ -2,8 +2,17 @@ using System.Collections;
 using UnityEngine.AI;
 using UnityEngine;
 
+public enum EnemyType
+{
+    [Tooltip("Melee enemy type.")]
+    Melee,
+    [Tooltip("Ranged enemy type.")]
+    Ranged
+}
+
 public class EnemyComponent : MonoBehaviour
 {
+    public EnemyType enemyType = EnemyType.Melee;
     [Header("Enemy Settings")]
     [SerializeField] private float moveSpeed = 3f;
     [SerializeField] private int HP = 3;
@@ -17,16 +26,21 @@ public class EnemyComponent : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private GameObject enemyVisual;
+    public Animator weaponAnimator;
+    public GameObject axeSpawnPoint;
+    public GameObject axe;
 
     [Header("Debug")]
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Transform targetTransform;
-    [SerializeField] private GameObject sword;
+    [SerializeField] private Sword sword;
     [SerializeField] private bool isDead = false;
     [SerializeField] private bool hasSpawnerMaterial = false;
     private Coroutine knockbackRoutine;
     private Coroutine attackCooldownRoutine;
     private Quaternion rootRotation;
+
+    public GameObject Target => targetTransform != null ? targetTransform.gameObject : null;
     private Vector3 spawnPosition;
     private Transform[] potentialTargets;
 
@@ -50,8 +64,19 @@ public class EnemyComponent : MonoBehaviour
         }
     }
 
+    public void SetMoveSpeed(float speed)
+    {
+        moveSpeed = speed;
+
+        if (agent != null)
+        {
+            agent.speed = moveSpeed;
+        }
+    }
+
     private void Start(){
         StartCoroutine(OnSpawnScale());
+
     }
 
     // === Enemy Actions ===
@@ -63,7 +88,8 @@ public class EnemyComponent : MonoBehaviour
         {
             return;
         }
-
+        
+        weaponAnimator.SetTrigger("Attack");
         animator.SetTrigger("Attack");
         Debug.Log($"{gameObject.name} attacked {targetTransform.name}!");
     }
@@ -138,7 +164,15 @@ public class EnemyComponent : MonoBehaviour
     {
         Destroy(gameObject);
     }
-    #endregion
+
+    public void OnSpawnAxe()
+    {
+        if (axe && axeSpawnPoint && enemyType == EnemyType.Ranged)
+        {
+            Instantiate(axe, axeSpawnPoint.transform.position, axeSpawnPoint.transform.rotation);
+            Debug.Log($"{gameObject.name} spawned an axe!");
+        }
+    }
 
     public void SetPotentialTargets(Transform[] targets)
     {
@@ -173,6 +207,7 @@ public class EnemyComponent : MonoBehaviour
 
         return closestTarget;
     }
+    #endregion
 
     // === Knockback & Bounce ===
     #region Knockback & Bounce

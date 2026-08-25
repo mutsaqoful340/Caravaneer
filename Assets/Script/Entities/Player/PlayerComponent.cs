@@ -18,6 +18,8 @@ public class PlayerComponent : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private int currHP = 3;
     [SerializeField] private int startHP = 3;
+    [Tooltip("The range within which the player can search for enemy Game Objects.")]
+    [SerializeField] private float searchRange = 2f;
     [SerializeField] private float knockOutDuration = 10f;
     [Tooltip("True for Mercenary, False for Driver")]
     [SerializeField] public bool isMercenary = false;
@@ -34,6 +36,7 @@ public class PlayerComponent : MonoBehaviour
     public GameObject playerVisual;
     public Animator animator;
     public Sword sword;
+    public Animator playerWeaponAnimator;
     [Tooltip("The UI element that displays the player's health.")]
     public GameObject playerStatUI;
     [Tooltip("The prefab for the heart icon representing health.")]
@@ -43,7 +46,7 @@ public class PlayerComponent : MonoBehaviour
     public PlayerInventory inventory;
     public PlayerReviveManager reviveManager;
     public GameObject reviveManagerPrefab;
-
+    public GameObject Target => currentEnemy != null ? currentEnemy.gameObject : null;
 
     [Header("Debug")]
     [Tooltip("DO NOT ASSIGN THIS MANUALLY. Reference to the wagon currently in range, if any.")]
@@ -344,7 +347,7 @@ public class PlayerComponent : MonoBehaviour
             currentHPStage = PlayerHPStage.KnockedOut;
             GameObject reviveManagerObject = Instantiate(reviveManagerPrefab, transform.position, Quaternion.identity, transform);
             reviveManager = reviveManagerObject.GetComponent<PlayerReviveManager>();
-            animator?.SetTrigger("KnockOut");
+            animator?.SetTrigger("Knocked");
             StartCoroutine(KnockOutCoroutine());
         }
         // TODO - add death logic here (e.g., play death animation, disable player controls, etc.)
@@ -433,13 +436,84 @@ public class PlayerComponent : MonoBehaviour
         }
 
         string triggerName = AttackTriggers[currentAttackIndex];
-        animator.SetTrigger(triggerName);
+        playerWeaponAnimator.SetTrigger(triggerName);
 
         currentAttackIndex = (currentAttackIndex + 1) % AttackTriggers.Length;
         lastAttackTime = Time.time;
         nextAttackTime = Time.time + attackCooldown;
 
         Debug.Log($"{gameObject.name} performed mercenary combo step {currentAttackIndex}.");
+    }
+
+    private void OnSearchEnemy()
+    {
+        currentEnemy = null;
+
+        Collider[] nearbyColliders = Physics.OverlapSphere(transform.position, searchRange);
+        float facingDirection = isMoveOpposDir ? -1f : 1f;
+        float closestDistanceSqr = float.PositiveInfinity;
+
+        for (int i = 0; i < nearbyColliders.Length; i++)
+        {
+            EnemyComponent enemy = nearbyColliders[i].GetComponentInParent<EnemyComponent>();
+            if (enemy == null || !enemy.isActiveAndEnabled)
+            {
+                continue;
+            }
+
+            Vector3 offset = enemy.transform.position - transform.position;
+            offset.y = 0f;
+
+            if (offset.sqrMagnitude <= Mathf.Epsilon || offset.x * facingDirection < 0f)
+            {
+                continue;
+            }
+
+            float distanceSqr = offset.sqrMagnitude;
+            if (distanceSqr < closestDistanceSqr)
+            {
+                closestDistanceSqr = distanceSqr;
+                currentEnemy = enemy;
+            }
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!isMercenary)
+        {
+            return;
+        }
+
+        Gizmos.color = Color.yellow;
+
+        Vector3 center = transform.position;
+        float facingDirection = isMoveOpposDir ? -1f : 1f;
+        const int segmentCount = 24;
+        Vector3 previousPoint = center + new Vector3(facingDirection * 0f, 0f, -searchRange);
+
+        for (int i = 1; i <= segmentCount; i++)
+        {
+            float angle = Mathf.Lerp(-90f, 90f, i / (float)segmentCount) * Mathf.Deg2Rad;
+            Vector3 currentPoint = center + new Vector3(
+                facingDirection * Mathf.Cos(angle) * searchRange,
+                0f,
+                Mathf.Sin(angle) * searchRange
+            );
+
+            Gizmos.DrawLine(previousPoint, currentPoint);
+            previousPoint = currentPoint;
+        }
+
+        Gizmos.DrawLine(center, center + new Vector3(0f, 0f, -searchRange));
+        Gizmos.DrawLine(center, center + new Vector3(0f, 0f, searchRange));
+
+        if (currentEnemy != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(center, currentEnemy.transform.position);
+            Gizmos.DrawSphere(currentEnemy.transform.position, 0.15f);
+        }
     }
     #endregion
 
@@ -466,6 +540,11 @@ public class PlayerComponent : MonoBehaviour
         if (actionInput != null && pressedTarget != PressedTarget.None && !actionInput.IsPressed())
         {
             HandleActionReleasedByPolling();
+        }
+
+        if (isMercenary && currentHPStage == PlayerHPStage.Alive)
+        {
+            OnSearchEnemy();
         }
 
         if (isMounted) return;

@@ -43,10 +43,13 @@ public class UI_InteractVisual : MonoBehaviour
         {
             interactHintIcon.SetActive(true);
             interactIcon1.SetActive(false);
+            interactIcon2_1.SetActive(false);
+            interactIcon2_2.SetActive(false);
         }
         else if (InteractionType.Two == interactionType)
         {
             interactHintIcon.SetActive(true);
+            interactIcon1.SetActive(false);
             interactIcon2_1.SetActive(false);
             interactIcon2_2.SetActive(false);
         }

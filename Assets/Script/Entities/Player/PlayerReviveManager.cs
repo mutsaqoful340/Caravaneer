@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class PlayerReviveManager : MonoBehaviour
 {
-    private bool isReviving = false;
-    private PlayerComponent targetPlayer;
+    [SerializeField] private bool isReviving = false;
+    [SerializeField] private PlayerComponent targetPlayer;
 
     private void Start()
     {
