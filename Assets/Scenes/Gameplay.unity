@@ -4713,7 +4713,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Spawner_Enemy
   playerConstraint: {fileID: 1052128758}
   enemyPrefab:
-  - {fileID: 4608767214350957727, guid: 0e662fad5d748bf40ba748821c690a1e, type: 3}
+  - {fileID: 4608767214350957727, guid: 0a47eb4e125e82947ae6926467246ce9, type: 3}
   minSpawnRadius: 1
   maxSpawnRadius: 1
   enemiesToSpawnA: 3
@@ -8429,6 +8429,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerConstraint: {fileID: 1388040499}
   enemyPrefab:
+  - {fileID: 4608767214350957727, guid: 0a47eb4e125e82947ae6926467246ce9, type: 3}
   - {fileID: 4608767214350957727, guid: 0e662fad5d748bf40ba748821c690a1e, type: 3}
   minSpawnRadius: 10
   maxSpawnRadius: 15

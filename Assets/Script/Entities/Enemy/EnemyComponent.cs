@@ -27,13 +27,15 @@ public class EnemyComponent : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private GameObject enemyVisual;
     public Animator weaponAnimator;
+    [Tooltip("Only assign if enemy is RANGED.")]
     public GameObject axeSpawnPoint;
-    public GameObject axe;
+    [Tooltip("Only assign if enemy is RANGED.")]
+    public GameObject axePrefab;
 
     [Header("Debug")]
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Transform targetTransform;
-    [SerializeField] private Sword sword;
+    [SerializeField] private Sword playerSword;
     [SerializeField] private bool isDead = false;
     [SerializeField] private bool hasSpawnerMaterial = false;
     private Coroutine knockbackRoutine;
@@ -91,7 +93,6 @@ public class EnemyComponent : MonoBehaviour
         
         weaponAnimator.SetTrigger("Attack");
         animator.SetTrigger("Attack");
-        Debug.Log($"{gameObject.name} attacked {targetTransform.name}!");
     }
 
     public void OnTakeDamage(int damage, Transform damageSource = null)
@@ -110,9 +111,9 @@ public class EnemyComponent : MonoBehaviour
         {
             knockbackDirection = (transform.position - damageSource.position).normalized;
         }
-        else if (sword != null)
+        else if (playerSword != null)
         {
-            knockbackDirection = (transform.position - sword.transform.position).normalized;
+            knockbackDirection = (transform.position - playerSword.transform.position).normalized;
         }
         else if (targetTransform != null)
         {
@@ -120,7 +121,7 @@ public class EnemyComponent : MonoBehaviour
         }
 
         OnKnockback(knockbackDirection);
-        sword = null;
+        playerSword = null;
 
         if (HP <= 0)
         {
@@ -150,14 +151,11 @@ public class EnemyComponent : MonoBehaviour
             isDead = true;
             return;
         }
-
-        Debug.Log($"{gameObject.name} took {damage} damage! Remaining HP: {HP}");
     }
 
     public void OnDie()
     {
         Destroy(gameObject);
-        Debug.Log($"{gameObject.name} has died!");
     }
 
     public void OnDespawn()
@@ -167,10 +165,9 @@ public class EnemyComponent : MonoBehaviour
 
     public void OnSpawnAxe()
     {
-        if (axe && axeSpawnPoint && enemyType == EnemyType.Ranged)
+        if (axePrefab && axeSpawnPoint && enemyType == EnemyType.Ranged)
         {
-            Instantiate(axe, axeSpawnPoint.transform.position, axeSpawnPoint.transform.rotation);
-            Debug.Log($"{gameObject.name} spawned an axe!");
+            Instantiate(axePrefab, axeSpawnPoint.transform.position, axeSpawnPoint.transform.rotation);
         }
     }
 
@@ -178,6 +175,58 @@ public class EnemyComponent : MonoBehaviour
     {
         potentialTargets = targets;
         targetTransform = GetClosestTargetFromSpawn();
+    }
+
+    private bool HasValidPlayerTarget()
+    {
+        if (potentialTargets == null)
+        {
+            return false;
+        }
+
+        foreach (Transform potentialTarget in potentialTargets)
+        {
+            if (potentialTarget == null)
+            {
+                continue;
+            }
+
+            PlayerComponent player = potentialTarget.GetComponent<PlayerComponent>();
+            if (player != null && player.currentHPStage != PlayerHPStage.KnockedOut)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool IsValidTarget(Transform potentialTarget)
+    {
+        if (potentialTarget == null)
+        {
+            return false;
+        }
+
+        PlayerComponent player = potentialTarget.GetComponent<PlayerComponent>();
+        return player == null || player.currentHPStage != PlayerHPStage.KnockedOut;
+    }
+
+    private void StopEnemyActions()
+    {
+        targetTransform = null;
+
+        if (agent != null && agent.enabled && agent.isOnNavMesh)
+        {
+            agent.isStopped = true;
+            agent.ResetPath();
+        }
+
+        if (attackCooldownRoutine != null)
+        {
+            StopCoroutine(attackCooldownRoutine);
+            attackCooldownRoutine = null;
+        }
     }
 
     private Transform GetClosestTargetFromSpawn()
@@ -192,7 +241,7 @@ public class EnemyComponent : MonoBehaviour
 
         foreach (Transform potentialTarget in potentialTargets)
         {
-            if (potentialTarget == null)
+            if (!IsValidTarget(potentialTarget))
             {
                 continue;
             }
@@ -248,10 +297,26 @@ public class EnemyComponent : MonoBehaviour
     #endregion
 
     // === Updates & Coroutines ===
-    #region Updates & Coroutines
+    #region Updates & Coroutines & Gizmos
     private void Update()
     {
-        if (targetTransform != null && !isDead)
+        if (isDead)
+        {
+            return;
+        }
+
+        if (!HasValidPlayerTarget())
+        {
+            StopEnemyActions();
+            return;
+        }
+
+        if (!IsValidTarget(targetTransform))
+        {
+            targetTransform = GetClosestTargetFromSpawn();
+        }
+
+        if (targetTransform != null)
         {
             transform.rotation = rootRotation;
 
@@ -368,6 +433,12 @@ public class EnemyComponent : MonoBehaviour
         }
 
         knockbackRoutine = null;
-    }        
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, targetTransform != null ? targetTransform.position : transform.position);
+    }
     #endregion
 }

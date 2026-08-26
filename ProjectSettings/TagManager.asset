@@ -10,6 +10,7 @@ TagManager:
   - Wagon
   - RepairMaterial
   - ReviveManager
+  - Axe
   layers:
   - Default
   - TransparentFX

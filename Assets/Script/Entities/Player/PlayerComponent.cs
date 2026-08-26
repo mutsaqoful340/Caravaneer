@@ -320,7 +320,7 @@ public class PlayerComponent : MonoBehaviour
 
     public void OnTakeDamage(int damage)
     {
-        if (damage <= 0)
+        if (currentHPStage == PlayerHPStage.KnockedOut ||damage <= 0)
         {
             return;
         }
@@ -425,6 +425,12 @@ public class PlayerComponent : MonoBehaviour
         if (animator == null)
         {
             Debug.LogWarning($"{gameObject.name} is missing an Animator reference.");
+            return;
+        }
+
+        if (currentEnemy == null)
+        {
+            Debug.Log($"{gameObject.name} has no enemy in range to attack.");
             return;
         }
 
