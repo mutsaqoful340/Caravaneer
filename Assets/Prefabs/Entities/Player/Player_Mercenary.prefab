@@ -57,6 +57,7 @@ MonoBehaviour:
   currHP: 3
   startHP: 3
   searchRange: 5
+  searchAngle: 180
   knockOutDuration: 10
   isMercenary: 1
   facingInputDeadZone: 0.1

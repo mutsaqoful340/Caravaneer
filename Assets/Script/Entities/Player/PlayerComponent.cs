@@ -20,6 +20,13 @@ public class PlayerComponent : MonoBehaviour
     [SerializeField] private int startHP = 3;
     [Tooltip("The range within which the player can search for enemy Game Objects.")]
     [SerializeField] private float searchRange = 2f;
+    [Tooltip("The total cone angle in degrees within which the player can search for enemy Game Objects.")]
+    [Range(0.1f, 360f)]
+    [SerializeField] private float searchAngle = 180f;
+    [Tooltip("Extra range added when checking if the currently tracked enemy is still valid, to avoid target flicker at the edge of searchRange.")]
+    [SerializeField] private float trackedEnemyRangeBuffer = 0.5f;
+    [Tooltip("Extra angle in degrees added when checking if the currently tracked enemy is still valid, to avoid target flicker at the edge of searchAngle.")]
+    [SerializeField] private float trackedEnemyAngleBuffer = 10f;
     [SerializeField] private float knockOutDuration = 10f;
     [Tooltip("True for Mercenary, False for Driver")]
     [SerializeField] public bool isMercenary = false;
@@ -453,10 +460,12 @@ public class PlayerComponent : MonoBehaviour
 
     private void OnSearchEnemy()
     {
+        EnemyComponent previousEnemy = currentEnemy;
         currentEnemy = null;
 
         Collider[] nearbyColliders = Physics.OverlapSphere(transform.position, searchRange);
-        float facingDirection = isMoveOpposDir ? -1f : 1f;
+        Vector3 facingVector = new Vector3(isMoveOpposDir ? -1f : 1f, 0f, 0f);
+        float halfSearchAngle = searchAngle * 0.5f;
         float closestDistanceSqr = float.PositiveInfinity;
 
         for (int i = 0; i < nearbyColliders.Length; i++)
@@ -470,7 +479,7 @@ public class PlayerComponent : MonoBehaviour
             Vector3 offset = enemy.transform.position - transform.position;
             offset.y = 0f;
 
-            if (offset.sqrMagnitude <= Mathf.Epsilon || offset.x * facingDirection < 0f)
+            if (offset.sqrMagnitude <= Mathf.Epsilon || Vector3.Angle(facingVector, offset) > halfSearchAngle)
             {
                 continue;
             }
@@ -482,43 +491,21 @@ public class PlayerComponent : MonoBehaviour
                 currentEnemy = enemy;
             }
         }
-    }
 
-    private void OnDrawGizmos()
-    {
-        if (!isMercenary)
+        // Keep the previously tracked enemy if it only fell outside the strict thresholds by a small margin, to avoid flicker.
+        if (currentEnemy == null && previousEnemy != null && previousEnemy.isActiveAndEnabled)
         {
-            return;
-        }
+            Vector3 previousOffset = previousEnemy.transform.position - transform.position;
+            previousOffset.y = 0f;
 
-        Gizmos.color = Color.yellow;
+            bool withinBufferedRange = previousOffset.sqrMagnitude <= (searchRange + trackedEnemyRangeBuffer) * (searchRange + trackedEnemyRangeBuffer);
+            bool withinBufferedAngle = previousOffset.sqrMagnitude > Mathf.Epsilon &&
+                Vector3.Angle(facingVector, previousOffset) <= halfSearchAngle + trackedEnemyAngleBuffer;
 
-        Vector3 center = transform.position;
-        float facingDirection = isMoveOpposDir ? -1f : 1f;
-        const int segmentCount = 24;
-        Vector3 previousPoint = center + new Vector3(facingDirection * 0f, 0f, -searchRange);
-
-        for (int i = 1; i <= segmentCount; i++)
-        {
-            float angle = Mathf.Lerp(-90f, 90f, i / (float)segmentCount) * Mathf.Deg2Rad;
-            Vector3 currentPoint = center + new Vector3(
-                facingDirection * Mathf.Cos(angle) * searchRange,
-                0f,
-                Mathf.Sin(angle) * searchRange
-            );
-
-            Gizmos.DrawLine(previousPoint, currentPoint);
-            previousPoint = currentPoint;
-        }
-
-        Gizmos.DrawLine(center, center + new Vector3(0f, 0f, -searchRange));
-        Gizmos.DrawLine(center, center + new Vector3(0f, 0f, searchRange));
-
-        if (currentEnemy != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(center, currentEnemy.transform.position);
-            Gizmos.DrawSphere(currentEnemy.transform.position, 0.15f);
+            if (withinBufferedRange && withinBufferedAngle)
+            {
+                currentEnemy = previousEnemy;
+            }
         }
     }
     #endregion
@@ -539,6 +526,53 @@ public class PlayerComponent : MonoBehaviour
     {
         yield return new WaitForSeconds(knockOutDuration);
         OnDie();
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!isMercenary)
+        {
+            return;
+        }
+
+        Gizmos.color = Color.yellow;
+
+        Vector3 center = transform.position;
+        float facingDirection = isMoveOpposDir ? -1f : 1f;
+        float halfSearchAngle = searchAngle * 0.5f;
+        const int segmentCount = 24;
+        Vector3 previousPoint = center + new Vector3(
+            facingDirection * Mathf.Cos(-halfSearchAngle * Mathf.Deg2Rad) * searchRange,
+            0f,
+            Mathf.Sin(-halfSearchAngle * Mathf.Deg2Rad) * searchRange
+        );
+
+        for (int i = 1; i <= segmentCount; i++)
+        {
+            float angle = Mathf.Lerp(-halfSearchAngle, halfSearchAngle, i / (float)segmentCount) * Mathf.Deg2Rad;
+            Vector3 currentPoint = center + new Vector3(
+                facingDirection * Mathf.Cos(angle) * searchRange,
+                0f,
+                Mathf.Sin(angle) * searchRange
+            );
+
+            Gizmos.DrawLine(previousPoint, currentPoint);
+            previousPoint = currentPoint;
+        }
+
+        Gizmos.DrawLine(center, previousPoint);
+        Gizmos.DrawLine(center, center + new Vector3(
+            facingDirection * Mathf.Cos(-halfSearchAngle * Mathf.Deg2Rad) * searchRange,
+            0f,
+            Mathf.Sin(-halfSearchAngle * Mathf.Deg2Rad) * searchRange
+        ));
+
+        if (currentEnemy != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(center, currentEnemy.transform.position);
+            Gizmos.DrawSphere(currentEnemy.transform.position, 0.15f);
+        }
     }
 
     private void Update()

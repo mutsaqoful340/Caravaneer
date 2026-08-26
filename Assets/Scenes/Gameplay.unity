@@ -4719,7 +4719,7 @@ MonoBehaviour:
   enemiesToSpawnA: 3
   enemiesToSpawnB: 5
   spawnInterval: 3
-  maxEnemyAlive: 5
+  maxEnemyAlive: 1
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 2048
@@ -4729,7 +4729,7 @@ MonoBehaviour:
   minEnemyMoveSpeed: 3
   maxEnemyMoveSpeed: 5
   isSpawnZoneTrigger: 1
-  poolSize: 5
+  poolSize: 1
   isSpawnAtOnce: 1
   folder: {fileID: 1093936898}
   isSpawning: 1
@@ -8434,9 +8434,9 @@ MonoBehaviour:
   minSpawnRadius: 10
   maxSpawnRadius: 15
   enemiesToSpawnA: 1
-  enemiesToSpawnB: 2
-  spawnInterval: 3
-  maxEnemyAlive: 50
+  enemiesToSpawnB: 1
+  spawnInterval: 5
+  maxEnemyAlive: 5
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 2048

@@ -43,12 +43,9 @@ public class Axe : MonoBehaviour
             playerTarget = other.GetComponent<PlayerComponent>();
             if (playerTarget != null && !isDamaging)
             {
-                isDamaging = true;
-                axeCollider.enabled = false; // Disable the axe's collider to prevent further collisions
                 OnCollided(); // Stop the axe's movement upon collision
-                playerTarget.OnTakeDamage(damage);
-                Debug.Log($"{gameObject.name} dealt {damage} damage to {playerTarget.gameObject.name}!");
                 StartCoroutine(DestroyAfterLifetime()); // Destroy the axe after hitting the player}
+                Debug.Log($"{gameObject.name} dealt {damage} damage to {playerTarget.gameObject.name}!");
             }
         }
             
@@ -57,12 +54,9 @@ public class Axe : MonoBehaviour
             wagonTarget = other.GetComponent<WagonComponent>();
             if (wagonTarget != null && !isDamaging)
             {
-                isDamaging = true;
-                axeCollider.enabled = false; // Disable the axe's collider to prevent further collisions
                 OnCollided(); // Stop the axe's movement upon collision
-                wagonTarget.OnTakeDamage(damage);
-                Debug.Log($"{gameObject.name} dealt {damage} damage to {wagonTarget.gameObject.name}!");
                 StartCoroutine(DestroyAfterLifetime()); // Destroy the axe after hitting the wagon
+                Debug.Log($"{gameObject.name} dealt {damage} damage to {wagonTarget.gameObject.name}!");
             }
         }
     }
@@ -72,12 +66,11 @@ public class Axe : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerTarget = null;
-            isDamaging = false;
+
         }
         else if (other.CompareTag("Wagon"))
         {
             wagonTarget = null;
-            isDamaging = false;
         }
     }
 
@@ -100,6 +93,8 @@ public class Axe : MonoBehaviour
 
     private void OnCollided()
     {
+        isDamaging = true; // Set isDamaging to true to prevent further damage
+        axeCollider.enabled = false; // Disable the axe's collider to prevent further collisions
         // Stop the axe's movement upon collision
         animator.SetTrigger("Stuck"); // Trigger the collision animation
         if (playerTarget) {playerTarget.OnTakeDamage(damage);}
@@ -107,7 +102,6 @@ public class Axe : MonoBehaviour
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         rb.isKinematic = true; // Make the axe kinematic to stop physics interactions
-        Debug.Log("Axe has collided and stopped moving.");
     }
 
     private void OnRandomAccuracy()
