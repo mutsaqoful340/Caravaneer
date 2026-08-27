@@ -105,7 +105,7 @@ public class Manager_UI : MonoBehaviour
             if (animator != null && panelReference.hasAnimation)
             {
                 animator.ResetTrigger("Open");
-                animator.SetTrigger("Close");
+                animator.SetTrigger("Close"); Debug.Log($"Closing panel with animation: {panelReference.name}");
                 ClearSelectedButton();
             }
             else

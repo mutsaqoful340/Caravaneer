@@ -15,6 +15,7 @@ public class PlayerComponent : MonoBehaviour
 
     [Header("Player Settings")]
     public PlayerHPStage currentHPStage = PlayerHPStage.Alive;
+    [SerializeField] public bool isMercenary = false;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private int currHP = 3;
     [SerializeField] private int startHP = 3;
@@ -28,8 +29,8 @@ public class PlayerComponent : MonoBehaviour
     [Tooltip("Extra angle in degrees added when checking if the currently tracked enemy is still valid, to avoid target flicker at the edge of searchAngle.")]
     [SerializeField] private float trackedEnemyAngleBuffer = 10f;
     [SerializeField] private float knockOutDuration = 10f;
+    public float IFrameDuration = 1f;
     [Tooltip("True for Mercenary, False for Driver")]
-    [SerializeField] public bool isMercenary = false;
     [SerializeField] private float facingInputDeadZone = 0.1f;
     [SerializeField] private float groundY = 0f;
     [SerializeField] private float gravity = -18f;
@@ -65,6 +66,7 @@ public class PlayerComponent : MonoBehaviour
     private PressedTarget pressedTarget = PressedTarget.None;
     [Tooltip("DO NOT ASSIGN THIS MANUALLY. This is a reference to the current enemy the player is attacking.")]
     [SerializeField] private bool isAttacking = false;
+    public bool isIFrame = false;
     public bool isMounted = false;
     [SerializeField] private bool isMoveOpposDir = false;
     [SerializeField] private EnemyComponent currentEnemy;
@@ -211,7 +213,7 @@ public class PlayerComponent : MonoBehaviour
             if (Manager_Game.Instance.currentGameState == GameState.Gameplay)
             {
                 Manager_Game.Instance.SetState(GameState.UI);
-                Manager_UI.Instance.OnShowPanel("Store");
+                Manager_UI.Instance.OnShowPanel("PauseMenu");
                 return;
             }
         }
@@ -327,11 +329,12 @@ public class PlayerComponent : MonoBehaviour
 
     public void OnTakeDamage(int damage)
     {
-        if (currentHPStage == PlayerHPStage.KnockedOut ||damage <= 0)
+        if (currentHPStage == PlayerHPStage.KnockedOut || damage <= 0 || isIFrame)
         {
             return;
         }
 
+        StartCoroutine(IFrameCoroutine());
         CameraConstraint.Instance?.CameraShake();
         currHP -= damage;
         AddVerticalImpulse(1.5f);
@@ -352,6 +355,7 @@ public class PlayerComponent : MonoBehaviour
         if (currentHPStage == PlayerHPStage.Alive)
         {
             currentHPStage = PlayerHPStage.KnockedOut;
+            moveInput = Vector2.zero; // Stop stale directional input from sliding the player after knockout
             if (!isMercenary)
             {
                 HUD_CharState.Instance?.SetCharacterState("Pia", "Knocked");
@@ -538,12 +542,58 @@ public class PlayerComponent : MonoBehaviour
     }
 
     #region Updates & Coroutines
+    // Coroutines
     private IEnumerator KnockOutCoroutine()
     {
         yield return new WaitForSeconds(knockOutDuration);
         OnDie();
     }
 
+    private IEnumerator IFrameCoroutine()
+    {
+        isIFrame = true;
+        yield return new WaitForSeconds(IFrameDuration);
+        isIFrame = false;
+    }
+
+    // Updates
+    private void Update()
+    {
+        if (actionInput != null && pressedTarget != PressedTarget.None && !actionInput.IsPressed())
+        {
+            HandleActionReleasedByPolling();
+        }
+
+        if (isMercenary && currentHPStage == PlayerHPStage.Alive)
+        {
+            OnSearchEnemy();
+        }
+
+        if (isMounted) return;
+
+        if (characterController.isGrounded && verticalVelocity.y < 0f)
+        {
+            verticalVelocity.y = 0f;
+        }
+
+        verticalVelocity.y += gravity * Time.deltaTime;
+
+        Vector3 horizontalMovement = new Vector3(moveInput.x, 0f, moveInput.y) * moveSpeed;
+        Vector3 movement = horizontalMovement * Time.deltaTime;
+        movement.y = verticalVelocity.y * Time.deltaTime;
+
+        characterController.Move(movement);
+
+        if (transform.position.y < groundY)
+        {
+            Vector3 groundedPosition = transform.position;
+            groundedPosition.y = groundY;
+            transform.position = groundedPosition;
+            verticalVelocity.y = 0f;
+        }
+    }
+
+    // Gizmos
     private void OnDrawGizmos()
     {
         if (!isMercenary)
@@ -588,42 +638,6 @@ public class PlayerComponent : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawLine(center, currentEnemy.transform.position);
             Gizmos.DrawSphere(currentEnemy.transform.position, 0.15f);
-        }
-    }
-
-    private void Update()
-    {
-        if (actionInput != null && pressedTarget != PressedTarget.None && !actionInput.IsPressed())
-        {
-            HandleActionReleasedByPolling();
-        }
-
-        if (isMercenary && currentHPStage == PlayerHPStage.Alive)
-        {
-            OnSearchEnemy();
-        }
-
-        if (isMounted) return;
-
-        if (characterController.isGrounded && verticalVelocity.y < 0f)
-        {
-            verticalVelocity.y = 0f;
-        }
-
-        verticalVelocity.y += gravity * Time.deltaTime;
-
-        Vector3 horizontalMovement = new Vector3(moveInput.x, 0f, moveInput.y) * moveSpeed;
-        Vector3 movement = horizontalMovement * Time.deltaTime;
-        movement.y = verticalVelocity.y * Time.deltaTime;
-
-        characterController.Move(movement);
-
-        if (transform.position.y < groundY)
-        {
-            Vector3 groundedPosition = transform.position;
-            groundedPosition.y = groundY;
-            transform.position = groundedPosition;
-            verticalVelocity.y = 0f;
         }
     }
     #endregion

@@ -53,13 +53,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentHPStage: 0
+  isMercenary: 1
   moveSpeed: 5
   currHP: 3
   startHP: 3
   searchRange: 5
   searchAngle: 180
+  trackedEnemyRangeBuffer: 0.5
+  trackedEnemyAngleBuffer: 10
   knockOutDuration: 10
-  isMercenary: 1
+  IFrameDuration: 0.75
   facingInputDeadZone: 0.1
   groundY: 0
   gravity: -18
@@ -79,6 +82,7 @@ MonoBehaviour:
   wagonInteractObject: {fileID: 0}
   interactObject: {fileID: 0}
   isAttacking: 0
+  isIFrame: 0
   isMounted: 0
   isMoveOpposDir: 0
   currentEnemy: {fileID: 0}

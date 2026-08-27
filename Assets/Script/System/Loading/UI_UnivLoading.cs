@@ -29,6 +29,11 @@ public class UI_UnivLoading : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        Hide();
+    }
+
     public void Show()
     {
         gameObject.SetActive(true);

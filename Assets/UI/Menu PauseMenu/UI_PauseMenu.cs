@@ -1,0 +1,22 @@
+using UnityEngine;
+
+public class UI_PauseMenu : MonoBehaviour
+{
+    public void OnResumeButtonPressed()
+    {
+        Manager_Game.Instance.SetState(GameState.Gameplay);
+        Manager_UI.Instance.OnCloseAllPanels();
+    }
+
+    public void OnReturnToMainMenuButtonPressed()
+    {
+        Debug.Log("Returning to Main Menu...");
+        SceneLoader.Instance.LoadScene("MainMenu");
+    }
+
+    public void OnQuitGameButtonPressed()
+    {
+        Debug.Log("Quitting Game...");
+        Application.Quit();
+    }
+}

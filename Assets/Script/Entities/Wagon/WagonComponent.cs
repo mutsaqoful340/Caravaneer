@@ -24,11 +24,12 @@ public class WagonComponent : MonoBehaviour
     public GameObject heartFunctionalPrefab;
     public GameObject heartBrokenPrefab;
 
-    [Header("Interaction Settings")]
+    [Header("Wagon Settings")]
     [Tooltip("Holding the action button for at least this long triggers a repair instead of mounting.")]
     public float repairHoldThreshold = 0.5f;
     [Tooltip("Repair materials consumed and HP restored per long-press repair.")]
     public int repairCost = 1;
+    public float IFrameDuration = 1f;
 
     [Header("Player References")]
     public PlayerComponent mechanic;
@@ -43,6 +44,7 @@ public class WagonComponent : MonoBehaviour
     [SerializeField] private int currHPFunctional = 5;
     [SerializeField] private bool isBroken = false;
     [SerializeField] private bool isDestroyed = false;
+    [SerializeField] private bool isIFrame = false;
     [SerializeField] private CharacterController mechanicCC;
     [SerializeField] private Rigidbody mechanicRB;
     [SerializeField] private CharacterController mercenaryCC;
@@ -272,13 +274,14 @@ public class WagonComponent : MonoBehaviour
 
     public void OnTakeDamage(int damage)
     {
-        if (isDestroyed || damage <= 0)
+        if (isDestroyed || damage <= 0 || isIFrame)
         {
             return;
         }
 
         CameraConstraint.Instance?.CameraShake();
 
+        StartCoroutine(IFrameCoroutine());
         if (currentWagonState == WagonState.Functional)
         {
             currHPFunctional = Mathf.Max(0, currHPFunctional - damage);
@@ -549,5 +552,12 @@ public class WagonComponent : MonoBehaviour
         if (!isMechanicMounted || mechanic == null || !CanOperate()) return;
         
         ApplyDriverInput(mechanic.GetMoveInput());
+    }
+
+    private IEnumerator IFrameCoroutine()
+    {
+        isIFrame = true;
+        yield return new WaitForSeconds(IFrameDuration);
+        isIFrame = false;
     }
 }
