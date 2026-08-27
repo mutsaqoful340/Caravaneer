@@ -352,6 +352,14 @@ public class PlayerComponent : MonoBehaviour
         if (currentHPStage == PlayerHPStage.Alive)
         {
             currentHPStage = PlayerHPStage.KnockedOut;
+            if (!isMercenary)
+            {
+                HUD_CharState.Instance?.SetCharacterState("Pia", "Knocked");
+            }
+            else
+            {
+                HUD_CharState.Instance?.SetCharacterState("Pippa", "Knocked");
+            }
             GameObject reviveManagerObject = Instantiate(reviveManagerPrefab, transform.position, Quaternion.identity, transform);
             reviveManager = reviveManagerObject.GetComponent<PlayerReviveManager>();
             animator?.SetTrigger("Knocked");
@@ -374,6 +382,14 @@ public class PlayerComponent : MonoBehaviour
     {
         if (currentHPStage == PlayerHPStage.KnockedOut)
         {
+            if (!isMercenary)
+            {
+                HUD_CharState.Instance?.SetCharacterState("Pia", "Revive");
+            }
+            else
+            {
+                HUD_CharState.Instance?.SetCharacterState("Pippa", "Revive");
+            }
             currentHPStage = PlayerHPStage.Alive;
             currHP = startHP; // Revive with full health
             animator?.SetTrigger("Revive");

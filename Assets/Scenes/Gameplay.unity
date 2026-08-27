@@ -2538,6 +2538,7 @@ GameObject:
   - component: {fileID: 518848944}
   - component: {fileID: 518848945}
   - component: {fileID: 518848946}
+  - component: {fileID: 518848947}
   m_Layer: 5
   m_Name: Canvas_HUD
   m_TagString: Untagged
@@ -2689,6 +2690,20 @@ MonoBehaviour:
   Wagon: {fileID: 0}
   progressSlider: {fileID: 1865484648}
   progressPercentageText: 'Wagon Progress: '
+--- !u!114 &518848947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518848939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e8087228a1262b43b07b5a7e34ef671, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HUD_CharState
+  animatorPia: {fileID: 1702351854}
+  animatorPippa: {fileID: 1243449466}
 --- !u!1001 &585093277
 PrefabInstance:
   m_ObjectHideFlags: 0
