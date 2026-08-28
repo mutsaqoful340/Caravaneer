@@ -11,7 +11,7 @@ public enum WagonState // Two-stage wagon state: Functional and Broken
 
 public class WagonComponent : MonoBehaviour
 {
-    public static WagonComponent Instance { get; private set; }
+    public static WagonComponent Instance { get; set; }
     [Header("Wagon Settings")]
     [SerializeField] private float moveSpeed = 3f;
     [SerializeField] private int startHPFunctional = 5;
@@ -70,12 +70,23 @@ public class WagonComponent : MonoBehaviour
         UpdateHPUI();
     }
 
+    // Reapplies starting HP after Awake, so spawners can carry over upgrades bought before this wagon was instantiated.
+    public void InitializeStartingHP(int functionalStart, int brokenStart)
+    {
+        startHPFunctional = functionalStart;
+        startHPBroken = brokenStart;
+        currHPFunctional = functionalStart;
+        currHPBroken = brokenStart;
+        UpdateHPUI();
+    }
+
     private void OnDestroy()
     {
         if (Instance == this)
             Instance = null;
     }
 
+    #region Core Methods
     public void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -142,21 +153,6 @@ public class WagonComponent : MonoBehaviour
             StopCoroutine(holdRepairRoutine);
         }
         holdRepairRoutine = StartCoroutine(HoldRepairRoutine(interactor));
-    }
-
-    private IEnumerator HoldRepairRoutine(PlayerComponent interactor)
-    {
-        yield return new WaitForSeconds(repairHoldThreshold);
-
-        Debug.Log($"[WagonInteract] HoldRepairRoutine threshold reached at t={Time.time:F2}, pressingPlayer={(pressingPlayer ? pressingPlayer.gameObject.name : "null")}");
-
-        if (pressingPlayer == interactor)
-        {
-            repairTriggeredThisPress = true;
-            TryRepairFromInventory(interactor);
-        }
-
-        holdRepairRoutine = null;
     }
 
     public void EndInteraction(PlayerComponent interactor)
@@ -243,33 +239,6 @@ public class WagonComponent : MonoBehaviour
         }
 
         OnRepair(repairCost);
-    }
-
-    private bool CanOperate()
-    {
-        return currentWagonState == WagonState.Functional
-            && !isBroken
-            && currHPFunctional > 0;
-    }
-    
-    public bool NeedsRepair()
-    {
-        if (isDestroyed)
-        {
-            return false;
-        }
-
-        // Broken covers two repair phases: filling currHPBroken, then currHPFunctional.
-        return currentWagonState == WagonState.Broken
-            ? currHPBroken < startHPBroken || currHPFunctional < startHPFunctional
-            : currHPFunctional < startHPFunctional;
-    }
-
-    // True while still repairing the broken HP pool (phase 1); false during the functional repair phase (phase 2), even though currentWagonState is still Broken.
-    private bool IsRepairingBrokenHP()
-    {
-        return currentWagonState == WagonState.Broken
-            && currHPBroken < startHPBroken;
     }
 
     public void OnTakeDamage(int damage)
@@ -359,7 +328,9 @@ public class WagonComponent : MonoBehaviour
             UpdateHPUI();
         }
     }
+    #endregion
 
+    #region Helper Methods
     private void OnMechanicMount()
     {
         isMechanicMounted = true;
@@ -544,9 +515,38 @@ public class WagonComponent : MonoBehaviour
         }
     }
 
-    // Supposedly call by the destroy animation event
-    public void DestroyWagon(){Destroy(gameObject);}
+    private bool CanOperate()
+    {
+        return currentWagonState == WagonState.Functional
+            && !isBroken
+            && currHPFunctional > 0;
+    }
+    public bool NeedsRepair()
+    {
+        if (isDestroyed)
+        {
+            return false;
+        }
 
+        // Broken covers two repair phases: filling currHPBroken, then currHPFunctional.
+        return currentWagonState == WagonState.Broken
+            ? currHPBroken < startHPBroken || currHPFunctional < startHPFunctional
+            : currHPFunctional < startHPFunctional;
+    }
+
+    // True while still repairing the broken HP pool (phase 1); false during the functional repair phase (phase 2), even though currentWagonState is still Broken.
+    private bool IsRepairingBrokenHP()
+    {
+        return currentWagonState == WagonState.Broken
+            && currHPBroken < startHPBroken;
+    }
+
+    public void DestroyWagon(){Destroy(gameObject);}
+    #endregion
+
+    // Supposedly call by the destroy animation event
+    
+    #region Updates, Coroutines, and Gizmos
     private void Update()
     {
         if (!isMechanicMounted || mechanic == null || !CanOperate()) return;
@@ -560,4 +560,20 @@ public class WagonComponent : MonoBehaviour
         yield return new WaitForSeconds(IFrameDuration);
         isIFrame = false;
     }
+
+    private IEnumerator HoldRepairRoutine(PlayerComponent interactor)
+    {
+        yield return new WaitForSeconds(repairHoldThreshold);
+
+        Debug.Log($"[WagonInteract] HoldRepairRoutine threshold reached at t={Time.time:F2}, pressingPlayer={(pressingPlayer ? pressingPlayer.gameObject.name : "null")}");
+
+        if (pressingPlayer == interactor)
+        {
+            repairTriggeredThisPress = true;
+            TryRepairFromInventory(interactor);
+        }
+
+        holdRepairRoutine = null;
+    }
+    #endregion
 }

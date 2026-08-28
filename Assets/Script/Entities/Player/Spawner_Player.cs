@@ -3,20 +3,32 @@ using UnityEngine.InputSystem;
 
 public class Spawner_Player : MonoBehaviour
 {
+    public static Spawner_Player Instance { get; private set; }
     [Header("Player Settings")]
+    public int playerMercHPStart = 3; // Default/pre-buff starting HP for Mercenary player
+    public int playerMechHPStart = 3; // Default/pre-buff starting HP for Mechanic player
     [SerializeField] private GameObject playerPrefab_1;
     [SerializeField] private GameObject playerPrefab_2;
-    [SerializeField] private Transform spawnPointP1;
-    [SerializeField] private Transform spawnPointP2;
 
-    [Header("Additional References")]
-    public GameObject folder;
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
     private void Start()
     {
         // Make sure a keyboard is plugged in
         if (Keyboard.current == null) return;
+    }
 
+    public void SpawnPlayer(Transform mechanicSpawnPoint, Transform mercenarySpawnPoint, GameObject folder)
+    {
         if (folder == null)
         {
             Debug.LogWarning("Spawner_Player: 'folder' is not assigned. Players will be spawned at root level.");
@@ -33,9 +45,10 @@ public class Spawner_Player : MonoBehaviour
         if (p1Component != null)
         {
             p1Component.prevParent = folder != null ? folder : (p1.transform.parent != null ? p1.transform.parent.gameObject : p1.gameObject);
+            p1Component.InitializeStartingHP(playerMechHPStart);
         }
         if (folder != null) p1.transform.SetParent(folder.transform, true);
-        p1.transform.position = spawnPointP1.position;
+        p1.transform.position = mechanicSpawnPoint.position;
         p1.gameObject.name = "Player_Mechanic";
 
         // Instantiate Player 2 using the P2 control scheme
@@ -49,9 +62,10 @@ public class Spawner_Player : MonoBehaviour
         if (p2Component != null)
         {
             p2Component.prevParent = folder != null ? folder : (p2.transform.parent != null ? p2.transform.parent.gameObject : p2.gameObject);
+            p2Component.InitializeStartingHP(playerMercHPStart);
         }
         if (folder != null) p2.transform.SetParent(folder.transform, true);
-        p2.transform.position = spawnPointP2.position;
+        p2.transform.position = mercenarySpawnPoint.position;
         p2.gameObject.name = "Player_Mercenary";
     }
 }

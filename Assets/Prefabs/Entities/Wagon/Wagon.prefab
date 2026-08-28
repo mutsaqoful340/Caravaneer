@@ -428,6 +428,7 @@ MonoBehaviour:
   heartBrokenPrefab: {fileID: 2319628780638901486, guid: aa906bf8dd1a2894da9837033c29383c, type: 3}
   repairHoldThreshold: 0.5
   repairCost: 1
+  IFrameDuration: 0.75
   mechanic: {fileID: 0}
   slotMechanic: {fileID: 8283601357128667503}
   isMechanicMounted: 0
@@ -438,6 +439,7 @@ MonoBehaviour:
   currHPFunctional: 5
   isBroken: 0
   isDestroyed: 0
+  isIFrame: 0
   mechanicCC: {fileID: 0}
   mechanicRB: {fileID: 0}
   mercenaryCC: {fileID: 0}

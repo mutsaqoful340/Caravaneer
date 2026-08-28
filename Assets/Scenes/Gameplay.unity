@@ -269,8 +269,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1930177794}
   - {fileID: 1890533084}
+  - {fileID: 1930177794}
   m_Father: {fileID: 1298441129}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &20736307
@@ -772,8 +772,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2f8dd905dce8434ea067a8f4dcec1c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Item
+  itemType: 0
   parentCanvas: {fileID: 462540118}
   itemData: {fileID: 11400000, guid: db7202ecd6e810e46a02af007eeec453, type: 2}
+  itemModifierValue: 0
   confirmPanel: {fileID: 1775964481}
 --- !u!1 &66271356
 GameObject:
@@ -3207,75 +3209,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -7147341944787386517, guid: d36381d6685a18544b33938e3f97b306, type: 3}
---- !u!1001 &598344223
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1093936899}
-    m_Modifications:
-    - target: {fileID: 1685490767955513281, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-      propertyPath: IFrameDuration
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 7378532109480050907, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 123944340}
-    - target: {fileID: 8101428499223464733, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8101428499223464733, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8101428499223464733, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 1.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 8101428499223464733, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8101428499223464733, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8101428499223464733, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8101428499223464733, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8101428499223464733, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8101428499223464733, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8101428499223464733, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8894524907553929642, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-      propertyPath: m_Name
-      value: Wagon
-      objectReference: {fileID: 0}
-    - target: {fileID: 8894524907553929642, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
 --- !u!1 &601882692
 GameObject:
   m_ObjectHideFlags: 0
@@ -3865,11 +3798,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 711379950}
   m_CullTransparentMesh: 1
---- !u!1 &711577226 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8894524907553929642, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-  m_PrefabInstance: {fileID: 598344223}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &763967559
 GameObject:
   m_ObjectHideFlags: 0
@@ -4809,8 +4737,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2f8dd905dce8434ea067a8f4dcec1c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Item
+  itemType: 0
   parentCanvas: {fileID: 462540118}
   itemData: {fileID: 11400000, guid: db7202ecd6e810e46a02af007eeec453, type: 2}
+  itemModifierValue: 0
   confirmPanel: {fileID: 1775964481}
 --- !u!1 &916323465
 GameObject:
@@ -4962,11 +4892,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919468934}
   m_CullTransparentMesh: 1
---- !u!4 &924395740 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8101428499223464733, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
-  m_PrefabInstance: {fileID: 598344223}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &961484479
 GameObject:
   m_ObjectHideFlags: 0
@@ -5428,6 +5353,37 @@ MonoBehaviour:
   m_Spacing: {x: -32.9, y: -94.44}
   m_Constraint: 2
   m_ConstraintCount: 2
+--- !u!1 &1015317459
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1015317460}
+  m_Layer: 0
+  m_Name: Spawn_Wagon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1015317460
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1015317459}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1.7}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1930177794}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1051735593
 GameObject:
   m_ObjectHideFlags: 0
@@ -6074,8 +6030,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 924395740}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1097895926
@@ -7560,8 +7515,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2f8dd905dce8434ea067a8f4dcec1c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Item
+  itemType: 0
   parentCanvas: {fileID: 462540118}
   itemData: {fileID: 11400000, guid: db7202ecd6e810e46a02af007eeec453, type: 2}
+  itemModifierValue: 0
   confirmPanel: {fileID: 1775964481}
 --- !u!1 &1379616854
 GameObject:
@@ -7855,7 +7812,7 @@ MonoBehaviour:
   shakeFrequency: 25
   shakeAxisMultiplier: {x: 1.5, y: 0.5, z: 0}
   targets:
-  - {fileID: 711577226}
+  - {fileID: 0}
 --- !u!1 &1396405072
 GameObject:
   m_ObjectHideFlags: 0
@@ -8582,6 +8539,8 @@ Transform:
   - {fileID: 986227927}
   - {fileID: 1097895927}
   - {fileID: 91710095}
+  - {fileID: 1593524911}
+  - {fileID: 2048086684}
   - {fileID: 1775964476}
   - {fileID: 816550863}
   m_Father: {fileID: 0}
@@ -8598,6 +8557,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f881322f5ae86d48b7966f8d6e8fcb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::System_PersistenceManager
+--- !u!1 &1593524910
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1593524911}
+  - component: {fileID: 1593524912}
+  m_Layer: 0
+  m_Name: Spawner_Wagon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1593524911
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1593524910}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1570477492}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1593524912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1593524910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a530688b8b047c046a1e1a5b6dcf6763, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Spawner_Wagon
+  wagonHPFunctionalStart: 5
+  wagonHPBrokenStart: 6
+  wagonPrefab: {fileID: 8894524907553929642, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
 --- !u!1 &1648170975
 GameObject:
   m_ObjectHideFlags: 0
@@ -9448,8 +9454,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2f8dd905dce8434ea067a8f4dcec1c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Item
+  itemType: 0
   parentCanvas: {fileID: 462540118}
   itemData: {fileID: 11400000, guid: db7202ecd6e810e46a02af007eeec453, type: 2}
+  itemModifierValue: 0
   confirmPanel: {fileID: 1775964481}
 --- !u!1 &1733335710
 GameObject:
@@ -9825,7 +9833,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1890533083}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -10040,31 +10048,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1930177794}
-  - component: {fileID: 1930177793}
+  - component: {fileID: 1930177795}
   m_Layer: 0
-  m_Name: Spawner_Player
+  m_Name: Spawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1930177793
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1930177792}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 477209ae0c6845140a0134c8e4a1c4dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerPrefab_1: {fileID: 378271028069150149, guid: 4f20f32838080844b9d0da70d0413a1f, type: 3}
-  playerPrefab_2: {fileID: 577214779032996936, guid: 901ee2a5262da894b9b9e88cc9003a45, type: 3}
-  spawnPointP1: {fileID: 1668769061}
-  spawnPointP2: {fileID: 67021926}
-  folder: {fileID: 1093936898}
 --- !u!4 &1930177794
 Transform:
   m_ObjectHideFlags: 0
@@ -10080,8 +10071,25 @@ Transform:
   m_Children:
   - {fileID: 1668769061}
   - {fileID: 67021926}
+  - {fileID: 1015317460}
   m_Father: {fileID: 3958614}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1930177795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930177792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ea7c5d5af8fde4b9fa1b9297ba12c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Spawner_TriggerLocalEntities
+  spawnPoint_Mechanics: {fileID: 1668769061}
+  spawnPoint_Mercenary: {fileID: 67021926}
+  spawnPoint_Wagon: {fileID: 1015317460}
+  folder: {fileID: 1093936898}
 --- !u!1 &1941124462
 GameObject:
   m_ObjectHideFlags: 0
@@ -10536,8 +10544,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2f8dd905dce8434ea067a8f4dcec1c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Item
+  itemType: 0
   parentCanvas: {fileID: 462540118}
   itemData: {fileID: 11400000, guid: db7202ecd6e810e46a02af007eeec453, type: 2}
+  itemModifierValue: 0
   confirmPanel: {fileID: 1775964481}
 --- !u!1 &2008075112
 GameObject:
@@ -10978,9 +10988,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2f8dd905dce8434ea067a8f4dcec1c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Item
+  itemType: 0
   parentCanvas: {fileID: 462540118}
   itemData: {fileID: 11400000, guid: db7202ecd6e810e46a02af007eeec453, type: 2}
+  itemModifierValue: 0
   confirmPanel: {fileID: 1775964481}
+--- !u!1 &2048086683
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2048086684}
+  - component: {fileID: 2048086685}
+  m_Layer: 0
+  m_Name: Spawner_Player
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2048086684
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2048086683}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1570477492}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2048086685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2048086683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 477209ae0c6845140a0134c8e4a1c4dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Spawner_Player
+  playerMercHPStart: 3
+  playerMechHPStart: 1
+  playerPrefab_1: {fileID: 378271028069150149, guid: 4f20f32838080844b9d0da70d0413a1f, type: 3}
+  playerPrefab_2: {fileID: 577214779032996936, guid: 901ee2a5262da894b9b9e88cc9003a45, type: 3}
 --- !u!1 &2054243174
 GameObject:
   m_ObjectHideFlags: 0
@@ -11126,8 +11186,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2f8dd905dce8434ea067a8f4dcec1c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Item
+  itemType: 0
   parentCanvas: {fileID: 462540118}
   itemData: {fileID: 11400000, guid: db7202ecd6e810e46a02af007eeec453, type: 2}
+  itemModifierValue: 0
   confirmPanel: {fileID: 1775964481}
 --- !u!1 &2057614645
 GameObject:
@@ -11349,8 +11411,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2f8dd905dce8434ea067a8f4dcec1c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Item
+  itemType: 0
   parentCanvas: {fileID: 462540118}
   itemData: {fileID: 11400000, guid: db7202ecd6e810e46a02af007eeec453, type: 2}
+  itemModifierValue: 0
   confirmPanel: {fileID: 1775964481}
 --- !u!1 &2128616658
 GameObject:

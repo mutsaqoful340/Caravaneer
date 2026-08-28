@@ -109,6 +109,14 @@ public class PlayerComponent : MonoBehaviour
         // OnUpdateHealthUI();
     }
 
+    // Reapplies starting HP after Start, so spawners can carry over upgrades bought before this player was instantiated.
+    public void InitializeStartingHP(int hpStart)
+    {
+        startHP = hpStart;
+        currHP = hpStart;
+        OnUpdateHealthUI();
+    }
+
     #region Input Callbacks
     public void OnMove(InputValue value)
     {
