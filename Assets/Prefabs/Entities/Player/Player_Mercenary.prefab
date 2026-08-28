@@ -58,7 +58,7 @@ MonoBehaviour:
   currHP: 3
   startHP: 3
   searchRange: 5
-  searchAngle: 180
+  searchAngle: 220
   trackedEnemyRangeBuffer: 0.5
   trackedEnemyAngleBuffer: 10
   knockOutDuration: 10

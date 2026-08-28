@@ -8,6 +8,7 @@ public class VNCharacterDialogue
 {
     public PopupData characterData;
     public string dialogueText;
+    public Sprite backgroundImage;
     public VNDisplayMode displayMode = VNDisplayMode.LeftSide;
     public float dialogueDelay = 0.5f; // Delay before the dialogue is displayed
     public float dialogueDuration = 2f; // Duration for which the dialogue is displayed
@@ -23,6 +24,7 @@ public class VNDialogueSystem : MonoBehaviour
 {
     public static VNDialogueSystem Instance { get; set; }
     
+    public Image imageBackground;
     public VNCharacterDialogue[] characterDatas;
     public bool isDialogueActive = false;
     public bool showDialogue = false;
@@ -52,6 +54,7 @@ public class VNDialogueSystem : MonoBehaviour
         if (rightPanel != null) rightPanel.gameObject.SetActive(false);
         if (leftPanelAnimator == null) leftPanelAnimator = leftPanel.GetComponent<Animator>();
         if (rightPanelAnimator == null) rightPanelAnimator = rightPanel.GetComponent<Animator>();
+        if (imageBackground != null) imageBackground.gameObject.SetActive(false);
     }
 
     public void OnPlayDialogue()
@@ -92,6 +95,12 @@ public class VNDialogueSystem : MonoBehaviour
                yield return new WaitForSeconds(characterData.dialogueDelay);
 
             bool isSamePanelAsLast = lastMode.HasValue && lastMode.Value == characterData.displayMode;
+
+            if (imageBackground != null && characterData.backgroundImage != null)
+            {
+                imageBackground.sprite = characterData.backgroundImage;
+                imageBackground.gameObject.SetActive(true);
+            }
 
             if (characterData.displayMode == VNDisplayMode.LeftSide)
             {
@@ -217,5 +226,7 @@ public class VNDialogueSystem : MonoBehaviour
             rightPanelAnimator.SetTrigger("Disable");
             isRightSide = false;
         }
+
+        imageBackground.gameObject.SetActive(false);
     }
 }
