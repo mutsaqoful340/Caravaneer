@@ -3,6 +3,7 @@ using UnityEngine;
 public class EnemyWeapon : MonoBehaviour
 {
     public EnemyComponent enemyParent;
+    public float rotationSpeed = 5f;
 
     private void Start()
     {
@@ -19,7 +20,7 @@ public class EnemyWeapon : MonoBehaviour
             // Rotate the weapon to face the target
             Vector3 directionToTarget = enemyParent.Target.transform.position - transform.position;
             Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
     }
 }

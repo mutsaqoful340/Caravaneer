@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerWeapon : MonoBehaviour
 {
     public PlayerComponent playerParent;
+    public float rotationSpeed = 5f;
 
     private void Start()
     {
@@ -22,7 +23,7 @@ public class PlayerWeapon : MonoBehaviour
             if (directionToTarget.sqrMagnitude > Mathf.Epsilon)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
             }
         }
     }

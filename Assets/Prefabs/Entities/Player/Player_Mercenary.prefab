@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1123524082231443749}
-  - component: {fileID: 2842060812652802986}
   - component: {fileID: 7162835061967961193}
   - component: {fileID: 8265349434864361819}
   - component: {fileID: -4162745935322825893}
   - component: {fileID: 5806241106843553541}
   - component: {fileID: 3236051585260709733}
+  - component: {fileID: 2842060812652802986}
   m_Layer: 6
   m_Name: Player_Mercenary
   m_TagString: Player
@@ -40,52 +40,6 @@ Transform:
   - {fileID: 6832842549501404497}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2842060812652802986
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 577214779032996936}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43214a41ce8ad554fad6231214b746ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHPStage: 0
-  isMercenary: 1
-  moveSpeed: 5
-  currHP: 3
-  startHP: 3
-  searchRange: 5
-  searchAngle: 220
-  trackedEnemyRangeBuffer: 0.5
-  trackedEnemyAngleBuffer: 10
-  knockOutDuration: 10
-  IFrameDuration: 0.75
-  facingInputDeadZone: 0.1
-  groundY: 0
-  gravity: -18
-  attackCooldown: 0.5
-  attackSequenceResetCooldown: 1
-  prevParent: {fileID: 0}
-  playerVisual: {fileID: 3327126757420799728}
-  animator: {fileID: 404834296781241136}
-  sword: {fileID: 1854454949622145575}
-  playerWeaponAnimator: {fileID: 8852493938274208277}
-  playerStatUI: {fileID: 4168679309859297073}
-  heartPrefab: {fileID: 2319628780638901486, guid: 99ae8cea45e07124994d4fd03e802439, type: 3}
-  playerInputComp: {fileID: 7162835061967961193}
-  inventory: {fileID: 0}
-  reviveManager: {fileID: 0}
-  reviveManagerPrefab: {fileID: 4650216304066145115, guid: b6202b4693e194348b5c9c45a9c24d3b, type: 3}
-  wagonInteractObject: {fileID: 0}
-  interactObject: {fileID: 0}
-  isAttacking: 0
-  isIFrame: 0
-  isMounted: 0
-  isMoveOpposDir: 0
-  currentEnemy: {fileID: 0}
 --- !u!114 &7162835061967961193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,6 +169,52 @@ MonoBehaviour:
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
   m_ScrollDeltaPerTick: 6
+--- !u!114 &2842060812652802986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577214779032996936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43214a41ce8ad554fad6231214b746ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHPStage: 0
+  isMercenary: 1
+  moveSpeed: 5
+  currHP: 3
+  startHP: 3
+  searchRange: 5
+  searchAngle: 220
+  trackedEnemyRangeBuffer: 0.5
+  trackedEnemyAngleBuffer: 10
+  knockOutDuration: 10
+  IFrameDuration: 0.75
+  facingInputDeadZone: 0.1
+  groundY: 0
+  gravity: -18
+  attackCooldown: 0.5
+  attackSequenceResetCooldown: 1
+  prevParent: {fileID: 0}
+  playerVisual: {fileID: 3327126757420799728}
+  animator: {fileID: 404834296781241136}
+  sword: {fileID: 1854454949622145575}
+  playerWeaponAnimator: {fileID: 8852493938274208277}
+  playerStatUI: {fileID: 4168679309859297073}
+  heartPrefab: {fileID: 6152395959410735661, guid: 99ae8cea45e07124994d4fd03e802439, type: 3}
+  playerInputComp: {fileID: 7162835061967961193}
+  inventory: {fileID: 0}
+  reviveManager: {fileID: 0}
+  reviveManagerPrefab: {fileID: 4650216304066145115, guid: b6202b4693e194348b5c9c45a9c24d3b, type: 3}
+  wagonInteractObject: {fileID: 0}
+  interactObject: {fileID: 0}
+  isAttacking: 0
+  isIFrame: 0
+  isMounted: 0
+  isMoveOpposDir: 0
+  currentEnemy: {fileID: 0}
 --- !u!1 &3327126757420799728
 GameObject:
   m_ObjectHideFlags: 0
@@ -468,6 +468,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWeapon
   playerParent: {fileID: 2842060812652802986}
+  rotationSpeed: 5
 --- !u!95 &8852493938274208277
 Animator:
   serializedVersion: 7

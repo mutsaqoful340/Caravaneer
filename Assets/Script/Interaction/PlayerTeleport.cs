@@ -391,7 +391,7 @@ public class PlayerTeleport : MonoBehaviour
             Gizmos.color = Color.cyan;
             Gizmos.DrawLine(sourceLineStart.position, sourceLineEnd.position);
             Gizmos.DrawSphere(sourceLineStart.position, 0.1f);
-            Gizmos.DrawSphere(sourceLineEnd.position, 0.1f);
+            Gizmos.DrawSphere(sourceLineEnd.position, 0.1f); 
         }
 
         if (destinationLineStart != null && destinationLineEnd != null)

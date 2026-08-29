@@ -59,6 +59,8 @@ public class PlayerComponent : MonoBehaviour
     [Header("Debug")]
     [Tooltip("DO NOT ASSIGN THIS MANUALLY. Reference to the wagon currently in range, if any.")]
     [SerializeField] private WagonComponent wagonInteractObject;
+    [Tooltip("DO NOT ASSIGN THIS MANUALLY. Reference to the interactable object currently in range, if any.")]
+    [SerializeField] private EnemyComponent currentEnemy;
     [Tooltip("DO NOT ASSIGN THIS MANUALLY. This is a reference to the current enemy the player is interacting.")]
     [SerializeField] private Universal_Interact interactObject;
     // Locks the release event to whichever target actually received the press, so a target change mid-hold can't hijack the release.
@@ -69,7 +71,7 @@ public class PlayerComponent : MonoBehaviour
     public bool isIFrame = false;
     public bool isMounted = false;
     [SerializeField] private bool isMoveOpposDir = false;
-    [SerializeField] private EnemyComponent currentEnemy;
+    public bool isRepairing = false;
 
 
     private Vector2 moveInput;
@@ -114,7 +116,7 @@ public class PlayerComponent : MonoBehaviour
     {
         startHP = hpStart;
         currHP = hpStart;
-        OnUpdateHealthUI();
+        RebuildHealthUI();
     }
 
     #region Input Callbacks
@@ -344,10 +346,11 @@ public class PlayerComponent : MonoBehaviour
 
         StartCoroutine(IFrameCoroutine());
         CameraConstraint.Instance?.CameraShake();
+        int previousHP = currHP;
         currHP -= damage;
         AddVerticalImpulse(1.5f);
         Debug.Log($"{gameObject.name} took {damage} damage! Remaining HP: {currHP}");
-        OnUpdateHealthUI();
+        AnimateLostHearts(previousHP - Mathf.Max(0, currHP));
 
         if (currHP <= 0)
         {
@@ -405,7 +408,7 @@ public class PlayerComponent : MonoBehaviour
             currentHPStage = PlayerHPStage.Alive;
             currHP = startHP; // Revive with full health
             animator?.SetTrigger("Revive");
-            OnUpdateHealthUI();
+            RebuildHealthUI();
             Debug.Log($"{gameObject.name} has been revived!");
         }
     }
@@ -428,7 +431,26 @@ public class PlayerComponent : MonoBehaviour
         }
     }
 
-    private void OnUpdateHealthUI()
+    private void AnimateLostHearts(int lostHealth)
+    {
+        if (playerStatUI == null || heartPrefab == null)
+        {
+            Debug.LogWarning($"{gameObject.name} is missing playerStatUI or heartPrefab reference.");
+            return;
+        }
+
+        Transform uiRoot = playerStatUI.transform;
+        int heartsToAnimate = Mathf.Min(lostHealth, uiRoot.childCount);
+
+        for (int i = 0; i < heartsToAnimate; i++)
+        {
+            uiRoot.GetChild(uiRoot.childCount - 1 - i).GetComponent<Heart>()?.PlayDepleteAnimation();
+        }
+
+        Debug.Log($"{gameObject.name} has {currHP} HP remaining.");
+    }
+
+    private void RebuildHealthUI()
     {
         if (playerStatUI == null || heartPrefab == null)
         {

@@ -22,6 +22,11 @@ public class WagonProgress : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (Wagon == null)
+        {
+            Wagon = WagonComponent.Instance?.transform; // Attempt to get the wagon transform if it's null
+        }
+        
         if (pointStart == null || pointEnd == null || Wagon == null || progressSlider == null)
         {
             Debug.LogWarning("WagonProgress: One or more references are not assigned.");
