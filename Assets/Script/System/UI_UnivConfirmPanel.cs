@@ -18,6 +18,7 @@ public class UI_UnivConfirmPanel : MonoBehaviour
     [SerializeField] private TMP_Text messageText;
     [SerializeField] private Button confirmButton;
     [SerializeField] private Button cancelButton;
+    [SerializeField] private GameObject panel;
 
     private Action onConfirm;
     private Action onCancel;

@@ -12,11 +12,10 @@ public class Item_Wagon : MonoBehaviour
     public CanvasGroup parentCanvas;
     public ItemData itemData;
     public int itemModifierValue; // This can be used to modify the item's effect, e.g., amount of HP restored
-    public UI_UnivConfirmPanel confirmPanel;
 
     public void OnClickItem()
     {
-        confirmPanel.OnShow(
+        UI_UnivConfirmPanel.Instance.OnShow(
             "Use Item",
             $"Are you sure you want to use {itemData.itemName}?",
             () => UseItem(),

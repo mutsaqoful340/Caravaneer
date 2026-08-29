@@ -19,19 +19,10 @@ public class Manager_UI : MonoBehaviour
     public PanelReference[] panels;
 
     private GameObject currentActivePanel;
-
+    
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
+        Instance = this;
     }
 
     // Show a specific panel by name.

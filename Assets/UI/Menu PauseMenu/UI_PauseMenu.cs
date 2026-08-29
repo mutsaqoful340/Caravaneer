@@ -10,6 +10,8 @@ public class UI_PauseMenu : MonoBehaviour
 
     public void OnReturnToMainMenuButtonPressed()
     {
+        Manager_Game.Instance.SetState(GameState.Gameplay);
+        Manager_UI.Instance.OnCloseAllPanels();
         Debug.Log("Returning to Main Menu...");
         SceneLoader.Instance.LoadScene("MainMenu");
     }

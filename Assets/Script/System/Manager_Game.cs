@@ -17,7 +17,6 @@ public enum GameScene
 public class Manager_Game : MonoBehaviour
 {
     public static Manager_Game Instance { get; private set; }
-    public Manager_Input inputManager;
     [Tooltip("Manages player input modes.")]
     public GameState currentGameState = GameState.Gameplay;
     [Tooltip("Manages the current game scene.")]
@@ -56,13 +55,19 @@ public class Manager_Game : MonoBehaviour
 
     private void OnGameStateChanged(GameState newState)
     {
+        if (Manager_Input.Instance == null)
+        {
+            Debug.LogWarning("Manager_Input.Instance is null; cannot switch input mode.");
+            return;
+        }
+
         switch (newState)
         {
             case GameState.UI:
-                inputManager.SwitchMode(GameState.UI);
+                Manager_Input.Instance.SwitchMode(GameState.UI);
                 break;
             case GameState.Gameplay:
-                inputManager.SwitchMode(GameState.Gameplay);
+                Manager_Input.Instance.SwitchMode(GameState.Gameplay);
                 break;
         }
     }

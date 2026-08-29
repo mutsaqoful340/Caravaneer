@@ -30,26 +30,9 @@ public class CameraConstraint : MonoBehaviour
     private Vector3 shakeOffset;
     private Coroutine shakeCoroutine;
 
-    [Header("Player References")]
-    [SerializeField] private GameObject[] targets;
+    [Header("Wagon Reference")]
+    [SerializeField] private GameObject target;
 
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-    }
-
-    private void OnDestroy()
-    {
-        if (Instance == this)
-        {
-            Instance = null;
-        }
-    }
 
     public void Start()
     {
@@ -68,38 +51,23 @@ public class CameraConstraint : MonoBehaviour
         Transform targetTransform = mainCamera != null ? mainCamera.transform : transform;
         Vector3 currentPosition = targetTransform.position - shakeOffset;
 
-        if (!isMainMenu && targets != null && targets.Length > 0)
+        if (!isMainMenu && target != null)
         {
-            Vector3 targetCenter = Vector3.zero;
-            int validTargetCount = 0;
-
-            foreach (GameObject target in targets)
+            Vector3 targetPosition = target.transform.position + cameraOffset;
+            if (isFreeezeZ)
             {
-                if (target == null) continue;
-
-                targetCenter += target.transform.position;
-                validTargetCount++;
+                targetPosition.z = startingZ;
             }
 
-            if (validTargetCount > 0)
-            {
-                Vector3 midpoint = targetCenter / validTargetCount;
-                Vector3 targetPosition = midpoint + cameraOffset;
-                if (isFreeezeZ)
-                {
-                    targetPosition.z = startingZ;
-                }
+            float smoothX = Mathf.Max(0.0001f, cameraDamping.x);
+            float smoothY = Mathf.Max(0.0001f, cameraDamping.y);
+            float smoothZ = Mathf.Max(0.0001f, cameraDamping.z);
 
-                float smoothX = Mathf.Max(0.0001f, cameraDamping.x);
-                float smoothY = Mathf.Max(0.0001f, cameraDamping.y);
-                float smoothZ = Mathf.Max(0.0001f, cameraDamping.z);
-
-                currentPosition = new Vector3(
-                    Mathf.SmoothDamp(currentPosition.x, targetPosition.x, ref velocityX, smoothX),
-                    Mathf.SmoothDamp(currentPosition.y, targetPosition.y, ref velocityY, smoothY),
-                    Mathf.SmoothDamp(currentPosition.z, targetPosition.z, ref velocityZ, smoothZ)
-                );
-            }
+            currentPosition = new Vector3(
+                Mathf.SmoothDamp(currentPosition.x, targetPosition.x, ref velocityX, smoothX),
+                Mathf.SmoothDamp(currentPosition.y, targetPosition.y, ref velocityY, smoothY),
+                Mathf.SmoothDamp(currentPosition.z, targetPosition.z, ref velocityZ, smoothZ)
+            );
         }
 
         targetTransform.position = currentPosition + shakeOffset;
@@ -112,6 +80,10 @@ public class CameraConstraint : MonoBehaviour
                 targetFOV,
                 ref fovVelocity,
                 fovSmoothTime);
+        }
+
+        if (!target){
+            target = WagonComponent.Instance?.gameObject;
         }
     }
 
