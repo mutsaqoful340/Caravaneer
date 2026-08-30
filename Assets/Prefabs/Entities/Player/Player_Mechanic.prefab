@@ -229,12 +229,13 @@ MonoBehaviour:
   reviveManager: {fileID: 0}
   reviveManagerPrefab: {fileID: 4650216304066145115, guid: b6202b4693e194348b5c9c45a9c24d3b, type: 3}
   wagonInteractObject: {fileID: 0}
+  currentEnemy: {fileID: 0}
   interactObject: {fileID: 0}
   isAttacking: 0
   isIFrame: 0
   isMounted: 0
   isMoveOpposDir: 0
-  currentEnemy: {fileID: 0}
+  isRepairing: 0
 --- !u!114 &5680246285842591190
 MonoBehaviour:
   m_ObjectHideFlags: 0

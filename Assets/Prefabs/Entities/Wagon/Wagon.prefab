@@ -426,7 +426,7 @@ MonoBehaviour:
   wagonHPCanvas: {fileID: 7378532109480050907}
   heartFunctionalPrefab: {fileID: 6152395959410735661, guid: ae4f8e42bf7665c4889f0109e5583d29, type: 3}
   heartBrokenPrefab: {fileID: 6152395959410735661, guid: 7d0e2ca66e7c14c47ac5bd8e75cb2ead, type: 3}
-  repairHoldThreshold: 0.5
+  repairHoldThreshold: 2
   repairCost: 1
   IFrameDuration: 0.75
   mechanic: {fileID: 0}

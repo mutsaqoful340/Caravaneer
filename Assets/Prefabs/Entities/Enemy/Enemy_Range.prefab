@@ -78,6 +78,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   enemyParent: {fileID: 2747884494428855356}
+  rotationSpeed: 5
 --- !u!95 &4781100669841265505
 Animator:
   serializedVersion: 7
@@ -252,8 +253,8 @@ MonoBehaviour:
   knockbackForce: 10
   knockbackUpwardForce: 3
   knockbackDuration: 0.2
-  attackCooldown: 1
-  attackRange: 10
+  attackCooldown: 2
+  attackRange: 6
   animator: {fileID: 3167588916961159080}
   rb: {fileID: 5027559247834516238}
   enemyVisual: {fileID: 9059877048891822878}

@@ -33,6 +33,23 @@ public class CameraConstraint : MonoBehaviour
     [Header("Wagon Reference")]
     [SerializeField] private GameObject target;
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 
     public void Start()
     {
@@ -90,6 +107,7 @@ public class CameraConstraint : MonoBehaviour
     public void CameraShake()
     {
         CameraShake(shakeDuration, shakeMagnitude);
+        Debug.Log($"Camera shake triggered with duration: {shakeDuration} and magnitude: {shakeMagnitude}");
     }
 
     public void CameraShake(float duration, float magnitude)

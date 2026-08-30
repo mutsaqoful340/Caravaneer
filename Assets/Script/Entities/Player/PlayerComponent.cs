@@ -11,7 +11,7 @@ public enum PlayerHPStage
 [RequireComponent(typeof(PlayerInput), typeof(CharacterController))]
 public class PlayerComponent : MonoBehaviour
 {
-    private static readonly string[] AttackTriggers = { "Attack1", "Attack2", "Attack3" };
+    private static readonly string[] AttackTriggers = { "Attack1", "Attack2" };
 
     [Header("Player Settings")]
     public PlayerHPStage currentHPStage = PlayerHPStage.Alive;
@@ -500,6 +500,7 @@ public class PlayerComponent : MonoBehaviour
 
         string triggerName = AttackTriggers[currentAttackIndex];
         playerWeaponAnimator.SetTrigger(triggerName);
+        animator.SetTrigger(triggerName);
 
         currentAttackIndex = (currentAttackIndex + 1) % AttackTriggers.Length;
         lastAttackTime = Time.time;
