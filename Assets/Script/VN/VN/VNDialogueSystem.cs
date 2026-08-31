@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 [System.Serializable]
 public class VNCharacterDialogue
@@ -23,11 +24,11 @@ public enum VNDisplayMode
 public class VNDialogueSystem : MonoBehaviour
 {
     public static VNDialogueSystem Instance { get; set; }
-    
-    public Image imageBackground;
     public VNCharacterDialogue[] characterDatas;
+    public Image imageBackground;
     public bool isDialogueActive = false;
     public bool showDialogue = false;
+    public GameObject skipButton;
 
     // Serves as reference to the current character data being displayed
     [Header("Left Side Panel Settings")]
@@ -55,6 +56,7 @@ public class VNDialogueSystem : MonoBehaviour
         if (leftPanelAnimator == null) leftPanelAnimator = leftPanel.GetComponent<Animator>();
         if (rightPanelAnimator == null) rightPanelAnimator = rightPanel.GetComponent<Animator>();
         if (imageBackground != null) imageBackground.gameObject.SetActive(false);
+        if (skipButton != null) Manager_UI.Instance.SelectFirstButtonInPanel(skipButton);
     }
 
     public void OnPlayDialogue()
@@ -228,5 +230,25 @@ public class VNDialogueSystem : MonoBehaviour
         }
 
         imageBackground.gameObject.SetActive(false);
+        SceneLoader.Instance.LoadScene("Gameplay");
+    }
+
+    public void OnSkipDialogue()
+    {
+        UI_UnivConfirmPanel.Instance.OnShow(
+            "Skip Dialogue",
+            "Are you sure you want to skip the dialogue?",
+            () => OnConfirmSkipDialogue(),
+            () => Debug.Log("Dialogue skip canceled."),
+            null
+        );
+    }
+    public void OnConfirmSkipDialogue()
+    {
+        StopAllCoroutines();
+        OnPanelHide_All();
+        isDialogueActive = false;
+        showDialogue = false;
+        Debug.Log("Dialogue skipped!");
     }
 }

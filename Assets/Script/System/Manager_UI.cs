@@ -111,7 +111,7 @@ public class Manager_UI : MonoBehaviour
 
     // === Specific Panel Methods ===
 
-    private void SelectFirstButtonInPanel(GameObject panel)
+    public void SelectFirstButtonInPanel(GameObject panel)
     {
         if (panel == null)
         {

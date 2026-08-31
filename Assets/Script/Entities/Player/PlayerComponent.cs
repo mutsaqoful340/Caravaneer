@@ -245,6 +245,12 @@ public class PlayerComponent : MonoBehaviour
             // Handle UI submit logic here
             Debug.Log($"{gameObject.name} submitted UI action.");
         }
+
+        if (VNDialogueSystem.Instance != null && VNDialogueSystem.Instance.isDialogueActive && value.isPressed)
+        {
+            VNDialogueSystem.Instance.OnSkipDialogue();
+            Debug.Log($"{gameObject.name} skipped dialogue.");
+        }
     }
 
     public void OnUICancel(InputValue value)
@@ -258,7 +264,8 @@ public class PlayerComponent : MonoBehaviour
 
     public void OnUIPause(InputValue value)
     {
-        if (Manager_Game.Instance.currentGameState == GameState.UI && value.isPressed)
+        if (Manager_Game.Instance.currentGameScene == GameScene.Gameplay && 
+        Manager_Game.Instance.currentGameState == GameState.UI && value.isPressed)
         {
             Manager_Game.Instance.SetState(GameState.Gameplay);
             Manager_UI.Instance.OnCloseAllPanels();
