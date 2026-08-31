@@ -496,11 +496,50 @@ public partial class @Player_Input: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""a5a0d1c2-cfae-4017-975f-000517baaa50"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Keyboard>/enter"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""UISkip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""VN"",
+            ""id"": ""d70c1432-93f0-4d43-9c2e-2ee3c0f89a8d"",
+            ""actions"": [
+                {
+                    ""name"": ""SkipDialogue"",
+                    ""type"": ""Button"",
+                    ""id"": ""c2159042-f15e-402e-b1cf-ad70808cb9a6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""12c08921-f77d-4922-be51-f4a17820071c"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SkipDialogue"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""54be49dc-3e09-4657-b9be-2a54953c4deb"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SkipDialogue"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -544,12 +583,16 @@ public partial class @Player_Input: IInputActionCollection2, IDisposable
         m_UI_UICancel = m_UI.FindAction("UICancel", throwIfNotFound: true);
         m_UI_UIPause = m_UI.FindAction("UIPause", throwIfNotFound: true);
         m_UI_UISkip = m_UI.FindAction("UISkip", throwIfNotFound: true);
+        // VN
+        m_VN = asset.FindActionMap("VN", throwIfNotFound: true);
+        m_VN_SkipDialogue = m_VN.FindAction("SkipDialogue", throwIfNotFound: true);
     }
 
     ~@Player_Input()
     {
         UnityEngine.Debug.Assert(!m_Gameplay.enabled, "This will cause a leak and performance issues, Player_Input.Gameplay.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, Player_Input.UI.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_VN.enabled, "This will cause a leak and performance issues, Player_Input.VN.Disable() has not been called.");
     }
 
     /// <summary>
@@ -879,6 +922,102 @@ public partial class @Player_Input: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="UIActions" /> instance referencing this action map.
     /// </summary>
     public UIActions @UI => new UIActions(this);
+
+    // VN
+    private readonly InputActionMap m_VN;
+    private List<IVNActions> m_VNActionsCallbackInterfaces = new List<IVNActions>();
+    private readonly InputAction m_VN_SkipDialogue;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "VN".
+    /// </summary>
+    public struct VNActions
+    {
+        private @Player_Input m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public VNActions(@Player_Input wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "VN/SkipDialogue".
+        /// </summary>
+        public InputAction @SkipDialogue => m_Wrapper.m_VN_SkipDialogue;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_VN; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="VNActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(VNActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="VNActions" />
+        public void AddCallbacks(IVNActions instance)
+        {
+            if (instance == null || m_Wrapper.m_VNActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_VNActionsCallbackInterfaces.Add(instance);
+            @SkipDialogue.started += instance.OnSkipDialogue;
+            @SkipDialogue.performed += instance.OnSkipDialogue;
+            @SkipDialogue.canceled += instance.OnSkipDialogue;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="VNActions" />
+        private void UnregisterCallbacks(IVNActions instance)
+        {
+            @SkipDialogue.started -= instance.OnSkipDialogue;
+            @SkipDialogue.performed -= instance.OnSkipDialogue;
+            @SkipDialogue.canceled -= instance.OnSkipDialogue;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="VNActions.UnregisterCallbacks(IVNActions)" />.
+        /// </summary>
+        /// <seealso cref="VNActions.UnregisterCallbacks(IVNActions)" />
+        public void RemoveCallbacks(IVNActions instance)
+        {
+            if (m_Wrapper.m_VNActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="VNActions.AddCallbacks(IVNActions)" />
+        /// <seealso cref="VNActions.RemoveCallbacks(IVNActions)" />
+        /// <seealso cref="VNActions.UnregisterCallbacks(IVNActions)" />
+        public void SetCallbacks(IVNActions instance)
+        {
+            foreach (var item in m_Wrapper.m_VNActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_VNActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="VNActions" /> instance referencing this action map.
+    /// </summary>
+    public VNActions @VN => new VNActions(this);
     private int m_P1SchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -976,5 +1115,20 @@ public partial class @Player_Input: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnUISkip(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "VN" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="VNActions.AddCallbacks(IVNActions)" />
+    /// <seealso cref="VNActions.RemoveCallbacks(IVNActions)" />
+    public interface IVNActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "SkipDialogue" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSkipDialogue(InputAction.CallbackContext context);
     }
 }

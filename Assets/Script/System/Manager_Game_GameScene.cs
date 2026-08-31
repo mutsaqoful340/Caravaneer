@@ -25,11 +25,16 @@ public class Manager_Game_GameScene : MonoBehaviour
         switch (currentGameType)
         {
             case GameType.MainMenu:
-            case GameType.VN:
-                Manager_Game.Instance.currentGameScene = GameScene.MainMenu;
+                Manager_Game.Instance.currentGameScene = GameScene.MainMenuScene;
+                Manager_Game.Instance.SetState(GameState.Gameplay);
                 break;
             case GameType.Gameplay:
-                Manager_Game.Instance.currentGameScene = GameScene.Gameplay;
+                Manager_Game.Instance.currentGameScene = GameScene.GameplayScene;
+                Manager_Game.Instance.SetState(GameState.Gameplay);
+                break;
+            case GameType.VN:
+                Manager_Game.Instance.currentGameScene = GameScene.VNScene;
+                Manager_Game.Instance.SetState(GameState.VN);
                 break;
         }
 

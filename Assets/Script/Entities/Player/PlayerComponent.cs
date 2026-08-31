@@ -82,6 +82,8 @@ public class PlayerComponent : MonoBehaviour
     private Vector3 verticalVelocity;
     // Release detection falls back to polling because the Input System's canceled message isn't reaching OnAction.
     private UnityEngine.InputSystem.InputAction actionInput;
+    private UnityEngine.InputSystem.InputAction skipDialogueInput;
+    private bool isSkipDialoguePressed;
 
     private void Awake()
     {
@@ -92,6 +94,7 @@ public class PlayerComponent : MonoBehaviour
         }
 
         actionInput = playerInputComp?.actions?.FindAction("Action");
+        skipDialogueInput = playerInputComp?.actions?.FindAction("SkipDialogue");
 
         prevParent = transform.parent != null ? transform.parent.gameObject : gameObject;
     }
@@ -245,12 +248,6 @@ public class PlayerComponent : MonoBehaviour
             // Handle UI submit logic here
             Debug.Log($"{gameObject.name} submitted UI action.");
         }
-
-        if (VNDialogueSystem.Instance != null && VNDialogueSystem.Instance.isDialogueActive && value.isPressed)
-        {
-            VNDialogueSystem.Instance.OnSkipDialogue();
-            Debug.Log($"{gameObject.name} skipped dialogue.");
-        }
     }
 
     public void OnUICancel(InputValue value)
@@ -264,8 +261,7 @@ public class PlayerComponent : MonoBehaviour
 
     public void OnUIPause(InputValue value)
     {
-        if (Manager_Game.Instance.currentGameScene == GameScene.Gameplay && 
-        Manager_Game.Instance.currentGameState == GameState.UI && value.isPressed)
+        if (Manager_Game.Instance.currentGameState == GameState.UI && value.isPressed)
         {
             Manager_Game.Instance.SetState(GameState.Gameplay);
             Manager_UI.Instance.OnCloseAllPanels();
@@ -273,12 +269,23 @@ public class PlayerComponent : MonoBehaviour
         }
     }
 
-    public void OnUISkip(InputValue value)
+    public void OnSkipDialogue(InputValue value)
     {
-        if (Manager_Game.Instance.currentGameState == GameState.UI && value.isPressed)
+        Debug.Log($"[VNDialogue] OnSkipDialogue invoked, isPressed={value.isPressed}, t={Time.time:F2}");
+        if (Manager_Game.Instance.currentGameState != GameState.VN)
         {
-            // Handle UI skip logic here
-            Debug.Log($"{gameObject.name} skipped UI action.");
+            return;
+        }
+
+        if (value.isPressed)
+        {
+            isSkipDialoguePressed = true;
+            VNDialogueSystem.Instance?.OnBeginSkipDialogue();
+        }
+        else
+        {
+            isSkipDialoguePressed = false;
+            VNDialogueSystem.Instance?.OnEndSkipDialogue();
         }
     }
     #endregion
@@ -484,7 +491,7 @@ public class PlayerComponent : MonoBehaviour
 
     private void OnPerformAction()
     {
-        if (!isMercenary || interactObject || reviveManager || Manager_Game.Instance.currentGameScene == GameScene.MainMenu) return;
+        if (!isMercenary || interactObject || reviveManager || Manager_Game.Instance.currentGameScene == GameScene.MainMenuScene) return;
 
         if (animator == null)
         {
@@ -600,6 +607,12 @@ public class PlayerComponent : MonoBehaviour
         if (actionInput != null && pressedTarget != PressedTarget.None && !actionInput.IsPressed())
         {
             HandleActionReleasedByPolling();
+        }
+
+        if (skipDialogueInput != null && isSkipDialoguePressed && !skipDialogueInput.IsPressed())
+        {
+            isSkipDialoguePressed = false;
+            VNDialogueSystem.Instance?.OnEndSkipDialogue();
         }
 
         if (isMercenary && currentHPStage == PlayerHPStage.Alive)

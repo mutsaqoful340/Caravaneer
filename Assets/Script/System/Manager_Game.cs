@@ -5,13 +5,15 @@ using UnityEngine.InputSystem;
 public enum GameState
 {
     UI,
-    Gameplay
+    Gameplay,
+    VN
 }
 
 public enum GameScene
 {
-    MainMenu,
-    Gameplay
+    MainMenuScene,
+    GameplayScene,
+    VNScene
 }
 
 public class Manager_Game : MonoBehaviour
@@ -20,7 +22,7 @@ public class Manager_Game : MonoBehaviour
     [Tooltip("Manages player input modes.")]
     public GameState currentGameState = GameState.Gameplay;
     [Tooltip("Manages the current game scene.")]
-    public GameScene currentGameScene = GameScene.MainMenu;
+    public GameScene currentGameScene = GameScene.MainMenuScene;
 
     private void Awake()
     {
@@ -69,6 +71,9 @@ public class Manager_Game : MonoBehaviour
             case GameState.Gameplay:
                 Manager_Input.Instance.SwitchMode(GameState.Gameplay);
                 break;
+            case GameState.VN:
+                Manager_Input.Instance.SwitchMode(GameState.VN);
+                break;
         }
     }
 
@@ -85,11 +90,14 @@ public class Manager_Game : MonoBehaviour
     {
         switch (newScene)
         {
-            case GameScene.MainMenu:
+            case GameScene.MainMenuScene:
                 // Handle main menu scene logic
                 break;
-            case GameScene.Gameplay:
+            case GameScene.GameplayScene:
                 // Handle gameplay scene logic
+                break;
+            case GameScene.VNScene:
+                // Handle VN scene logic
                 break;
         }
         

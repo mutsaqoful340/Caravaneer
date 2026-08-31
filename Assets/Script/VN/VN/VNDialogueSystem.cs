@@ -23,12 +23,17 @@ public enum VNDisplayMode
 
 public class VNDialogueSystem : MonoBehaviour
 {
+    public float skipAllHoldDuration = 2f; // Duration to hold the skip button to skip all dialogues
     public static VNDialogueSystem Instance { get; set; }
     public VNCharacterDialogue[] characterDatas;
     public Image imageBackground;
     public bool isDialogueActive = false;
     public bool showDialogue = false;
-    public GameObject skipButton;
+
+    private Coroutine skipHoldRoutine;
+    private bool isSkipButtonHeld;
+    private bool skipAllTriggered;
+    private bool skipCurrentDialogueRequested;
 
     // Serves as reference to the current character data being displayed
     [Header("Left Side Panel Settings")]
@@ -48,6 +53,19 @@ public class VNDialogueSystem : MonoBehaviour
     public TextMeshProUGUI rightCharacterDialogue;
     public bool isRightSide = false; // Determines if the dialogue should be displayed on the right side
 
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Debug.LogWarning("Multiple instances of VNDialogueSystem detected. Destroying duplicate.");
+            Destroy(this.gameObject);
+        }
+    }
+
     private void Start()
     {
         // Ensure panels are inactive at the start
@@ -56,7 +74,7 @@ public class VNDialogueSystem : MonoBehaviour
         if (leftPanelAnimator == null) leftPanelAnimator = leftPanel.GetComponent<Animator>();
         if (rightPanelAnimator == null) rightPanelAnimator = rightPanel.GetComponent<Animator>();
         if (imageBackground != null) imageBackground.gameObject.SetActive(false);
-        if (skipButton != null) Manager_UI.Instance.SelectFirstButtonInPanel(skipButton);
+        // if (skipButton != null) Manager_UI.Instance.SelectFirstButtonInPanel(skipButton);
     }
 
     public void OnPlayDialogue()
@@ -72,6 +90,8 @@ public class VNDialogueSystem : MonoBehaviour
             return;
         }
         isDialogueActive = true;
+        skipCurrentDialogueRequested = false;
+        skipAllTriggered = false;
         StartCoroutine(DisplayDialogue());
     }
 
@@ -168,7 +188,13 @@ public class VNDialogueSystem : MonoBehaviour
             lastMode = characterData.displayMode;
 
             // Wait for a short duration before displaying the next dialogue
-            yield return new WaitForSeconds(characterData.dialogueDuration);
+            skipCurrentDialogueRequested = false;
+            float currentDuration = 0f;
+            while (currentDuration < characterData.dialogueDuration && !skipCurrentDialogueRequested)
+            {
+                currentDuration += Time.deltaTime;
+                yield return null;
+            }
         }
 
         OnPanelHide_All();
@@ -243,12 +269,76 @@ public class VNDialogueSystem : MonoBehaviour
             null
         );
     }
+
     public void OnConfirmSkipDialogue()
     {
         StopAllCoroutines();
+        ClearSkipInputState();
         OnPanelHide_All();
         isDialogueActive = false;
         showDialogue = false;
         Debug.Log("Dialogue skipped!");
+    }
+
+    public void OnBeginSkipDialogue()
+    {
+        if (!isDialogueActive || skipHoldRoutine != null)
+        {
+            return;
+        }
+
+        isSkipButtonHeld = true;
+        skipAllTriggered = false;
+        skipHoldRoutine = StartCoroutine(WaitForSkipConfirmation());
+    }
+
+    private IEnumerator WaitForSkipConfirmation()
+    {
+        float currentHoldTime = 0f;
+
+        while (isSkipButtonHeld && currentHoldTime < skipAllHoldDuration)
+        {
+            currentHoldTime += Time.deltaTime;
+            yield return null;
+        }
+
+        skipHoldRoutine = null;
+
+        if (!isSkipButtonHeld)
+        {
+            yield break;
+        }
+
+        skipAllTriggered = true;
+        OnSkipDialogue();
+    }
+
+    public void OnEndSkipDialogue()
+    {
+        if (!isSkipButtonHeld)
+        {
+            return;
+        }
+
+        isSkipButtonHeld = false;
+
+        if (skipHoldRoutine != null)
+        {
+            StopCoroutine(skipHoldRoutine);
+            skipHoldRoutine = null;
+        }
+
+        if (!skipAllTriggered)
+        {
+            skipCurrentDialogueRequested = true;
+        }
+    }
+
+    private void ClearSkipInputState()
+    {
+        isSkipButtonHeld = false;
+        skipAllTriggered = false;
+        skipCurrentDialogueRequested = false;
+        skipHoldRoutine = null;
     }
 }

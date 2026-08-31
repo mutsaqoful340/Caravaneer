@@ -8583,7 +8583,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Manager_Game_GameScene
   currentGameType: 0
-  isGameplayScene: 0
 --- !u!1 &2045876148
 GameObject:
   m_ObjectHideFlags: 0

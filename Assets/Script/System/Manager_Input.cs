@@ -20,6 +20,7 @@ public class Manager_Input : MonoBehaviour
             return;
 
         players.Add(player);
+        player.SwitchCurrentActionMap(GetActionMapName(currentGameState));
     }
 
     public void UnregisterPlayer(PlayerInput player)
@@ -30,7 +31,7 @@ public class Manager_Input : MonoBehaviour
     public void SwitchMode(GameState newGameState)
     {
         currentGameState = newGameState;
-        string actionMap = newGameState == GameState.UI ? "UI" : "Gameplay";
+        string actionMap = GetActionMapName(newGameState);
 
         if (players == null || players.Count <= 0)
         {
@@ -44,5 +45,15 @@ public class Manager_Input : MonoBehaviour
             player.SwitchCurrentActionMap(actionMap);
             Debug.Log($"Switched {player.gameObject.name} to {actionMap} action map.");
         }
+    }
+
+    private string GetActionMapName(GameState state)
+    {
+        return state switch
+        {
+            GameState.UI => "UI",
+            GameState.VN => "VN",
+            _ => "Gameplay"
+        };
     }
 }
