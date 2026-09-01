@@ -824,13 +824,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 123944336}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.32804236, y: 0, z: 0, w: 0.94466305}
-  m_LocalPosition: {x: 0, y: 10, z: -10}
+  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
+  m_LocalPosition: {x: 0, y: 1, z: -9.04}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 103416222}
-  m_LocalEulerAnglesHint: {x: 38.3, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!114 &123944338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -916,7 +916,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 200
-  field of view: 50.6
+  field of view: 50
   orthographic: 0
   orthographic size: 10
   m_Depth: -1
@@ -3306,7 +3306,6 @@ GameObject:
   - component: {fileID: 518848942}
   - component: {fileID: 518848941}
   - component: {fileID: 518848944}
-  - component: {fileID: 518848945}
   - component: {fileID: 518848946}
   - component: {fileID: 518848947}
   m_Layer: 5
@@ -3426,23 +3425,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &518848945
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 518848939}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69f61fca1c3b3554fbc38ccd4e295075, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
-  coins: 0
-  repairMaterials: 0
-  textCoins: {fileID: 961484481}
-  textRepairMaterials: {fileID: 1060276218}
-  animator: {fileID: 518848944}
 --- !u!114 &518848946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4986,6 +4968,7 @@ GameObject:
   - component: {fileID: 819143862}
   - component: {fileID: 819143861}
   - component: {fileID: 819143860}
+  - component: {fileID: 819143865}
   m_Layer: 5
   m_Name: <<< UI
   m_TagString: Untagged
@@ -5108,6 +5091,20 @@ MonoBehaviour:
   - name: Store
     gameObject: {fileID: 462540112}
     hasAnimation: 0
+--- !u!114 &819143865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 819143858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8314c5682f5efef418dfc27697958519, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player_LocalInvenvory
+  textCoins: {fileID: 961484481}
+  textRepairMaterials: {fileID: 1060276218}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -6933,6 +6930,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1173330627}
   m_CullTransparentMesh: 1
+--- !u!1 &1179620221
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1179620223}
+  - component: {fileID: 1179620222}
+  m_Layer: 0
+  m_Name: Mng_PlayerInventory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1179620222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1179620221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69f61fca1c3b3554fbc38ccd4e295075, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
+  coins: 0
+  repairMaterials: 0
+  animator: {fileID: 0}
+--- !u!4 &1179620223
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1179620221}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1243449461
 GameObject:
   m_ObjectHideFlags: 0
@@ -9225,7 +9269,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d54f1aca5a347f4a9ef61d022893d8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VNDialogueSystem
-  imageBackground: {fileID: 2057614647}
+  skipAllHoldDuration: 2
   characterDatas:
   - characterData: {fileID: 11400000, guid: 56634d6766626a145ac939ae1ac240e4, type: 2}
     dialogueText: Halo ini VN
@@ -9251,9 +9295,10 @@ MonoBehaviour:
     displayMode: 0
     dialogueDelay: 0
     dialogueDuration: 1
+  imageBackground: {fileID: 2057614647}
+  holdSkipDialogueIndicator: {fileID: 0}
   isDialogueActive: 0
   showDialogue: 0
-  skipButton: {fileID: 0}
   leftPanel: {fileID: 393448508}
   leftPanelAnimator: {fileID: 393448505}
   leftCharacterSprite: {fileID: 612571507}
@@ -10539,7 +10584,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Manager_Game_GameScene
   currentGameType: 1
-  isGameplayScene: 0
 --- !u!1 &1984254450
 GameObject:
   m_ObjectHideFlags: 0
@@ -11707,6 +11751,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 339197000}
+  - {fileID: 1179620223}
   - {fileID: 1348030814}
   - {fileID: 744596217}
   - {fileID: 391486912}

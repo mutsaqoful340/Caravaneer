@@ -27,6 +27,7 @@ public class VNDialogueSystem : MonoBehaviour
     public static VNDialogueSystem Instance { get; set; }
     public VNCharacterDialogue[] characterDatas;
     public Image imageBackground;
+    public Image holdSkipDialogueIndicator;
     public bool isDialogueActive = false;
     public bool showDialogue = false;
 
@@ -74,6 +75,8 @@ public class VNDialogueSystem : MonoBehaviour
         if (leftPanelAnimator == null) leftPanelAnimator = leftPanel.GetComponent<Animator>();
         if (rightPanelAnimator == null) rightPanelAnimator = rightPanel.GetComponent<Animator>();
         if (imageBackground != null) imageBackground.gameObject.SetActive(false);
+        if (holdSkipDialogueIndicator != null) holdSkipDialogueIndicator.fillAmount = 0f;
+        SetSkipHoldProgress(0f);
         // if (skipButton != null) Manager_UI.Instance.SelectFirstButtonInPanel(skipButton);
     }
 
@@ -289,6 +292,7 @@ public class VNDialogueSystem : MonoBehaviour
 
         isSkipButtonHeld = true;
         skipAllTriggered = false;
+        SetSkipHoldProgress(0f);
         skipHoldRoutine = StartCoroutine(WaitForSkipConfirmation());
     }
 
@@ -299,6 +303,7 @@ public class VNDialogueSystem : MonoBehaviour
         while (isSkipButtonHeld && currentHoldTime < skipAllHoldDuration)
         {
             currentHoldTime += Time.deltaTime;
+            SetSkipHoldProgress(skipAllHoldDuration > 0f ? currentHoldTime / skipAllHoldDuration : 1f);
             yield return null;
         }
 
@@ -321,6 +326,7 @@ public class VNDialogueSystem : MonoBehaviour
         }
 
         isSkipButtonHeld = false;
+        SetSkipHoldProgress(0f);
 
         if (skipHoldRoutine != null)
         {
@@ -340,5 +346,14 @@ public class VNDialogueSystem : MonoBehaviour
         skipAllTriggered = false;
         skipCurrentDialogueRequested = false;
         skipHoldRoutine = null;
+        SetSkipHoldProgress(0f);
+    }
+
+    private void SetSkipHoldProgress(float progress)
+    {
+        if (holdSkipDialogueIndicator != null)
+        {
+            holdSkipDialogueIndicator.fillAmount = Mathf.Clamp01(progress);
+        }
     }
 }

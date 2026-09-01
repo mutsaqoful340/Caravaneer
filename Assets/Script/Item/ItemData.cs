@@ -4,7 +4,7 @@ using UnityEngine;
 public class ItemData : ScriptableObject
 {
     public string itemName;
-    public Sprite itemIcon;
+    [Tooltip("01 Functional Wagon HP, 02 Broken Wagon HP, 03 Players HP")]
     public int itemID;
     public int itemPrice;
 }

@@ -14,8 +14,6 @@ public class PlayerInventory : MonoBehaviour
     public int repairMaterials;
 
     [Header("HUD References")]
-    public TextMeshProUGUI textCoins;
-    public TextMeshProUGUI textRepairMaterials;
 
     [Header("Other Inventory References")]
     public Animator animator;
@@ -29,6 +27,10 @@ public class PlayerInventory : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
         UpdateHUD();
     }
 
@@ -56,15 +58,25 @@ public class PlayerInventory : MonoBehaviour
         return true;
     }
 
+    public bool TrySpendCoins(int amount)
+    {
+        if (coins < amount)
+        {
+            return false;
+        }
+        
+        coins -= amount;
+        UpdateHUD();
+        return true;
+    }
     private void UpdateHUD()
     {
-        if (!textCoins || !textRepairMaterials)
+        if (Player_LocalInvenvory.Instance == null)
         {
             Debug.LogWarning("PlayerInventory: HUD references are not assigned.");
             return;
         }
         
-        textCoins.text = $"Coins: {coins}";
-        textRepairMaterials.text = $"Repair Materials: {repairMaterials}";
+        Player_LocalInvenvory.Instance.UpdateLocalInventory();
     }
 }

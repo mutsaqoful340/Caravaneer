@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f30324688e580a747931959040171ebb, type: 3}
   m_Name: GoonPotion
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: 
-  itemIcon: {fileID: 0}
-  itemID: 0
-  itemPrice: 0
+  itemName: Goon Potion
+  itemID: 1
+  itemPrice: 2
