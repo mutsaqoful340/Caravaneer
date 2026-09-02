@@ -19,6 +19,7 @@ public class UI_UnivConfirmPanel : MonoBehaviour
     [SerializeField] private Button confirmButton;
     [SerializeField] private Button cancelButton;
     [SerializeField] private GameObject panel;
+    public bool isActive;
 
     private Action onConfirm;
     private Action onCancel;
@@ -85,7 +86,7 @@ public class UI_UnivConfirmPanel : MonoBehaviour
         RestoreCallerInteraction();    // check activeInHierarchy after destruction is real
     }
 
-    private void Cancel()
+    public void Cancel()
     {
         Action action = onCancel;
 

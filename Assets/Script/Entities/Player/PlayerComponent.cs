@@ -73,6 +73,7 @@ public class PlayerComponent : MonoBehaviour
     public bool isMounted = false;
     [SerializeField] private bool isMoveOpposDir = false;
     public bool isRepairing = false;
+    public bool IsTeleporting { get; set; }
 
 
     private Vector2 moveInput;
@@ -82,8 +83,8 @@ public class PlayerComponent : MonoBehaviour
     private CharacterController characterController;
     private Vector3 verticalVelocity;
     // Release detection falls back to polling because the Input System's canceled message isn't reaching OnAction.
-    private UnityEngine.InputSystem.InputAction actionInput;
-    private UnityEngine.InputSystem.InputAction skipDialogueInput;
+    private InputAction actionInput;
+    private InputAction skipDialogueInput;
     private bool isSkipDialoguePressed;
 
     private void Awake()
@@ -227,7 +228,7 @@ public class PlayerComponent : MonoBehaviour
             if (Manager_Game.Instance.currentGameState == GameState.Gameplay)
             {
                 Manager_Game.Instance.SetState(GameState.UI);
-                Manager_UI.Instance.OnShowPanel("PauseMenu");
+                Manager_UI.Instance.OnShowPanel("Map");
                 return;
             }
         }
@@ -255,8 +256,14 @@ public class PlayerComponent : MonoBehaviour
     {
         if (Manager_Game.Instance.currentGameState == GameState.UI && value.isPressed)
         {
-            // Handle UI cancel logic here
-            Debug.Log($"{gameObject.name} canceled UI action.");
+            Manager_Game.Instance.SetState(GameState.Gameplay);
+            Manager_UI.Instance.OnCloseAllPanels();
+            Debug.Log($"{gameObject.name} confirmed UI action.");
+            
+            if (UI_UnivConfirmPanel.Instance.isActive)
+            {
+                UI_UnivConfirmPanel.Instance.Cancel();
+            }
         }
     }
 
@@ -625,6 +632,7 @@ public class PlayerComponent : MonoBehaviour
         }
 
         if (isMounted) return;
+        if (IsTeleporting) return;
 
         if (characterController.isGrounded && verticalVelocity.y < 0f)
         {

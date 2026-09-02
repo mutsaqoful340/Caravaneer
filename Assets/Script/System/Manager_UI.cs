@@ -25,6 +25,15 @@ public class Manager_UI : MonoBehaviour
         Instance = this;
     }
 
+    private void Start()
+    {
+        // disables every panels at start
+        foreach (PanelReference panelReference in panels)
+        {
+            panelReference.gameObject.SetActive(false);
+        }
+    }
+
     // Show a specific panel by name.
     public void OnShowPanel(string panelName)
     {
@@ -55,14 +64,14 @@ public class Manager_UI : MonoBehaviour
 
         currentActivePanel = panel;
         Animator animator = currentActivePanel.GetComponent<Animator>();
-        if (animator != null && !selectedPanel.hasAnimation)
+        if (animator != null && selectedPanel.hasAnimation)
         {
             currentActivePanel.SetActive(true);
+            animator?.SetTrigger("Open");
         }
         else
         {
             currentActivePanel.SetActive(true);
-            animator?.SetTrigger("Open");
         }
 
         SelectFirstButtonInPanel(currentActivePanel);

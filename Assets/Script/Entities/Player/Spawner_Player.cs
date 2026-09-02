@@ -67,5 +67,15 @@ public class Spawner_Player : MonoBehaviour
         if (folder != null) p2.transform.SetParent(folder.transform, true);
         p2.transform.position = mercenarySpawnPoint.position;
         p2.gameObject.name = "Player_Mercenary";
+
+        Map map = FindAnyObjectByType<Map>();
+        if (map != null && p1Component != null && p2Component != null)
+        {
+            map.SetPlayers(p2Component, p1Component);
+        }
+        else
+        {
+            Debug.LogWarning("Spawner_Player: Unable to register both players with Map.");
+        }
     }
 }
