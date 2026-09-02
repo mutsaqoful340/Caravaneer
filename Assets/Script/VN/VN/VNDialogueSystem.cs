@@ -4,17 +4,6 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-[System.Serializable]
-public class VNCharacterDialogue
-{
-    public PopupData characterData;
-    public string dialogueText;
-    public Sprite backgroundImage;
-    public VNDisplayMode displayMode = VNDisplayMode.LeftSide;
-    public float dialogueDelay = 0.5f; // Delay before the dialogue is displayed
-    public float dialogueDuration = 2f; // Duration for which the dialogue is displayed
-}
-
 public enum VNDisplayMode
 {
     LeftSide,
@@ -25,7 +14,7 @@ public class VNDialogueSystem : MonoBehaviour
 {
     public float skipAllHoldDuration = 2f; // Duration to hold the skip button to skip all dialogues
     public static VNDialogueSystem Instance { get; set; }
-    public VNCharacterDialogue[] characterDatas;
+    public VNData VNData;
     public Image imageBackground;
     public Image holdSkipDialogueIndicator;
     public bool isDialogueActive = false;
@@ -82,9 +71,9 @@ public class VNDialogueSystem : MonoBehaviour
 
     public void OnPlayDialogue()
     {
-        if (characterDatas == null || characterDatas.Length == 0)
+        if (VNData == null || VNData.VNDialogue == null || VNData.VNDialogue.Length == 0)
         {
-            Debug.LogWarning("No character data available for dialogue!");
+            Debug.LogWarning("No VNData dialogue entries available!");
             return;
         }
         if (isDialogueActive)
@@ -105,29 +94,29 @@ public class VNDialogueSystem : MonoBehaviour
         bool hasLeftAppeared = false;
         bool hasRightAppeared = false;
 
-        foreach (VNCharacterDialogue characterData in characterDatas)
+        foreach (VNDialoguesEntry dialogueEntry in VNData.VNDialogue)
         {
-            Debug.Log($"Displaying dialogue {dialogueIndex} of {characterDatas.Length}");
+            Debug.Log($"Displaying dialogue {dialogueIndex} of {VNData.VNDialogue.Length}");
             dialogueIndex++;
             
             // Null check for character data
-            if (characterData == null || characterData.characterData == null)
+            if (dialogueEntry == null || dialogueEntry.dialogueCharacter == null)
             {
                 Debug.LogWarning("Character data or VNData is null, skipping dialogue entry!");
                 continue;
             }
                
-               yield return new WaitForSeconds(characterData.dialogueDelay);
+               yield return new WaitForSeconds(dialogueEntry.dialogueDisplayDelay);
 
-            bool isSamePanelAsLast = lastMode.HasValue && lastMode.Value == characterData.displayMode;
+            bool isSamePanelAsLast = lastMode.HasValue && lastMode.Value == dialogueEntry.displayMode;
 
-            if (imageBackground != null && characterData.backgroundImage != null)
+            if (imageBackground != null && dialogueEntry.backgroundImage != null)
             {
-                imageBackground.sprite = characterData.backgroundImage;
+                imageBackground.sprite = dialogueEntry.backgroundImage;
                 imageBackground.gameObject.SetActive(true);
             }
 
-            if (characterData.displayMode == VNDisplayMode.LeftSide)
+            if (dialogueEntry.displayMode == VNDisplayMode.LeftSide)
             {
                 isLeftSide = true;
                 if (!isSamePanelAsLast)
@@ -147,17 +136,17 @@ public class VNDialogueSystem : MonoBehaviour
 
                 if (leftCharacterSprite != null && leftCharacterName != null && leftCharacterDialogue != null)
                 {
-                    leftCharacterSprite.sprite = characterData.characterData.characterSprite;
+                    leftCharacterSprite.sprite = dialogueEntry.dialogueCharacter.characterSprite;
                     leftCharacterSprite.SetNativeSize();
-                    leftCharacterName.text = characterData.characterData.characterName;
-                    leftCharacterDialogue.text = characterData.dialogueText;
+                    leftCharacterName.text = dialogueEntry.dialogueCharacter.characterName;
+                    leftCharacterDialogue.text = dialogueEntry.dialogueText;
                 }
                 else
                 {
                     Debug.LogWarning("Left panel UI elements are not assigned!");
                 }
             }
-            else if (characterData.displayMode == VNDisplayMode.RightSide)
+            else if (dialogueEntry.displayMode == VNDisplayMode.RightSide)
             {
                 isRightSide = true;
                 if (!isSamePanelAsLast)
@@ -177,10 +166,10 @@ public class VNDialogueSystem : MonoBehaviour
 
                 if (rightCharacterSprite != null && rightCharacterName != null && rightCharacterDialogue != null)
                 {
-                    rightCharacterSprite.sprite = characterData.characterData.characterSprite;
+                    rightCharacterSprite.sprite = dialogueEntry.dialogueCharacter.characterSprite;
                     rightCharacterSprite.SetNativeSize();
-                    rightCharacterName.text = characterData.characterData.characterName;
-                    rightCharacterDialogue.text = characterData.dialogueText;
+                    rightCharacterName.text = dialogueEntry.dialogueCharacter.characterName;
+                    rightCharacterDialogue.text = dialogueEntry.dialogueText;
                 }
                 else
                 {
@@ -188,12 +177,12 @@ public class VNDialogueSystem : MonoBehaviour
                 }
             }
 
-            lastMode = characterData.displayMode;
+            lastMode = dialogueEntry.displayMode;
 
             // Wait for a short duration before displaying the next dialogue
             skipCurrentDialogueRequested = false;
             float currentDuration = 0f;
-            while (currentDuration < characterData.dialogueDuration && !skipCurrentDialogueRequested)
+            while (currentDuration < dialogueEntry.dialogueDisplayDuration && !skipCurrentDialogueRequested)
             {
                 currentDuration += Time.deltaTime;
                 yield return null;

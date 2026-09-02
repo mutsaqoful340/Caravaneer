@@ -25,6 +25,8 @@ public class WagonComponent : MonoBehaviour
     public GameObject heartBrokenPrefab;
 
     [Header("Wagon Settings")]
+    [Tooltip("Time held before checking whether the wagon can be repaired.")]
+    public float repairEligibilityCheckDuration = 0.5f;
     [Tooltip("Holding the action button for at least this long triggers a repair instead of mounting.")]
     public float repairHoldThreshold = 0.5f;
     [Tooltip("Repair materials consumed and HP restored per long-press repair.")]
@@ -152,6 +154,7 @@ public class WagonComponent : MonoBehaviour
         if (holdRepairRoutine != null)
         {
             StopCoroutine(holdRepairRoutine);
+            SetRepairAnimation(pressingPlayer, false);
         }
         holdRepairRoutine = StartCoroutine(HoldRepairRoutine(interactor));
     }
@@ -167,6 +170,7 @@ public class WagonComponent : MonoBehaviour
         }
 
         pressingPlayer = null;
+        SetRepairAnimation(interactor, false);
 
         if (holdRepairRoutine != null)
         {
@@ -599,11 +603,24 @@ public class WagonComponent : MonoBehaviour
 
     private IEnumerator HoldRepairRoutine(PlayerComponent interactor)
     {
-        interactor.isRepairing = true;
-        interactor.animator.SetBool("IsRepairing", true);
+        yield return new WaitForSeconds(repairEligibilityCheckDuration);
+
+        if (pressingPlayer != interactor)
+        {
+            holdRepairRoutine = null;
+            yield break;
+        }
+
+        if (!NeedsRepair() || PlayerInventory.Instance == null || PlayerInventory.Instance.repairMaterials < repairCost)
+        {
+            repairTriggeredThisPress = true;
+            holdRepairRoutine = null;
+            yield break;
+        }
+
+        SetRepairAnimation(interactor, true);
         yield return new WaitForSeconds(repairHoldThreshold);
-        interactor.isRepairing = false;
-        interactor.animator.SetBool("IsRepairing", false);
+        SetRepairAnimation(interactor, false);
 
         Debug.Log($"[WagonInteract] HoldRepairRoutine threshold reached at t={Time.time:F2}, pressingPlayer={(pressingPlayer ? pressingPlayer.gameObject.name : "null")}");
 
@@ -614,6 +631,17 @@ public class WagonComponent : MonoBehaviour
         }
 
         holdRepairRoutine = null;
+    }
+
+    private void SetRepairAnimation(PlayerComponent interactor, bool isRepairing)
+    {
+        if (interactor == null)
+        {
+            return;
+        }
+
+        interactor.isRepairing = isRepairing;
+        interactor.animator?.SetBool("IsRepairing", isRepairing);
     }
     #endregion
 }

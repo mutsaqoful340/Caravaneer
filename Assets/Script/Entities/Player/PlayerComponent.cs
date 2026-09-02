@@ -11,7 +11,8 @@ public enum PlayerHPStage
 [RequireComponent(typeof(PlayerInput), typeof(CharacterController))]
 public class PlayerComponent : MonoBehaviour
 {
-    private static readonly string[] AttackTriggers = { "Attack1", "Attack2" };
+    private static readonly string[] NormAttackTriggers = { "Attack1Norm", "Attack2Norm" };
+    private static readonly string[] OppsAttackTriggers = { "Attack1Opps", "Attack2Opps" };
 
     [Header("Player Settings")]
     public PlayerHPStage currentHPStage = PlayerHPStage.Alive;
@@ -499,12 +500,6 @@ public class PlayerComponent : MonoBehaviour
             return;
         }
 
-        if (currentEnemy == null)
-        {
-            Debug.Log($"{gameObject.name} has no enemy in range to attack.");
-            return;
-        }
-
         if (Time.time < nextAttackTime) return;
 
         if (Time.time - lastAttackTime > attackSequenceResetCooldown)
@@ -512,11 +507,20 @@ public class PlayerComponent : MonoBehaviour
             currentAttackIndex = 0;
         }
 
-        string triggerName = AttackTriggers[currentAttackIndex];
-        playerWeaponAnimator.SetTrigger(triggerName);
-        animator.SetTrigger(triggerName);
+        string triggerNorm = NormAttackTriggers[currentAttackIndex];
+        string triggerOpps = OppsAttackTriggers[currentAttackIndex];
+        if (!isMoveOpposDir)
+        {
+            playerWeaponAnimator.SetTrigger(triggerNorm);
+            animator.SetTrigger(triggerNorm);
+        }
+        else
+        {
+            playerWeaponAnimator.SetTrigger(triggerOpps);
+            animator.SetTrigger(triggerOpps);            
+        }
 
-        currentAttackIndex = (currentAttackIndex + 1) % AttackTriggers.Length;
+        currentAttackIndex = (currentAttackIndex + 1) % NormAttackTriggers.Length;
         lastAttackTime = Time.time;
         nextAttackTime = Time.time + attackCooldown;
 

@@ -418,7 +418,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d6d64706c34c184fb0b0f9db67cf773, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WagonComponent
-  moveSpeed: 3
+  moveSpeed: 1
   startHPFunctional: 5
   startHPBroken: 8
   currentWagonState: 0
