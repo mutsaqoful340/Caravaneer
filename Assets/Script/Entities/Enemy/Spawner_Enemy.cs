@@ -6,7 +6,8 @@ public class Spawner_Enemy : MonoBehaviour
 {
     public static Spawner_Enemy Instance { get; private set; }
     [Header("Enemy Spawner Settings")]
-    public GameObject playerConstraint;
+    public bool isMainSpawner = false;
+    public Transform playerConstraint;
     [SerializeField] private GameObject[] enemyPrefab;
     [SerializeField] private float minSpawnRadius = 10f;
     [SerializeField] private float maxSpawnRadius = 20f;
@@ -71,6 +72,10 @@ public class Spawner_Enemy : MonoBehaviour
             yield return null;
         }
 
+        if (WagonComponent.Instance != null && isMainSpawner)
+        {
+            playerConstraint = WagonComponent.Instance.transform;
+        }
         NotifyEnemyPresence();
     }
 

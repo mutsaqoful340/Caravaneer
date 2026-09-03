@@ -256,8 +256,6 @@ public class PlayerComponent : MonoBehaviour
     {
         if (Manager_Game.Instance.currentGameState == GameState.UI && value.isPressed)
         {
-            Manager_Game.Instance.SetState(GameState.Gameplay);
-            Manager_UI.Instance.OnCloseAllPanels();
             Debug.Log($"{gameObject.name} confirmed UI action.");
             
             if (UI_UnivConfirmPanel.Instance.isActive)
@@ -271,8 +269,6 @@ public class PlayerComponent : MonoBehaviour
     {
         if (Manager_Game.Instance.currentGameState == GameState.UI && value.isPressed)
         {
-            Manager_Game.Instance.SetState(GameState.Gameplay);
-            Manager_UI.Instance.OnCloseAllPanels();
             Debug.Log($"{gameObject.name} confirmed UI action.");
         }
     }

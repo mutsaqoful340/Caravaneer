@@ -367,7 +367,7 @@ public partial class @Player_Input: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";P1"",
                     ""action"": ""UICancel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

@@ -3,6 +3,7 @@ using UnityEngine;
 public class RepairMaterial : MonoBehaviour
 {
     public int repairValue = 1; // The amount of repair this material provides
+    [Range(0.1f, 1f)]
     public float spawnPercentage = 0.5f; // The chance of this material spawning when an enemy dies
     public bool isCollected = false; // Flag to check if the material has been collected
 
