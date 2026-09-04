@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public enum WagonState // Two-stage wagon state: Functional and Broken
 {
     Functional,
-    Broken
+    Broken,
+    Destroyed
 }
 
 public class WagonComponent : MonoBehaviour
@@ -17,14 +19,6 @@ public class WagonComponent : MonoBehaviour
     [SerializeField] private int startHPFunctional = 5;
     [SerializeField] private int startHPBroken = 8;
     public WagonState currentWagonState = WagonState.Functional;
-
-    [Header("Wagon References")]
-    public Animator animator;
-    public Canvas wagonHPCanvas;
-    public GameObject heartFunctionalPrefab;
-    public GameObject heartBrokenPrefab;
-
-    [Header("Wagon Settings")]
     [Tooltip("Time held before checking whether the wagon can be repaired.")]
     public float repairEligibilityCheckDuration = 0.5f;
     [Tooltip("Holding the action button for at least this long triggers a repair instead of mounting.")]
@@ -32,6 +26,13 @@ public class WagonComponent : MonoBehaviour
     [Tooltip("Repair materials consumed and HP restored per long-press repair.")]
     public int repairCost = 1;
     public float IFrameDuration = 1f;
+    public UnityEvent onWagonBroken;
+
+    [Header("Wagon References")]
+    public Animator animator;
+    public Canvas wagonHPCanvas;
+    public GameObject heartFunctionalPrefab;
+    public GameObject heartBrokenPrefab;
 
     [Header("Player References")]
     public PlayerComponent mechanic;
@@ -46,7 +47,7 @@ public class WagonComponent : MonoBehaviour
     [SerializeField] private int currHPFunctional = 5;
     [SerializeField] private bool isBroken = false;
     [SerializeField] private bool isRepairingFunctionalHP = false;
-    [SerializeField] private bool isDestroyed = false;
+    [SerializeField] public bool isDestroyed = false;
     [SerializeField] private bool isIFrame = false;
     [SerializeField] private CharacterController mechanicCC;
     [SerializeField] private Rigidbody mechanicRB;
@@ -267,6 +268,7 @@ public class WagonComponent : MonoBehaviour
                 isBroken = true;
                 isRepairingFunctionalHP = false;
                 SetWagonState(WagonState.Broken);
+                onWagonBroken?.Invoke();
                 DismountAllPlayers();
                 UpdateHPUI();
                 return;
@@ -302,6 +304,8 @@ public class WagonComponent : MonoBehaviour
                 AnimateLostHearts(previousHP - currHPFunctional);
             }
         }
+
+        Manager_GameLocal.Instance.OnCheckEntity();
     }
 
     public void OnRepair(int repairAmount)
@@ -358,6 +362,7 @@ public class WagonComponent : MonoBehaviour
     {
         isMechanicMounted = true;
         mechanic.playerVisual.SetActive(false);
+        mechanic.playerStatUI.SetActive(false);
         if (mechanicCC != null && mechanicRB != null)
         {
             mechanicCC.enabled = false;
@@ -377,6 +382,7 @@ public class WagonComponent : MonoBehaviour
     {
         isMercenaryMounted = true;
         mercenary.playerVisual.SetActive(false);
+        mercenary.playerStatUI.SetActive(false);
         if (mercenaryCC != null && mercenaryRB != null)
         {
             mercenaryCC.enabled = false;
@@ -395,6 +401,7 @@ public class WagonComponent : MonoBehaviour
     {
         isMechanicMounted = false;
         mechanic.playerVisual.SetActive(true);
+        mechanic.playerStatUI.SetActive(true);
         if (mechanicCC != null && mechanicRB != null)
         {
             mechanicCC.enabled = true;
@@ -420,6 +427,7 @@ public class WagonComponent : MonoBehaviour
     {
         isMercenaryMounted = false;
         mercenary.playerVisual.SetActive(true);
+        mercenary.playerStatUI.SetActive(true);
         if (mercenaryCC != null && mercenaryRB != null)
         {
             mercenaryCC.enabled = true;

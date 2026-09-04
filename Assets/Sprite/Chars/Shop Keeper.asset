@@ -10,8 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56722a892fce67f4796581d6a1e76251, type: 3}
-  m_Name: Char_Pia
-  m_EditorClassIdentifier: Assembly-CSharp::VNData
-  characterSprite: {fileID: 1186925170, guid: 34c148fa539a4c844bd1a7263c4b1811, type: 3}
-  characterName: Pia
-  dialogueText: []
+  m_Name: Shop Keeper
+  m_EditorClassIdentifier: Assembly-CSharp::PopupData
+  characterSprite: {fileID: 21300000, guid: 42a6823569c4fe0478f2ee9059a16ddd, type: 3}
+  characterName: Masha (Shop Keeper)

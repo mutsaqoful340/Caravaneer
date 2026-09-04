@@ -6,7 +6,7 @@ public class Spawner_Wagon : MonoBehaviour
     [Header("Wagon Settings")]
     public int wagonHPFunctionalStart = 5; // Default/pre-buff starting HP for functional wagons
     public int wagonHPBrokenStart = 6; // Default/pre-buff starting HP for broken wagons
-    public GameObject wagonPrefab; // The wagon prefab to spawn
+    [SerializeField] private WagonComponent wagon;
 
     private void Awake()
     {
@@ -19,21 +19,15 @@ public class Spawner_Wagon : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void SpawnWagon(Transform wagonSpawnPoint, GameObject folder)
+    public void UpdateWagonStat()
     {
-        if (wagonPrefab != null && wagonSpawnPoint != null)
+        if (!Spawner_TriggerLocalEntities.Instance.wagonObject)
         {
-            GameObject wagonObject = Instantiate(wagonPrefab, wagonSpawnPoint.position, wagonSpawnPoint.rotation);
-            if (folder != null)
-            {
-                wagonObject.transform.SetParent(folder.transform, true);
-            }
-            WagonComponent wagonComponent = wagonObject.GetComponent<WagonComponent>();
-            wagonComponent?.InitializeStartingHP(wagonHPFunctionalStart, wagonHPBrokenStart);
+            Spawner_TriggerLocalEntities.Instance.wagonObject.InitializeStartingHP(wagonHPFunctionalStart, wagonHPBrokenStart);
         }
         else
         {
-            Debug.LogWarning("Wagon prefab or spawn point is not assigned.");
+            Debug.LogWarning("The existing scene wagon is not assigned or available.");
         }
     }
 }

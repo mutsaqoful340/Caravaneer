@@ -73,24 +73,41 @@ public class PopupDialogueSystem : MonoBehaviour
     private IEnumerator DisplayDialogue()
     {
         int dialogueIndex = 0;
+        PopupDisplayMode? lastDisplayMode = null;
+        bool hasShownLeft = false;
+        bool hasShownRight = false;
+
         foreach (PopupCharacterDialogue characterData in characterDatas)
         {
             Debug.Log($"Displaying dialogue {dialogueIndex} of {characterDatas.Length}");
             dialogueIndex++;
-            
-            // Null check for character data
+
             if (characterData == null || characterData.characterData == null)
             {
-                Debug.LogWarning("Character data or VNData is null, skipping dialogue entry!");
+                Debug.LogWarning("Character data or PopupData is null, skipping dialogue entry!");
                 continue;
             }
-               
-               yield return new WaitForSeconds(characterData.dialogueDelay);
+
+            yield return new WaitForSeconds(characterData.dialogueDelay);
+
+            bool isSamePanelAsLast = lastDisplayMode.HasValue &&
+                lastDisplayMode.Value == characterData.displayMode;
 
             if (characterData.displayMode == PopupDisplayMode.LeftSide)
             {
                 isLeftSide = true;
-                PrvPanelShow_Left();
+                isRightSide = false;
+
+                if (!isSamePanelAsLast && lastDisplayMode == PopupDisplayMode.RightSide &&
+                    rightPanelAnimator != null)
+                {
+                    ResetPanelTriggers(rightPanelAnimator);
+                    rightPanelAnimator.SetTrigger("Hide");
+                }
+
+                PrvPanelShow_Left(!hasShownLeft);
+                hasShownLeft = true;
+
                 if (leftCharacterSprite != null && leftCharacterName != null && leftCharacterDialogue != null)
                 {
                     leftCharacterSprite.sprite = characterData.characterData.characterSprite;
@@ -103,10 +120,21 @@ public class PopupDialogueSystem : MonoBehaviour
                     Debug.LogWarning("Left panel UI elements are not assigned!");
                 }
             }
-            else if (characterData.displayMode == PopupDisplayMode.RightSide)
+            else
             {
                 isRightSide = true;
-                PrvPanelShow_Right();
+                isLeftSide = false;
+
+                if (!isSamePanelAsLast && lastDisplayMode == PopupDisplayMode.LeftSide &&
+                    leftPanelAnimator != null)
+                {
+                    ResetPanelTriggers(leftPanelAnimator);
+                    leftPanelAnimator.SetTrigger("Hide");
+                }
+
+                PrvPanelShow_Right(!hasShownRight);
+                hasShownRight = true;
+
                 if (rightCharacterSprite != null && rightCharacterName != null && rightCharacterDialogue != null)
                 {
                     rightCharacterSprite.sprite = characterData.characterData.characterSprite;
@@ -120,19 +148,8 @@ public class PopupDialogueSystem : MonoBehaviour
                 }
             }
 
-            // Wait for a short duration before displaying the next dialogue
+            lastDisplayMode = characterData.displayMode;
             yield return new WaitForSeconds(characterData.dialogueDuration);
-
-            if (characterData.displayMode == PopupDisplayMode.LeftSide)
-            {
-                isLeftSide = false;
-                leftPanelAnimator.SetTrigger("Hide");
-            }
-            else if (characterData.displayMode == PopupDisplayMode.RightSide)
-            {
-                isRightSide = false;
-                rightPanelAnimator.SetTrigger("Hide");
-            }
         }
 
         PrvPanelHide_All();
@@ -150,21 +167,35 @@ public class PopupDialogueSystem : MonoBehaviour
         }
     }
 
-    private void PrvPanelShow_Right()
+    private void PrvPanelShow_Right(bool isFirstAppearance)
     {
-        rightPanel.SetActive(true);
-        rightPanelAnimator.SetTrigger("Show");
+        if (rightPanel != null)
+        {
+            rightPanel.SetActive(true);
+        }
+        if (rightPanelAnimator != null)
+        {
+            ResetPanelTriggers(rightPanelAnimator);
+            rightPanelAnimator.SetTrigger(isFirstAppearance ? "Enable" : "Show");
+        }
     }
 
-    private void PrvPanelShow_Left()
+    private void PrvPanelShow_Left(bool isFirstAppearance)
     {
-        leftPanel.SetActive(true);
-        leftPanelAnimator.SetTrigger("Show");
+        if (leftPanel != null)
+        {
+            leftPanel.SetActive(true);
+        }
+        if (leftPanelAnimator != null)
+        {
+            ResetPanelTriggers(leftPanelAnimator);
+            leftPanelAnimator.SetTrigger(isFirstAppearance ? "Enable" : "Show");
+        }
     }
 
     public void PrvPanelHide_Left()
     {
-        if (leftPanel)
+        if (leftPanel != null)
         {
             leftPanel.SetActive(false);
             isLeftSide = false;
@@ -173,7 +204,7 @@ public class PopupDialogueSystem : MonoBehaviour
 
     public void PrvPanelHide_Right()
     {
-        if (rightPanel)
+        if (rightPanel != null)
         {
             rightPanel.SetActive(false);
             isRightSide = false;
@@ -182,15 +213,25 @@ public class PopupDialogueSystem : MonoBehaviour
 
     private void PrvPanelHide_All()
     {
-        if (leftPanel)
+        if (leftPanel != null && leftPanelAnimator != null)
         {
-            leftPanelAnimator.SetTrigger("Hide");
+            ResetPanelTriggers(leftPanelAnimator);
+            leftPanelAnimator.SetTrigger("Disable");
             isLeftSide = false;
         }
-        if (rightPanel)
+        if (rightPanel != null && rightPanelAnimator != null)
         {
-            rightPanelAnimator.SetTrigger("Hide");
+            ResetPanelTriggers(rightPanelAnimator);
+            rightPanelAnimator.SetTrigger("Disable");
             isRightSide = false;
         }
+    }
+
+    private void ResetPanelTriggers(Animator panelAnimator)
+    {
+        panelAnimator.ResetTrigger("Show");
+        panelAnimator.ResetTrigger("Enable");
+        panelAnimator.ResetTrigger("Hide");
+        panelAnimator.ResetTrigger("Disable");
     }
 }

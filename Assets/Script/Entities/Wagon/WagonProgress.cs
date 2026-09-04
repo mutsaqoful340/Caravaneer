@@ -1,6 +1,7 @@
 /// <summary>
 /// This script calculates the progress of a wagon between two points and updates a UI slider to reflect that progress.
 /// </summary>
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,16 +16,11 @@ public class WagonProgress : MonoBehaviour
     [Header("Debug")]
     public string progressPercentageText = "Wagon Progress: ";
 
-    private void Start()
-    {
-        Wagon = WagonComponent.Instance.transform; // Assuming WagonComponent is a singleton
-    }
-
     private void FixedUpdate()
     {
-        if (Wagon == null)
+        if (Wagon.IsDestroyed())
         {
-            Wagon = WagonComponent.Instance?.transform; // Attempt to get the wagon transform if it's null
+            return;
         }
         
         if (pointStart == null || pointEnd == null || Wagon == null || progressSlider == null)

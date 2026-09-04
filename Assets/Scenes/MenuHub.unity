@@ -516,7 +516,7 @@ MonoBehaviour:
   isMainMenu: 1
   spawnPoint_Mechanics: {fileID: 1903896784}
   spawnPoint_Mercenary: {fileID: 1263293705}
-  spawnPoint_Wagon: {fileID: 0}
+  wagonObject: {fileID: 0}
   folder: {fileID: 1093936898}
 --- !u!1 &83109452
 GameObject:
@@ -4992,7 +4992,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Spawner_Wagon
   wagonHPFunctionalStart: 5
   wagonHPBrokenStart: 6
-  wagonPrefab: {fileID: 8894524907553929642, guid: a924cc52c0d43ef42b2b73b61e030875, type: 3}
+  wagon: {fileID: 0}
 --- !u!1 &569706152
 GameObject:
   m_ObjectHideFlags: 0
@@ -6493,7 +6493,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Manager_UI
   panels:
-  - name: Map
+  - name: Panel1
     gameObject: {fileID: 1176578425}
     hasAnimation: 0
   - name: Store

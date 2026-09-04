@@ -12,13 +12,14 @@ public enum VNDisplayMode
 
 public class VNDialogueSystem : MonoBehaviour
 {
-    public float skipAllHoldDuration = 2f; // Duration to hold the skip button to skip all dialogues
     public static VNDialogueSystem Instance { get; set; }
+    public float skipAllHoldDuration = 2f; // Duration to hold the skip button to skip all dialogues
     public VNData VNData;
     public Image imageBackground;
     public Image holdSkipDialogueIndicator;
     public bool isDialogueActive = false;
     public bool showDialogue = false;
+    public UnityEvent onDialogueFinished;
 
     private Coroutine skipHoldRoutine;
     private bool isSkipButtonHeld;
@@ -49,11 +50,6 @@ public class VNDialogueSystem : MonoBehaviour
         {
             Instance = this;
         }
-        else
-        {
-            Debug.LogWarning("Multiple instances of VNDialogueSystem detected. Destroying duplicate.");
-            Destroy(this.gameObject);
-        }
     }
 
     private void Start()
@@ -81,6 +77,7 @@ public class VNDialogueSystem : MonoBehaviour
             Debug.LogWarning("Dialogue is already active!");
             return;
         }
+        Manager_Game_GameScene.Instance.SetGameType(GameType.VN);
         isDialogueActive = true;
         skipCurrentDialogueRequested = false;
         skipAllTriggered = false;
@@ -248,7 +245,8 @@ public class VNDialogueSystem : MonoBehaviour
         }
 
         imageBackground.gameObject.SetActive(false);
-        SceneLoader.Instance.LoadScene("Gameplay");
+        onDialogueFinished?.Invoke();
+        // SceneLoader.Instance.LoadScene("Gameplay");
     }
 
     public void OnSkipDialogue()
@@ -327,6 +325,21 @@ public class VNDialogueSystem : MonoBehaviour
         {
             skipCurrentDialogueRequested = true;
         }
+    }
+
+    public void OnPlayPopupOP()
+    {
+        PopupPlayer.Instance.OnPlayVN_OP();
+    }
+
+    public void OnPlayPopupED()
+    {
+        PopupPlayer.Instance.OnPlayVN_ED();
+    }
+
+    public void DestroyVN()
+    {
+        Destroy(gameObject);
     }
 
     private void ClearSkipInputState()

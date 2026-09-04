@@ -7,7 +7,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: VNLeft_Enable
+  m_Name: PopupLeft_Enable
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -21,7 +21,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 79ec054cfea2f774bbd52156f3759275, type: 2}
+  m_Motion: {fileID: 7400000, guid: 12e55df9d925ef442ae3be31af9024a2, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -34,7 +34,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: VNLeft_Hide
+  m_Name: PopupLeft_Hide
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -49,37 +49,12 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 55861c0e33bb4fd4e8d8d6ec32690547, type: 2}
+  m_Motion: {fileID: 7400000, guid: 0eb55228b3bfbc348a5b350e9b51f532, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1101 &-5802032304774257752
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: Show
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 396122036103933273}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0
-  m_ExitTime: 0
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
 --- !u!1101 &-4607798631026760517
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -184,11 +159,10 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: VNLeft_Disable
+  m_Name: PopupLeft_Disable
   m_Speed: 1
   m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: -5802032304774257752}
+  m_Transitions: []
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -198,7 +172,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: d2506cf4cfdc92e49b42bcfcfd480843, type: 2}
+  m_Motion: {fileID: 7400000, guid: 1e9d6e9382439584d96f837c97350301, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -211,7 +185,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: VNLeft_Show
+  m_Name: PopupLeft_Show
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -225,7 +199,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: f2ceb4f5539acac4682736f85c924d80, type: 2}
+  m_Motion: {fileID: 7400000, guid: 6df29159420d74c49be7ffe3dacc1b1e, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

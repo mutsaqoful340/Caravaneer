@@ -73,9 +73,19 @@ public class Spawner_Player : MonoBehaviour
         {
             map.SetPlayers(p2Component, p1Component);
         }
-        else
+
+        if (p1Component == null || p2Component == null)
         {
-            Debug.LogWarning("Spawner_Player: Unable to register both players with Map.");
+            Debug.LogError("Spawner_Player: One or both player prefabs are missing a PlayerComponent.");
+            return;
         }
+
+        if (Manager_GameLocal.Instance == null)
+        {
+            Debug.LogError("Spawner_Player: Manager_GameLocal.Instance is null. Add Manager_GameLocal to the gameplay scene.");
+            return;
+        }
+
+        Manager_GameLocal.Instance.SetPlayers(p2Component, p1Component);
     }
 }

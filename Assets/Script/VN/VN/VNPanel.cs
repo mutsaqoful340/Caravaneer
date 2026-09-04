@@ -9,5 +9,6 @@ public class VNPanel : MonoBehaviour
     public void OnDisablePanel()
     {
         if (dialogueSubsystem != null) onPanelDisplay.Invoke();
+        Manager_Game_GameScene.Instance.SetGameType(GameType.Gameplay);
     }
 }

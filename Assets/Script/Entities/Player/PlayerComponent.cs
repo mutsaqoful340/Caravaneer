@@ -226,7 +226,7 @@ public class PlayerComponent : MonoBehaviour
             if (Manager_Game.Instance.currentGameState == GameState.Gameplay)
             {
                 Manager_Game.Instance.SetState(GameState.UI);
-                Manager_UI.Instance.OnShowPanel("Map");
+                Manager_UI.Instance.OnShowPanel("Panel1");
                 return;
             }
         }
@@ -367,6 +367,7 @@ public class PlayerComponent : MonoBehaviour
         AddVerticalImpulse(1.5f);
         Debug.Log($"{gameObject.name} took {damage} damage! Remaining HP: {currHP}");
         AnimateLostHearts(previousHP - Mathf.Max(0, currHP));
+        Manager_GameLocal.Instance.OnCheckEntity();
 
         if (currHP <= 0)
         {

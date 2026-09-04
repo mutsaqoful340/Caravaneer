@@ -9,13 +9,13 @@ EditorBuildSettings:
     path: Assets/Scenes/Bootstrap.unity
     guid: 62492f2ac8b1a8541b3df1da8345aa25
   - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
+    path: Assets/Scenes/MenuHub.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
     path: Assets/Scenes/VN_1.unity
     guid: 7d385dc4bf8c6db4ba3f8ec5b3a020f3
   - enabled: 1
-    path: Assets/Scenes/Gameplay.unity
+    path: Assets/Scenes/Gameplay_Quest1.unity
     guid: 68699ea495531d64096e0a8eb18b9df0
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 99f9c9493070a9d4c979a8fec7c5a8d3, type: 2}
