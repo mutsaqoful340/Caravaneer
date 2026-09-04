@@ -27,8 +27,6 @@ public class PlayerComponent : MonoBehaviour
     [SerializeField] private float searchAngle = 180f;
     [Tooltip("Extra range added when checking if the currently tracked enemy is still valid, to avoid target flicker at the edge of searchRange.")]
     [SerializeField] private float trackedEnemyRangeBuffer = 0.5f;
-    [Tooltip("Extra angle in degrees added when checking if the currently tracked enemy is still valid, to avoid target flicker at the edge of searchAngle.")]
-    [SerializeField] private float trackedEnemyAngleBuffer = 10f;
     [SerializeField] private float knockOutDuration = 10f;
     public float IFrameDuration = 1f;
     [Tooltip("True for Mercenary, False for Driver")]
@@ -564,17 +562,15 @@ public class PlayerComponent : MonoBehaviour
             }
         }
 
-        // Keep the previously tracked enemy if it only fell outside the strict thresholds by a small margin, to avoid flicker.
+        // Keep the previous target when no replacement is found, even after the player turns away.
         if (currentEnemy == null && previousEnemy != null && previousEnemy.isActiveAndEnabled)
         {
             Vector3 previousOffset = previousEnemy.transform.position - transform.position;
             previousOffset.y = 0f;
 
             bool withinBufferedRange = previousOffset.sqrMagnitude <= (searchRange + trackedEnemyRangeBuffer) * (searchRange + trackedEnemyRangeBuffer);
-            bool withinBufferedAngle = previousOffset.sqrMagnitude > Mathf.Epsilon &&
-                Vector3.Angle(facingVector, previousOffset) <= halfSearchAngle + trackedEnemyAngleBuffer;
 
-            if (withinBufferedRange && withinBufferedAngle)
+            if (withinBufferedRange)
             {
                 currentEnemy = previousEnemy;
             }

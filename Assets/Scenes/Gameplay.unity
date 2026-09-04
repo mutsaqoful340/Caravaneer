@@ -5605,6 +5605,7 @@ MonoBehaviour:
   - name: Store
     gameObject: {fileID: 462540112}
     hasAnimation: 0
+  panelHistory: []
 --- !u!114 &819143865
 MonoBehaviour:
   m_ObjectHideFlags: 0
