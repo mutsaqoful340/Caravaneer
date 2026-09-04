@@ -74,6 +74,7 @@ public class Map : MonoBehaviour
         pia.IsTeleporting = false;
         pippa.IsTeleporting = false;
 
+        // Manager_UI.Instance.OnCloseCurrentPanel();
         yield return new WaitForSeconds(0.3f);
         Manager_UI.Instance.OnShowPanel(waypoint.waypointName);
     }

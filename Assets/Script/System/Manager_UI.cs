@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -17,6 +18,7 @@ public class Manager_UI : MonoBehaviour
     [Header("UI Panels")]
     [Tooltip("Panels to manage by name and GameObject reference.")]
     public PanelReference[] panels;
+    public GameObject[] panelHistory;
 
     private GameObject currentActivePanel;
     
@@ -30,8 +32,16 @@ public class Manager_UI : MonoBehaviour
         // disables every panels at start
         foreach (PanelReference panelReference in panels)
         {
+            if (panelReference?.gameObject == null)
+            {
+                continue;
+            }
+
             panelReference.gameObject.SetActive(false);
+            SetPanelButtonsInteractable(panelReference.gameObject, false);
         }
+
+        panelHistory = Array.Empty<GameObject>();
     }
 
     // Show a specific panel by name.
@@ -59,10 +69,12 @@ public class Manager_UI : MonoBehaviour
 
         if (currentActivePanel != null)
         {
-            currentActivePanel.SetActive(false);
+            AddPanelToHistory(currentActivePanel);
+            SetPanelButtonsInteractable(currentActivePanel, false);
         }
 
         currentActivePanel = panel;
+        SetPanelButtonsInteractable(currentActivePanel, true);
         Animator animator = currentActivePanel.GetComponent<Animator>();
         if (animator != null && selectedPanel.hasAnimation)
         {
@@ -85,8 +97,25 @@ public class Manager_UI : MonoBehaviour
 
     public void OnCloseCurrentPanel()
     {
-        currentActivePanel?.SetActive(false);
-        currentActivePanel = null;
+        if (currentActivePanel != null)
+        {
+            SetPanelButtonsInteractable(currentActivePanel, false);
+            currentActivePanel.SetActive(false);
+        }
+
+        GameObject previousPanel = RemoveLastPanelFromHistory();
+        if (previousPanel == null)
+        {
+            currentActivePanel = null;
+            ClearSelectedButton();
+            Manager_Game.Instance?.SetState(GameState.Gameplay);
+            return;
+        }
+
+        currentActivePanel = previousPanel;
+        SetPanelButtonsInteractable(currentActivePanel, true);
+        currentActivePanel.SetActive(true);
+        SelectFirstButtonInPanel(currentActivePanel);
     }
 
     public void OnCloseAllPanels()
@@ -99,6 +128,7 @@ public class Manager_UI : MonoBehaviour
             }
 
             GameObject panel = panelReference.gameObject;
+            SetPanelButtonsInteractable(panel, false);
             Animator animator = panel.GetComponent<Animator>();
             // UI_Panel uI_Panel = panel.GetComponent<UI_Panel>();
 
@@ -116,6 +146,51 @@ public class Manager_UI : MonoBehaviour
         }
 
         currentActivePanel = null;
+        panelHistory = Array.Empty<GameObject>();
+        ClearSelectedButton();
+        RestorePlayerControl();
+    }
+
+    private void AddPanelToHistory(GameObject panel)
+    {
+        if (panel == null)
+        {
+            return;
+        }
+
+        int historyLength = panelHistory?.Length ?? 0;
+        Array.Resize(ref panelHistory, historyLength + 1);
+        panelHistory[historyLength] = panel;
+    }
+
+    private GameObject RemoveLastPanelFromHistory()
+    {
+        if (panelHistory == null || panelHistory.Length == 0)
+        {
+            return null;
+        }
+
+        int lastIndex = panelHistory.Length - 1;
+        GameObject previousPanel = panelHistory[lastIndex];
+        Array.Resize(ref panelHistory, lastIndex);
+        return previousPanel;
+    }
+
+    private void SetPanelButtonsInteractable(GameObject panel, bool interactable)
+    {
+        if (panel == null)
+        {
+            return;
+        }
+
+        Button[] buttons = panel.GetComponentsInChildren<Button>(true);
+        foreach (Button button in buttons)
+        {
+            if (button != null)
+            {
+                button.interactable = interactable;
+            }
+        }
     }
 
     // === Specific Panel Methods ===
@@ -149,5 +224,9 @@ public class Manager_UI : MonoBehaviour
         {
             EventSystem.current.SetSelectedGameObject(null);
         }
+    }
+
+    private void RestorePlayerControl(){
+        Manager_Game.Instance.SetState(GameState.Gameplay);
     }
 }
