@@ -100,6 +100,11 @@ public class Manager_Game : MonoBehaviour
                 // Handle VN scene logic
                 break;
         }
-        
+    }
+
+    public void OnQuit()
+    {
+        Application.Quit();
+        Debug.Log("Quitting..");
     }
 }

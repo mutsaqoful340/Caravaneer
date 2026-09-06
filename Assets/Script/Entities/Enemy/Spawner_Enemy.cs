@@ -283,4 +283,15 @@ public class Spawner_Enemy : MonoBehaviour
         bool hasEnemies = enemies != null && enemies.Length > 0;
         CameraConstraint.Instance?.OnEnemyPresent(hasEnemies);
     }
+
+    private void OnDrawGizmos()
+    {
+        Vector3 center = playerConstraint != null ? playerConstraint.position : transform.position;
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(center, minSpawnRadius);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(center, maxSpawnRadius);
+    }
 }

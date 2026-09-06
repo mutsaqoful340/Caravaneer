@@ -87,6 +87,7 @@ public class Manager_UI : MonoBehaviour
         }
 
         SelectFirstButtonInPanel(currentActivePanel);
+        Manager_Game.Instance.SetState(GameState.UI);
 
         // Animator animator = currentActivePanel.GetComponent<Animator>();
         // if (animator != null)
@@ -100,7 +101,19 @@ public class Manager_UI : MonoBehaviour
         if (currentActivePanel != null)
         {
             SetPanelButtonsInteractable(currentActivePanel, false);
-            currentActivePanel.SetActive(false);
+
+            PanelReference currentPanelReference = FindPanelReference(currentActivePanel);
+            Animator animator = currentActivePanel.GetComponent<Animator>();
+
+            if (animator != null && currentPanelReference != null && currentPanelReference.hasAnimation)
+            {
+                animator.ResetTrigger("Open");
+                animator.SetTrigger("Close");
+            }
+            else
+            {
+                currentActivePanel.SetActive(false);
+            }
         }
 
         GameObject previousPanel = RemoveLastPanelFromHistory();
@@ -116,6 +129,19 @@ public class Manager_UI : MonoBehaviour
         SetPanelButtonsInteractable(currentActivePanel, true);
         currentActivePanel.SetActive(true);
         SelectFirstButtonInPanel(currentActivePanel);
+    }
+
+    private PanelReference FindPanelReference(GameObject panel)
+    {
+        foreach (PanelReference panelReference in panels)
+        {
+            if (panelReference != null && panelReference.gameObject == panel)
+            {
+                return panelReference;
+            }
+        }
+
+        return null;
     }
 
     public void OnCloseAllPanels()

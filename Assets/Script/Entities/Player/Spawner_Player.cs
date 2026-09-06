@@ -82,7 +82,7 @@ public class Spawner_Player : MonoBehaviour
 
         if (Manager_GameLocal.Instance == null)
         {
-            Debug.LogError("Spawner_Player: Manager_GameLocal.Instance is null. Add Manager_GameLocal to the gameplay scene.");
+            Debug.LogError("Spawner_Player: Manager_GameLocal.Instance is null. If this scene not Main Menu, add Manager_GameLocal to the gameplay scene.");
             return;
         }
 

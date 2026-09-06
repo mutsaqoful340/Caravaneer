@@ -39,7 +39,7 @@ public class Manager_Game_GameScene : MonoBehaviour
         {
             case GameType.MainMenu:
                 Manager_Game.Instance.SetScene(GameScene.MainMenuScene);
-                Manager_Game.Instance.SetState(GameState.Gameplay);
+                Manager_Game.Instance.SetState(GameState.UI);
                 break;
             case GameType.Gameplay:
                 Manager_Game.Instance.SetScene(GameScene.GameplayScene);

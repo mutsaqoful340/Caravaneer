@@ -16,8 +16,8 @@ public class Universal_Interact : MonoBehaviour
     [Header("Hold Interaction Settings")]
     [Tooltip("Determines if the interaction requires holding the action button.")]
     public bool isHoldInteract;
-    [Tooltip("The animator component for the interactable object.")]
-    public Animator animator;
+    // [Tooltip("The animator component for the interactable object.")]
+    // public Animator animator;
     [Tooltip("Delay before destroying this object after interaction.")]
     public float destroyDelay = 0f;
     [Tooltip("Duration in seconds for hold interaction.")]
