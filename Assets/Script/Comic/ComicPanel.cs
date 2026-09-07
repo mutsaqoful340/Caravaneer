@@ -14,9 +14,16 @@ public class ComicPanel : MonoBehaviour
         }
     }
 
-    public void OnPlayAnimation(string triggerName)
+    public void OnShowPanel()
     {
-        animator.SetTrigger(triggerName);
+        animator.ResetTrigger("Hide");
+        animator.SetTrigger("Show");
+    }
+
+    public void OnHidePanel()
+    {
+        animator.ResetTrigger("Show");
+        animator.SetTrigger("Hide");
     }
 
     public void OnComicAnimationComplete()
@@ -27,6 +34,14 @@ public class ComicPanel : MonoBehaviour
         if (comicManager)
         {
             comicManager.OnPlayComic();
+        }
+    }
+
+    public void OnComicOver()
+    {
+        if (comicManager)
+        {
+            comicManager.OnComicOver();
         }
     }
 }

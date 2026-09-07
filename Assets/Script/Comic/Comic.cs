@@ -1,9 +1,11 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Comic : MonoBehaviour
 {
     public ComicPanel[] comicPanels;
     public Animator animator;
+    public Image backrgoundSprite;
     private int currentPanelIndex;
 
     private void Start()
@@ -12,7 +14,8 @@ public class Comic : MonoBehaviour
         {
             animator = GetComponent<Animator>();
         }
-        animator.SetTrigger("Play");
+        animator.SetTrigger("Show");
+        OnPlayComic();
     }
 
     public void OnPlayComic()
@@ -24,7 +27,7 @@ public class Comic : MonoBehaviour
 
             if (comicPanel)
             {
-                comicPanel.OnPlayAnimation("Show");
+                comicPanel.OnShowPanel();
                 return;
             }
         }
@@ -36,8 +39,14 @@ public class Comic : MonoBehaviour
         {
             if (comicPanel)
             {
-                comicPanel.OnPlayAnimation("Hide");
+                comicPanel.OnHidePanel();
+                animator.SetTrigger("Hide");
             }
         }
+    }
+
+    public void OnComicDisable()
+    {
+        gameObject.SetActive(false);
     }
 }
