@@ -26,6 +26,7 @@ public class UI_UnivConfirmPanel : MonoBehaviour
 
     private CanvasGroup callerCanvas;
     private GameObject previousSelection;
+    private Selectable fallbackSelection;
 
     private void Awake()
     {
@@ -47,10 +48,12 @@ public class UI_UnivConfirmPanel : MonoBehaviour
         string message,
         Action confirmAction,
         Action cancelAction = null,
-        CanvasGroup callerCanvasToFreeze = null)
+        CanvasGroup callerCanvasToFreeze = null,
+        Selectable fallbackSelectable = null)
     {
         callerCanvas = callerCanvasToFreeze;
         previousSelection = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
+        fallbackSelection = fallbackSelectable;
 
         if (callerCanvas != null)
         {
@@ -123,38 +126,60 @@ public class UI_UnivConfirmPanel : MonoBehaviour
 
     private void RestoreCallerInteraction()
     {
-        if (callerCanvas == null) return;
+        if (callerCanvas == null && fallbackSelection == null) return;
 
-        // Host on Manager_UI (always active) since this panel deactivates itself right after this call.
         MonoBehaviour coroutineHost = Manager_UI.Instance != null ? Manager_UI.Instance : this;
-        coroutineHost.StartCoroutine(RestoreCallerInteractionNextFrame(callerCanvas, previousSelection));
+        coroutineHost.StartCoroutine(RestoreCallerInteractionNextFrame(callerCanvas, previousSelection, fallbackSelection));
 
         callerCanvas = null;
         previousSelection = null;
+        fallbackSelection = null;
     }
 
-    // Waits a frame so any Destroy() triggered by the caller's action has actually taken effect.
-    private IEnumerator RestoreCallerInteractionNextFrame(CanvasGroup canvas, GameObject previous)
+    private IEnumerator RestoreCallerInteractionNextFrame(
+        CanvasGroup canvas,
+        GameObject previous,
+        Selectable fallback)
     {
         yield return null;
 
-        canvas.interactable = true;
+        if (canvas != null)
+        {
+            canvas.interactable = true;
+        }
 
         if (EventSystem.current == null) yield break;
 
-        if (previous != null && previous.activeInHierarchy)
+        Selectable previousSelectable = previous != null ? previous.GetComponent<Selectable>() : null;
+        if (IsValidSelection(previousSelectable))
         {
             EventSystem.current.SetSelectedGameObject(previous);
             Debug.Log($"Restored previous selection: {previous.name}");
+            yield break;
         }
-        else
+
+        if (canvas != null)
         {
-            Selectable firstSelectable = canvas.GetComponentInChildren<Selectable>(true);
-            if (firstSelectable != null)
+            foreach (Selectable selectable in canvas.GetComponentsInChildren<Selectable>(true))
             {
-                EventSystem.current.SetSelectedGameObject(firstSelectable.gameObject);
-                Debug.Log($"Restored first selectable in caller canvas: {firstSelectable.name}");
+                if (!IsValidSelection(selectable)) continue;
+
+                EventSystem.current.SetSelectedGameObject(selectable.gameObject);
+                Debug.Log($"Restored first selectable in caller canvas: {selectable.name}");
+                yield break;
             }
         }
+
+        if (IsValidSelection(fallback))
+        {
+            EventSystem.current.SetSelectedGameObject(fallback.gameObject);
+            Debug.Log($"Restored fallback selection: {fallback.name}");
+        }
+    }
+
+    private static bool IsValidSelection(Selectable selectable)
+    {
+        return selectable != null && selectable.gameObject.activeInHierarchy &&
+            selectable.enabled && selectable.IsInteractable();
     }
 }

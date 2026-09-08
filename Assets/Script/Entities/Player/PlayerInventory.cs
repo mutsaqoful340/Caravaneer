@@ -4,8 +4,14 @@
 /// </summary>
 
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+using System;
+
+[Serializable]
+public class TrackedItem
+{
+    public string itemID;
+    public bool hasBought;
+}
 public class PlayerInventory : MonoBehaviour
 {
     public static PlayerInventory Instance { get; private set; }
@@ -17,6 +23,9 @@ public class PlayerInventory : MonoBehaviour
 
     [Header("Other Inventory References")]
     public Animator animator;
+
+    [Header("Store Item")]
+    public TrackedItem[] trackedItems = Array.Empty<TrackedItem>();
 
     private void Awake()
     {
@@ -60,7 +69,7 @@ public class PlayerInventory : MonoBehaviour
 
     public bool TrySpendCoins(int amount)
     {
-        if (coins < amount)
+        if (amount <= 0 || coins < amount)
         {
             return false;
         }
@@ -69,6 +78,59 @@ public class PlayerInventory : MonoBehaviour
         UpdateHUD();
         return true;
     }
+
+    public void RegisterItem(string itemID)
+    {
+        if (string.IsNullOrWhiteSpace(itemID) || FindTrackedItem(itemID) != null)
+        {
+            return;
+        }
+
+        trackedItems ??= Array.Empty<TrackedItem>();
+        int newIndex = trackedItems.Length;
+        Array.Resize(ref trackedItems, newIndex + 1);
+        trackedItems[newIndex] = new TrackedItem
+        {
+            itemID = itemID,
+            hasBought = false
+        };
+    }
+
+    public bool HasBoughtItem(string itemID)
+    {
+        TrackedItem trackedItem = FindTrackedItem(itemID);
+        return trackedItem != null && trackedItem.hasBought;
+    }
+
+    public void MarkItemAsBought(string itemID)
+    {
+        RegisterItem(itemID);
+
+        TrackedItem trackedItem = FindTrackedItem(itemID);
+        if (trackedItem != null)
+        {
+            trackedItem.hasBought = true;
+        }
+    }
+
+    private TrackedItem FindTrackedItem(string itemID)
+    {
+        if (trackedItems == null || string.IsNullOrWhiteSpace(itemID))
+        {
+            return null;
+        }
+
+        foreach (TrackedItem trackedItem in trackedItems)
+        {
+            if (trackedItem != null && trackedItem.itemID == itemID)
+            {
+                return trackedItem;
+            }
+        }
+
+        return null;
+    }
+
     private void UpdateHUD()
     {
         if (Player_LocalInvenvory.Instance == null)

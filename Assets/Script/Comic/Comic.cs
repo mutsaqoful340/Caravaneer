@@ -7,6 +7,7 @@ public class Comic : MonoBehaviour
     public Animator animator;
     public Image backrgoundSprite;
     private int currentPanelIndex;
+    private bool hasShown;
 
     private void Start()
     {
@@ -20,6 +21,12 @@ public class Comic : MonoBehaviour
 
     public void OnPlayComic()
     {
+        if (!hasShown)
+        {
+            animator.SetTrigger("Show");
+            hasShown = true;
+        }
+        
         while (comicPanels != null && currentPanelIndex < comicPanels.Length)
         {
             ComicPanel comicPanel = comicPanels[currentPanelIndex];

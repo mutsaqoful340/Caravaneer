@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -2877977303542438586}
   - component: {fileID: 2672642793070571287}
   - component: {fileID: 5680246285842591190}
+  - component: {fileID: -489448087997936665}
   m_Layer: 6
   m_Name: Player_Mechanic
   m_TagString: Player
@@ -209,7 +210,6 @@ MonoBehaviour:
   searchRange: 2
   searchAngle: 180
   trackedEnemyRangeBuffer: 0.5
-  trackedEnemyAngleBuffer: 10
   knockOutDuration: 10
   IFrameDuration: 1
   facingInputDeadZone: 0.1
@@ -228,6 +228,7 @@ MonoBehaviour:
   inventory: {fileID: 0}
   reviveManager: {fileID: 0}
   reviveManagerPrefab: {fileID: 4650216304066145115, guid: b6202b4693e194348b5c9c45a9c24d3b, type: 3}
+  audioInvoker: {fileID: -489448087997936665}
   wagonInteractObject: {fileID: 0}
   currentEnemy: {fileID: 0}
   interactObject: {fileID: 0}
@@ -253,6 +254,19 @@ MonoBehaviour:
   repairInterval: 1
   wagonComponent: {fileID: 0}
   repairMaterialVisualPrefab: {fileID: 719458099140218483, guid: 9c66e28f916a53f46862c29e37d8be84, type: 3}
+--- !u!114 &-489448087997936665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 378271028069150149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bc96a3788821bf4087862c536cb412a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Audio_Invoker
+  worldPlayerPrefab: {fileID: 8096826828242194344, guid: 8b1c4b758f7f0a04c877f7397182b268, type: 3}
 --- !u!1 &1743004827363687211
 GameObject:
   m_ObjectHideFlags: 0

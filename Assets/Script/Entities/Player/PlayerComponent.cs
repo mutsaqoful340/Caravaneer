@@ -53,6 +53,7 @@ public class PlayerComponent : MonoBehaviour
     public PlayerInventory inventory;
     public PlayerReviveManager reviveManager;
     public GameObject reviveManagerPrefab;
+    public Audio_Invoker audioInvoker;
     public GameObject Target => currentEnemy != null ? currentEnemy.gameObject : null;
 
     [Header("Debug")]
@@ -112,6 +113,11 @@ public class PlayerComponent : MonoBehaviour
         }
         startHP = currHP; // Initialize startHP with the current HP value
         // OnUpdateHealthUI();
+
+        if (!audioInvoker)
+        {
+            audioInvoker = GetComponent<Audio_Invoker>();
+        }
     }
 
     // Reapplies starting HP after Start, so spawners can carry over upgrades bought before this player was instantiated.
@@ -522,6 +528,7 @@ public class PlayerComponent : MonoBehaviour
             animator.SetTrigger(triggerOpps);            
         }
 
+        audioInvoker.OnPlaySFXLocal("SwordSwing");
         currentAttackIndex = (currentAttackIndex + 1) % NormAttackTriggers.Length;
         lastAttackTime = Time.time;
         nextAttackTime = Time.time + attackCooldown;

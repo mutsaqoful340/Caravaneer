@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5806241106843553541}
   - component: {fileID: 3236051585260709733}
   - component: {fileID: 2842060812652802986}
+  - component: {fileID: 2979460889917256033}
   m_Layer: 6
   m_Name: Player_Mercenary
   m_TagString: Player
@@ -189,7 +190,6 @@ MonoBehaviour:
   searchRange: 5
   searchAngle: 220
   trackedEnemyRangeBuffer: 0.5
-  trackedEnemyAngleBuffer: 10
   knockOutDuration: 10
   IFrameDuration: 0.75
   facingInputDeadZone: 0.1
@@ -208,6 +208,7 @@ MonoBehaviour:
   inventory: {fileID: 0}
   reviveManager: {fileID: 0}
   reviveManagerPrefab: {fileID: 4650216304066145115, guid: b6202b4693e194348b5c9c45a9c24d3b, type: 3}
+  audioInvoker: {fileID: 2979460889917256033}
   wagonInteractObject: {fileID: 0}
   currentEnemy: {fileID: 0}
   interactObject: {fileID: 0}
@@ -216,6 +217,19 @@ MonoBehaviour:
   isMounted: 0
   isMoveOpposDir: 0
   isRepairing: 0
+--- !u!114 &2979460889917256033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577214779032996936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bc96a3788821bf4087862c536cb412a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Audio_Invoker
+  worldPlayerPrefab: {fileID: 8096826828242194344, guid: 8b1c4b758f7f0a04c877f7397182b268, type: 3}
 --- !u!1 &3327126757420799728
 GameObject:
   m_ObjectHideFlags: 0

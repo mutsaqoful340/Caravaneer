@@ -1,46 +1,93 @@
 using UnityEngine;
+using UnityEngine.UI;
+
+public enum HPType
+{
+    Pia,
+    Pippa
+}
 
 public class Item_Player : MonoBehaviour
 {
+    public HPType hPType;
     public CanvasGroup parentCanvas;
+    public Selectable fallbackSelectable;
     public ItemData itemData;
     public int itemModifierValue; // This can be used to modify the item's effect, e.g., amount of HP restored
-    public UI_UnivConfirmPanel confirmPanel;
 
-    [Header("Debug")]
-    private bool isPurchased = false;
+    private bool isPurchased;
 
     public void OnClickItem()
     {
-        confirmPanel.OnShow(
+        if (itemData == null || UI_UnivConfirmPanel.Instance == null)
+        {
+            Debug.LogError("Item_Player: Item data or confirmation panel is not available.");
+            return;
+        }
+
+        if (parentCanvas == null)
+        {
+            parentCanvas = GetComponentInParent<CanvasGroup>();
+        }
+
+        UI_UnivConfirmPanel.Instance.OnShow(
             $"Buy {itemData.itemName}.",
-            $"Are you sure you want to use {itemData.itemName}?",
+            $"Are you sure you want to buy {itemData.itemName}?",
             () => UseItem(),
-            () => Debug.Log("Item use canceled."),
-            parentCanvas
+            () => Debug.Log("Item purchase canceled."),
+            parentCanvas,
+            fallbackSelectable
         );
     }
 
     private void UseItem()
     {
-        if (PlayerInventory.Instance == null)
+        if (isPurchased)
         {
-            Debug.LogError("PlayerInventory instance is null. Cannot proceed with buying the item.");
             return;
         }
 
-        if (isPurchased) return; // Prevent multiple purchases
-
-        if (PlayerInventory.Instance.TrySpendCoins(itemData.itemPrice))
+        if (PlayerInventory.Instance == null || Spawner_Player.Instance == null ||
+            itemData == null || string.IsNullOrWhiteSpace(itemData.itemID))
         {
-            Spawner_Player.Instance.playerMechHPStart += itemModifierValue; // Example effect: Increase wagon HP by item price
-            Spawner_Player.Instance.playerMercHPStart += itemModifierValue; // Example effect: Increase wagon HP by item price
+            Debug.LogError("Item_Player: A required purchase reference or item ID is missing.");
+            return;
+        }
+
+        if (PlayerInventory.Instance.HasBoughtItem(itemData.itemID))
+        {
+            isPurchased = true;
+            gameObject.SetActive(false);
             Destroy(gameObject);
-            Debug.Log($"Purchased {itemData.itemID} {itemData.itemName} to increase wagon HP by {itemModifierValue}.");
+            return;
+        }
+
+        if (hPType != HPType.Pia && hPType != HPType.Pippa)
+        {
+            Debug.LogWarning($"Item_Player: HP type {hPType} is not implemented.");
+            return;
+        }
+
+        isPurchased = true;
+        if (!PlayerInventory.Instance.TrySpendCoins(itemData.itemPrice))
+        {
+            isPurchased = false;
+            Debug.LogWarning("Not enough coins to buy this item.");
+            return;
+        }
+
+        if (hPType == HPType.Pia)
+        {
+            Spawner_Player.Instance.playerMechHPStart += itemModifierValue;
         }
         else
         {
-            Debug.LogWarning("Not enough coins to buy this item.");
+            Spawner_Player.Instance.playerMercHPStart += itemModifierValue;
         }
+
+        PlayerInventory.Instance.MarkItemAsBought(itemData.itemID);
+        Debug.Log($"Purchased {itemData.itemID} {itemData.itemName} to increase player HP by {itemModifierValue}.");
+        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 }
