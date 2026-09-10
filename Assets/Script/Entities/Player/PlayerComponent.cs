@@ -371,6 +371,7 @@ public class PlayerComponent : MonoBehaviour
         int previousHP = currHP;
         currHP -= damage;
         AddVerticalImpulse(1.5f);
+        audioInvoker.OnPlaySFXLocal("ImpactFlesh", SFXType.OneShot);
         Debug.Log($"{gameObject.name} took {damage} damage! Remaining HP: {currHP}");
         AnimateLostHearts(previousHP - Mathf.Max(0, currHP));
         Manager_GameLocal.Instance.OnCheckEntity();
@@ -528,7 +529,6 @@ public class PlayerComponent : MonoBehaviour
             animator.SetTrigger(triggerOpps);            
         }
 
-        audioInvoker.OnPlaySFXLocal("SwordSwing");
         currentAttackIndex = (currentAttackIndex + 1) % NormAttackTriggers.Length;
         lastAttackTime = Time.time;
         nextAttackTime = Time.time + attackCooldown;
@@ -583,6 +583,11 @@ public class PlayerComponent : MonoBehaviour
                 currentEnemy = previousEnemy;
             }
         }
+    }
+
+    public void OnAnimationPlaySFX(string sfxName)
+    {
+        audioInvoker.OnPlaySFXLocal(sfxName);
     }
     #endregion
 

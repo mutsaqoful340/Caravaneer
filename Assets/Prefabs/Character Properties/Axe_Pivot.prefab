@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4144060268958620146}
   - component: {fileID: 617052592249641205}
   - component: {fileID: -1278431098940557098}
+  - component: {fileID: -6578387217552314061}
   m_Layer: 6
   m_Name: Axe_Pivot
   m_TagString: Axe
@@ -57,6 +58,8 @@ MonoBehaviour:
   axeCollider: {fileID: 0}
   playerTarget: {fileID: 0}
   wagonTarget: {fileID: 0}
+  audioInvoker: {fileID: 0}
+  audioPlayer: {fileID: 0}
   isDamaging: 0
   rb: {fileID: 0}
 --- !u!54 &4144060268958620146
@@ -129,6 +132,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.25, y: 0.7, z: 0.43}
   m_Center: {x: 0, y: 0.22, z: 0.13}
+--- !u!114 &-6578387217552314061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1424881331818459052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bc96a3788821bf4087862c536cb412a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Audio_Invoker
+  worldPlayerPrefab: {fileID: 8096826828242194344, guid: 8b1c4b758f7f0a04c877f7397182b268, type: 3}
+  sFXType: 0
 --- !u!1 &3259723749713992155
 GameObject:
   m_ObjectHideFlags: 0

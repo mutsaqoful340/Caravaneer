@@ -35,6 +35,10 @@ public class Map : MonoBehaviour
             return;
         }
 
+        Debug.LogWarning(
+            $"Map registration: Pippa = {pippa != null}, Pia = {pia != null}"
+        );
+
         if (pippa == null || pia == null || waypoint.pippaTeleportPos == null || waypoint.piaTeleportPos == null)
         {
             Debug.LogWarning("Map: Players and both waypoint teleport positions must be assigned.");

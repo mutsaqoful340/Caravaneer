@@ -17,6 +17,8 @@ public class Axe : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private PlayerComponent playerTarget;
     [SerializeField] private WagonComponent wagonTarget;
+    public Audio_Invoker audioInvoker;
+    public Audio_Player audioPlayer;
     [SerializeField] private bool isDamaging = false;
     [SerializeField] private Rigidbody rb;
 
@@ -25,6 +27,9 @@ public class Axe : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         axeCollider = GetComponent<Collider>();
+        audioInvoker = GetComponent<Audio_Invoker>();
+        audioInvoker.OnPlaySFXLocal("AxeSwing", SFXType.Continuous);
+        audioPlayer = GetComponentInChildren<Audio_Player>();
         OnThrown();
         OnRandomAccuracy();
     }
@@ -99,6 +104,8 @@ public class Axe : MonoBehaviour
         animator.SetTrigger("Stuck"); // Trigger the collision animation
         if (playerTarget) {playerTarget.OnTakeDamage(damage);}
         else if (wagonTarget) {wagonTarget.OnTakeDamage(damage);}
+        audioInvoker.OnPlaySFXLocal("ImpactWood", SFXType.OneShot);
+        audioPlayer.SFX.Stop();
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         rb.isKinematic = true; // Make the axe kinematic to stop physics interactions

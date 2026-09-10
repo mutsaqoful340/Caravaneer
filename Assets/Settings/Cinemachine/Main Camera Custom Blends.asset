@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Main Camera Custom Blends
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineBlenderSettings
   CustomBlends:
-  - From: CinCam_Setting
-    To: CinCam_MainMenu
+  - From: CinCam_Guild
+    To: CinCam_Store
     Blend:
-      Style: 1
+      Style: 0
       Time: 1
       CustomCurve:
         serializedVersion: 2
@@ -24,14 +24,14 @@ MonoBehaviour:
         m_PreInfinity: 0
         m_PostInfinity: 0
         m_RotationOrder: 4
-  - From: CinCam_MainMenu
-    To: CinCam_Setting
+  - From: CinCam_Store
+    To: CinCam_Guild
     Blend:
-      Style: 1
+      Style: 0
       Time: 1
       CustomCurve:
         serializedVersion: 2
         m_Curve: []
         m_PreInfinity: 0
         m_PostInfinity: 0
-        m_RotationOrder: 0
+        m_RotationOrder: 4

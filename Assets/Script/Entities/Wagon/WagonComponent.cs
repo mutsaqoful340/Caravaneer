@@ -16,6 +16,10 @@ public class WagonComponent : MonoBehaviour
     public static WagonComponent Instance { get; set; }
     [Header("Wagon Settings")]
     [SerializeField] private float moveSpeed = 3f;
+    [SerializeField] private float wheelRotationSpeed = 360f;
+    [SerializeField] private Vector3 wheelRotationAxis = Vector3.forward;
+    [Tooltip("Caps how often the wheel rotation visually updates, for a stepped/low-FPS animation look.")]
+    [SerializeField] private float wheelAnimationFPS = 12f;
     [SerializeField] private int startHPFunctional = 5;
     [SerializeField] private int startHPBroken = 8;
     public WagonState currentWagonState = WagonState.Functional;
@@ -30,6 +34,8 @@ public class WagonComponent : MonoBehaviour
 
     [Header("Wagon References")]
     public Animator animator;
+    public GameObject rodaKanan;
+    public GameObject rodaKiri;
     public Canvas wagonHPCanvas;
     public GameObject heartFunctionalPrefab;
     public GameObject heartBrokenPrefab;
@@ -58,6 +64,7 @@ public class WagonComponent : MonoBehaviour
     private float pressStartTime;
     private Coroutine holdRepairRoutine;
     private bool repairTriggeredThisPress;
+    private float wheelAnimationTimer;
 
     void Awake()
     {
@@ -457,6 +464,22 @@ public class WagonComponent : MonoBehaviour
             Vector3.right * forwardInput * moveSpeed * Time.deltaTime;
 
         transform.position += movement;
+
+        // Only spin the wheels while actually moving; no input means no Rotate call, so rotation holds in place.
+        if (forwardInput > 0f)
+        {
+            wheelAnimationTimer += Time.deltaTime;
+            float frameInterval = 1f / Mathf.Max(1f, wheelAnimationFPS);
+
+            // Step the rotation only once per simulated animation frame instead of every render frame.
+            if (wheelAnimationTimer >= frameInterval)
+            {
+                float rotationAmount = forwardInput * wheelRotationSpeed * frameInterval;
+                rodaKanan?.transform.Rotate(wheelRotationAxis, rotationAmount);
+                rodaKiri?.transform.Rotate(wheelRotationAxis, rotationAmount);
+                wheelAnimationTimer -= frameInterval;
+            }
+        }
     }
 
     private void OnWagonDestroyed()

@@ -12,6 +12,11 @@ public class Audio_Invoker : MonoBehaviour
 
     public void OnPlaySFXLocal(string sfxName)
     {
+        OnPlaySFXLocal(sfxName, sFXType);
+    }
+
+    public void OnPlaySFXLocal(string sfxName, SFXType newSFXType)
+    {
         if (worldPlayerPrefab == null)
         {
             Debug.LogWarning("Audio_Invoker requires a world player prefab.");
@@ -35,7 +40,7 @@ public class Audio_Invoker : MonoBehaviour
             transform.position,
             transform.rotation);
 
-        OnSFXType(sFXType, worldPlayerObject, clip);
+        OnSFXType(newSFXType, worldPlayerObject, clip);
     }
 
     public void OnSFXType(SFXType newSFXType, GameObject worldPlayerObject, AudioClip clip)
@@ -43,15 +48,17 @@ public class Audio_Invoker : MonoBehaviour
         switch (newSFXType)
         {
             case SFXType.OneShot:
-                if (worldPlayerObject.TryGetComponent<Audio_OneShotPlayer>(out Audio_OneShotPlayer oneShotPlayer))
+                if (worldPlayerObject.TryGetComponent<Audio_Player>(out Audio_Player oneShotPlayer))
                 {
                     oneShotPlayer.PlaySFX(clip);
                     return;
                 }
                 break;
             case SFXType.Continuous:
-                if (worldPlayerObject.TryGetComponent<Audio_ContinuePlayer>(out Audio_ContinuePlayer continuePlayer))
+                if (worldPlayerObject.TryGetComponent<Audio_Player>(out Audio_Player continuePlayer))
                 {
+                    worldPlayerObject.transform.SetParent(transform);
+                    continuePlayer.SFX.loop = true;
                     continuePlayer.PlaySFX(clip);
                     return;
                 }

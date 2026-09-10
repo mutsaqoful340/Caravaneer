@@ -27,6 +27,7 @@ public class EnemyComponent : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private GameObject enemyVisual;
     public Animator weaponAnimator;
+    public Audio_Invoker audioInvoker;
     [Tooltip("Only assign if enemy is RANGED.")]
     public GameObject axeSpawnPoint;
     [Tooltip("Only assign if enemy is RANGED.")]
@@ -38,6 +39,7 @@ public class EnemyComponent : MonoBehaviour
     [SerializeField] private Sword playerSword;
     [SerializeField] private bool isDead = false;
     [SerializeField] private bool hasSpawnerMaterial = false;
+    [SerializeField] private bool isMoving = false;
     private Coroutine knockbackRoutine;
     private Coroutine attackCooldownRoutine;
     private Quaternion rootRotation;
@@ -86,7 +88,7 @@ public class EnemyComponent : MonoBehaviour
     private void OnAttack()
     {
         if (isDead || targetTransform == null ||
-            Vector3.Distance(transform.position, targetTransform.position) > attackRange)
+            Vector3.Distance(transform.position, GetClosestPointOnTarget(targetTransform)) > attackRange)
         {
             return;
         }
@@ -120,6 +122,7 @@ public class EnemyComponent : MonoBehaviour
             knockbackDirection = (transform.position - targetTransform.position).normalized;
         }
 
+        audioInvoker.OnPlaySFXLocal("ImpactFlesh", SFXType.OneShot);
         OnKnockback(knockbackDirection);
         playerSword = null;
 
@@ -147,7 +150,8 @@ public class EnemyComponent : MonoBehaviour
                 agent.ResetPath();
             }
 
-            animator.SetTrigger("Die");
+            SetMoving(false);
+            animator?.SetTrigger("Die");
             isDead = true;
             return;
         }
@@ -215,6 +219,7 @@ public class EnemyComponent : MonoBehaviour
     private void StopEnemyActions()
     {
         targetTransform = null;
+        SetMoving(false);
 
         if (agent != null && agent.enabled && agent.isOnNavMesh)
         {
@@ -246,7 +251,7 @@ public class EnemyComponent : MonoBehaviour
                 continue;
             }
 
-            float distance = Vector3.Distance(spawnPosition, potentialTarget.position);
+            float distance = Vector3.Distance(spawnPosition, GetClosestPointOnTarget(potentialTarget));
             if (distance < closestDistance)
             {
                 closestDistance = distance;
@@ -255,6 +260,36 @@ public class EnemyComponent : MonoBehaviour
         }
 
         return closestTarget;
+    }
+
+    private Vector3 GetClosestPointOnTarget(Transform target)
+    {
+        Collider[] targetColliders = target.GetComponentsInChildren<Collider>();
+        if (targetColliders.Length == 0)
+        {
+            return target.position;
+        }
+
+        Vector3 closestPoint = target.position;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (Collider targetCollider in targetColliders)
+        {
+            if (targetCollider == null || !targetCollider.enabled)
+            {
+                continue;
+            }
+
+            Vector3 candidatePoint = targetCollider.ClosestPoint(transform.position);
+            float candidateDistance = (transform.position - candidatePoint).sqrMagnitude;
+            if (candidateDistance < closestDistance)
+            {
+                closestDistance = candidateDistance;
+                closestPoint = candidatePoint;
+            }
+        }
+
+        return closestPoint;
     }
     #endregion
 
@@ -270,6 +305,8 @@ public class EnemyComponent : MonoBehaviour
             agent.ResetPath();
             agent.enabled = false;
         }
+
+        SetMoving(false);
 
         // hand movement over to physics so the Enemy physic material's bounciness can kick in
         rb.isKinematic = false;
@@ -320,7 +357,8 @@ public class EnemyComponent : MonoBehaviour
         {
             transform.rotation = rootRotation;
 
-            float distanceToTarget = Vector3.Distance(transform.position, targetTransform.position);
+            Vector3 targetPoint = GetClosestPointOnTarget(targetTransform);
+            float distanceToTarget = Vector3.Distance(transform.position, targetPoint);
             bool isInAttackRange = distanceToTarget <= attackRange;
 
             if (isInAttackRange)
@@ -331,6 +369,8 @@ public class EnemyComponent : MonoBehaviour
                     agent.ResetPath();
                 }
 
+                SetMoving(false);
+
                 if (attackCooldownRoutine == null)
                 {
                     attackCooldownRoutine = StartCoroutine(OnAttackCooldown());
@@ -339,11 +379,29 @@ public class EnemyComponent : MonoBehaviour
             else if (agent != null && agent.enabled && agent.isOnNavMesh)
             {
                 agent.isStopped = false;
-                agent.SetDestination(targetTransform.position);
+                agent.SetDestination(targetPoint);
+                UpdateMovementAnimation();
             }
 
             UpdateFacing();
         }
+    }
+
+    private void SetMoving(bool moving)
+    {
+        isMoving = moving;
+        animator?.SetBool("IsMoving", isMoving);
+    }
+
+    private void UpdateMovementAnimation()
+    {
+        bool agentIsMoving = agent != null &&
+            agent.enabled &&
+            agent.isOnNavMesh &&
+            !agent.isStopped &&
+            agent.desiredVelocity.sqrMagnitude > 0.01f;
+
+        SetMoving(agentIsMoving);
     }
 
     private void UpdateFacing()
@@ -352,7 +410,7 @@ public class EnemyComponent : MonoBehaviour
 
         float horizontalDirection = agent != null && agent.enabled
             ? agent.desiredVelocity.x
-            : targetTransform.position.x - transform.position.x;
+            : GetClosestPointOnTarget(targetTransform).x - transform.position.x;
 
         if (Mathf.Abs(horizontalDirection) <= 0.01f) return;
 
@@ -385,7 +443,7 @@ public class EnemyComponent : MonoBehaviour
         attackCooldownRoutine = null;
 
         if (!isDead && targetTransform != null &&
-            Vector3.Distance(transform.position, targetTransform.position) <= attackRange)
+            Vector3.Distance(transform.position, GetClosestPointOnTarget(targetTransform)) <= attackRange)
         {
             OnAttack();
         }

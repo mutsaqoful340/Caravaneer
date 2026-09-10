@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4573104585209307629}
   - component: {fileID: -7552232321283794576}
   m_Layer: 0
-  m_Name: Audio
+  m_Name: AudioPlayer_Generic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,6 +46,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Audio_WorldPlayer
   SFX: {fileID: -7552232321283794576}
+  randomizePitch: 1
+  minPitch: 0.8
+  maxPitch: 0.9
+  randomizeVolume: 1
+  minVolume: 0.8
+  maxVolume: 1
 --- !u!82 &-7552232321283794576
 AudioSource:
   m_ObjectHideFlags: 0
@@ -67,7 +73,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 3
+  MinDistance: 2
   MaxDistance: 30
   Pan2D: 0
   rolloffMode: 0

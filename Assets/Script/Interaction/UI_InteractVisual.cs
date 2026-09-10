@@ -26,12 +26,14 @@ public class UI_InteractVisual : MonoBehaviour
     public bool interactIcon2_1Active = false;
     public GameObject interactIcon2_2;
     public bool interactIcon2_2Active = false;
+    public GameObject twoInteractCover;
 
     public Vector3 offset = new Vector3(0, 2f, 0); // Offset to position the visual above the object
 
     private Image interactIconImage;
     private Image interactIcon2_1Image;
     private Image interactIcon2_2Image;
+    private int playerCount = 0;
 
     private void Start()
     {
@@ -41,6 +43,7 @@ public class UI_InteractVisual : MonoBehaviour
 
         if (InteractionType.One == interactionType)
         {
+            twoInteractCover.SetActive(false);
             interactHintIcon.SetActive(true);
             interactIcon1.SetActive(false);
             interactIcon2_1.SetActive(false);
@@ -48,6 +51,7 @@ public class UI_InteractVisual : MonoBehaviour
         }
         else if (InteractionType.Two == interactionType)
         {
+            twoInteractCover.SetActive(false);
             interactHintIcon.SetActive(true);
             interactIcon1.SetActive(false);
             interactIcon2_1.SetActive(false);
@@ -141,6 +145,32 @@ public class UI_InteractVisual : MonoBehaviour
                 visualRotation.x = visualFacingRotation.eulerAngles.x;
                 interactIconPivot.transform.eulerAngles = visualRotation;
             }
+        }
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerCount++;
+            UpdateTwoInteractCover();
+        }
+    }
+
+    public void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerCount = Mathf.Max(0, playerCount - 1);
+            UpdateTwoInteractCover();
+        }
+    }
+
+    private void UpdateTwoInteractCover()
+    {
+        if (twoInteractCover && interactionType == InteractionType.Two)
+        {
+            twoInteractCover.SetActive(playerCount >= 1);
         }
     }
 }

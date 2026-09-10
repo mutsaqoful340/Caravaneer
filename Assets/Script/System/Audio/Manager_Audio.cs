@@ -4,10 +4,15 @@ public class Manager_Audio : MonoBehaviour
 {
     public static Manager_Audio Instance {get; set;}
 
-    public AudioClip footStep;
-    public AudioClip swordSwing;
-    public AudioClip enemySwordSwing;
-    public AudioClip axeSwing;
+    public AudioClip[] footSteps;
+    public AudioClip[] swordSwings;
+    public AudioClip[] enemySwordSwings;
+    public AudioClip[] axeSwings;
+
+    [Header("Impacts/Hits")]
+    public AudioClip[] impactsWood;
+    public AudioClip[] impactHammer;
+    public AudioClip[] impactFlesh;
 
     private void Awake()
     {
@@ -29,13 +34,19 @@ public class Manager_Audio : MonoBehaviour
         switch (sfxName)
         {
             case "FootStep":
-                return footStep;
+                return GetRandomClip(footSteps, sfxName);
             case "SwordSwing":
-                return swordSwing;
+                return GetRandomClip(swordSwings, sfxName);
             case "EnemySwordSwing":
-                return enemySwordSwing;
+                return GetRandomClip(enemySwordSwings, sfxName);
             case "AxeSwing":
-                return axeSwing;
+                return GetRandomClip(axeSwings, sfxName);
+            case "ImpactWood":
+                return GetRandomClip(impactsWood, sfxName);
+            case "ImpactHammer":
+                return GetRandomClip(impactHammer, sfxName);
+            case "ImpactFlesh":
+                return GetRandomClip(impactFlesh, sfxName);
             default:
                 Debug.LogWarning($"Audio clip '{sfxName}' was not found.");
                 return null;
@@ -44,5 +55,15 @@ public class Manager_Audio : MonoBehaviour
     #endregion
 
     #region Helper Methods
+    private AudioClip GetRandomClip(AudioClip[] clips, string sfxName)
+    {
+        if (clips == null || clips.Length == 0)
+        {
+            Debug.LogWarning($"Audio clip array '{sfxName}' is empty.");
+            return null;
+        }
+
+        return clips[Random.Range(0, clips.Length)];
+    }
     #endregion
 }

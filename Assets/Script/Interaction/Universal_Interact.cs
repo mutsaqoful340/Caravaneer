@@ -25,6 +25,7 @@ public class Universal_Interact : MonoBehaviour
 
     [Header("Interaction References")]
     public GameObject interactVisualPrefab; // Prefab for the interaction visual
+    public GameObject twoInteractCover;
     public UI_InteractVisual interactVisualComponent; // Reference to the UI_InteractVisual component
 
     [Header("Interaction Events")]
@@ -57,6 +58,16 @@ public class Universal_Interact : MonoBehaviour
         visual.transform.SetParent(transform);
     }
 
+    public void OnCoverEnable()
+    {
+        twoInteractCover.SetActive(true);
+    }
+
+    public void OnCoverDisable()
+    {
+        twoInteractCover.SetActive(false);
+    }
+    
     public void Interact()
     {
         BeginInteraction(null);

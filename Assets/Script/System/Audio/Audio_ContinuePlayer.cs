@@ -4,6 +4,9 @@ using System.Collections;
 public class Audio_ContinuePlayer : MonoBehaviour
 {
     public AudioSource SFX;
+    public bool randomizePitch;
+    public float minPitch = 0.95f;
+    public float maxPitch = 1.05f;
 
     public void PlaySFX(AudioClip clip)
     {
@@ -21,8 +24,20 @@ public class Audio_ContinuePlayer : MonoBehaviour
             return;
         }
 
+        OnRandomPitch();
         SFX.PlayOneShot(clip);
         StartCoroutine(EnumDestroy(clip.length));
+    }
+
+    private void OnRandomPitch()
+    {
+        if (randomizePitch)
+        {
+            SFX.pitch = Random.Range(minPitch, maxPitch);
+            return;
+        }
+
+        SFX.pitch = 1f;
     }
 
     private IEnumerator EnumDestroy(float destroyDelay)
