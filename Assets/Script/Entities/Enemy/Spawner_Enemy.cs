@@ -25,19 +25,16 @@ public class Spawner_Enemy : MonoBehaviour
     public float maxEnemyMoveSpeed = 5f;
     
     [Header("Spawn Mode Settings")]
-    [Tooltip("If true, enemies will only spawn when the player is within a designated trigger zone.")]
-    [SerializeField] private bool isSpawnZoneTrigger = false;
-    [Tooltip("If true, enemies will spawn with the number limit.")]
+    [Tooltip("If true, total enemies spawned are capped by poolSize, which decreases as enemies spawn.")]
+    [SerializeField] private bool isSpawnFromPool = false;
+    [Tooltip("Remaining enemy budget when isSpawnFromPool is true. Decreases as enemies spawn; spawning stops at 0.")]
     [SerializeField] private int poolSize = 10;
-    [Tooltip("USE THIS IF ONLY isSpawnZoneTrigger IS TRUE!!! If true, all enemies will spawn at once instead of over time.")]
-    [SerializeField] private bool isSpawnAtOnce = false;
 
     [Header("Additional References")]
     public GameObject folder;
 
     [Header("Debug")]
-    [SerializeField] private bool isSpawning = true;
-    [SerializeField] private bool hasSpawning = false;
+    public bool isSpawning = true;
     [SerializeField] private GameObject[] enemies;
     [SerializeField] private Transform[] targetTransforms = new Transform[3];
     private bool targetReferencesReady;
@@ -83,7 +80,7 @@ public class Spawner_Enemy : MonoBehaviour
     {
         OnClearEnemyFromTheList();
 
-        if (!isSpawning || !targetReferencesReady || (isSpawnZoneTrigger && !hasSpawning)) return;
+        if (!isSpawning || !targetReferencesReady) return;
 
         _spawnTimer -= Time.deltaTime;
         if (_spawnTimer <= 0f)
@@ -91,25 +88,6 @@ public class Spawner_Enemy : MonoBehaviour
             OnSpawnEnemy();
             _spawnTimer = spawnInterval;
         }
-    }
-
-    public void TriggerSpawnZone()
-    {
-        if (!isSpawnZoneTrigger || hasSpawning)
-        {
-            return;
-        }
-
-        hasSpawning = true;
-
-        if (isSpawnAtOnce)
-        {
-            SpawnEnemies(poolSize, true);
-            isSpawning = false;
-            return;
-        }
-
-        _spawnTimer = 0f;
     }
 
     private int _spawnCycle;
@@ -138,7 +116,19 @@ public class Spawner_Enemy : MonoBehaviour
 
     private void OnSpawnEnemy()
     {
-        SpawnEnemies(GetEffectiveSpawnCount(), false);
+        if (isSpawnFromPool && poolSize <= 0)
+        {
+            isSpawning = false;
+            return;
+        }
+
+        int spawnCount = GetEffectiveSpawnCount();
+        if (isSpawnFromPool)
+        {
+            spawnCount = Mathf.Min(spawnCount, poolSize);
+        }
+
+        SpawnEnemies(spawnCount, false);
     }
 
     private void SpawnEnemies(int requestedSpawnCount, bool ignoreAliveCap)
@@ -252,6 +242,12 @@ public class Spawner_Enemy : MonoBehaviour
         List<GameObject> trackedEnemies = enemies == null ? new List<GameObject>() : new List<GameObject>(enemies);
         trackedEnemies.AddRange(newlySpawnedEnemies);
         enemies = trackedEnemies.ToArray();
+
+        if (isSpawnFromPool)
+        {
+            poolSize = Mathf.Max(0, poolSize - newlySpawnedEnemies.Length);
+        }
+
         NotifyEnemyPresence();
     }
 

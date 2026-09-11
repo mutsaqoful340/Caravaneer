@@ -18,10 +18,10 @@ MonoBehaviour:
     dialogueDisplayDelay: 0
     dialogueDisplayDuration: 3
     displayMode: 0
-    backgroundImage: {fileID: 21300000, guid: 951669eb5e994e2409ffbc17c0926fd1, type: 3}
+    backgroundImage: {fileID: 21300000, guid: 1bdc68d2c4a71c8409a0560b72e08e35, type: 3}
   - dialogueCharacter: {fileID: 11400000, guid: 5b82f9e8235b5924bb88377f7e49f036, type: 2}
     dialogueText: "Ku cuma mau cari kerjaan yang normal kok gini jadinya (\u252C\u252C_\u252C\u252C)"
     dialogueDisplayDelay: 1
     dialogueDisplayDuration: 3
     displayMode: 0
-    backgroundImage: {fileID: 21300000, guid: 951669eb5e994e2409ffbc17c0926fd1, type: 3}
+    backgroundImage: {fileID: 21300000, guid: 1bdc68d2c4a71c8409a0560b72e08e35, type: 3}

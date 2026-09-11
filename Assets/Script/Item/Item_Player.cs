@@ -31,8 +31,6 @@ public class Item_Player : MonoBehaviour
         }
 
         UI_UnivConfirmPanel.Instance.OnShow(
-            $"Buy {itemData.itemName}.",
-            $"Are you sure you want to buy {itemData.itemName}?",
             () => UseItem(),
             () => Debug.Log("Item purchase canceled."),
             parentCanvas,

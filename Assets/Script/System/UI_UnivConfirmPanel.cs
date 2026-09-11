@@ -14,8 +14,6 @@ public enum PanelState
 public class UI_UnivConfirmPanel : MonoBehaviour
 {
     public static UI_UnivConfirmPanel Instance { get; set; }
-    [SerializeField] private TMP_Text titleText;
-    [SerializeField] private TMP_Text messageText;
     [SerializeField] private Button confirmButton;
     [SerializeField] private Button cancelButton;
     [SerializeField] private GameObject panel;
@@ -44,8 +42,6 @@ public class UI_UnivConfirmPanel : MonoBehaviour
     }
 
     public void OnShow(
-        string title,
-        string message,
         Action confirmAction,
         Action cancelAction = null,
         CanvasGroup callerCanvasToFreeze = null,
@@ -59,10 +55,8 @@ public class UI_UnivConfirmPanel : MonoBehaviour
         {
             callerCanvas.interactable = false;
         }
-
+        
         SelectFirstButton();
-        titleText.text = title;
-        messageText.text = message;
 
         onConfirm = confirmAction;
         onCancel = cancelAction;

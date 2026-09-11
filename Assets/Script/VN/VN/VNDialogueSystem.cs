@@ -252,8 +252,6 @@ public class VNDialogueSystem : MonoBehaviour
     public void OnSkipDialogue()
     {
         UI_UnivConfirmPanel.Instance.OnShow(
-            "Skip Dialogue",
-            "Are you sure you want to skip the dialogue?",
             () => OnConfirmSkipDialogue(),
             () => Debug.Log("Dialogue skip canceled."),
             null

@@ -18,42 +18,42 @@ MonoBehaviour:
     dialogueDisplayDelay: 0
     dialogueDisplayDuration: 3
     displayMode: 1
-    backgroundImage: {fileID: 21300000, guid: 951669eb5e994e2409ffbc17c0926fd1, type: 3}
+    backgroundImage: {fileID: 21300000, guid: 3e213808c43ea40498e756a762e01ffc, type: 3}
   - dialogueCharacter: {fileID: 11400000, guid: 1d5d2975c5084274b9a5eb1d0e3a8dae, type: 2}
     dialogueText: Kalian akan ditugaskan untuk mengawal paket hingga sampai tujuan,
     dialogueDisplayDelay: 0
     dialogueDisplayDuration: 3
     displayMode: 1
-    backgroundImage: {fileID: 21300000, guid: 951669eb5e994e2409ffbc17c0926fd1, type: 3}
+    backgroundImage: {fileID: 21300000, guid: 3e213808c43ea40498e756a762e01ffc, type: 3}
   - dialogueCharacter: {fileID: 11400000, guid: 1d5d2975c5084274b9a5eb1d0e3a8dae, type: 2}
     dialogueText: dan perkenalkan ini nona pemilik barang yang akan menunggu dikota
       tujuan nanti.
     dialogueDisplayDelay: 0
     dialogueDisplayDuration: 3
     displayMode: 1
-    backgroundImage: {fileID: 21300000, guid: 951669eb5e994e2409ffbc17c0926fd1, type: 3}
+    backgroundImage: {fileID: 21300000, guid: 3e213808c43ea40498e756a762e01ffc, type: 3}
   - dialogueCharacter: {fileID: 11400000, guid: f30ea29be9fcb754e88276207abaeecd, type: 2}
     dialogueText: Kalian kurirnya?
     dialogueDisplayDelay: 0
     dialogueDisplayDuration: 2
     displayMode: 1
-    backgroundImage: {fileID: 21300000, guid: 951669eb5e994e2409ffbc17c0926fd1, type: 3}
+    backgroundImage: {fileID: 21300000, guid: 3e213808c43ea40498e756a762e01ffc, type: 3}
   - dialogueCharacter: {fileID: 11400000, guid: 60ce59e1397105c4981fcd14d6f091b3, type: 2}
     dialogueText: "Percayakan pada kami barang kiriman pasti aman \xB0\u25BD\xB0)"
     dialogueDisplayDelay: 0
     dialogueDisplayDuration: 2
     displayMode: 0
-    backgroundImage: {fileID: 21300000, guid: 951669eb5e994e2409ffbc17c0926fd1, type: 3}
+    backgroundImage: {fileID: 21300000, guid: 3e213808c43ea40498e756a762e01ffc, type: 3}
   - dialogueCharacter: {fileID: 11400000, guid: f30ea29be9fcb754e88276207abaeecd, type: 2}
     dialogueText: Kalo rusak atau kecolongan, bakal diganti dengan uang kalian loh
       ya..(*insert
     dialogueDisplayDelay: 0
     dialogueDisplayDuration: 2
     displayMode: 1
-    backgroundImage: {fileID: 21300000, guid: 951669eb5e994e2409ffbc17c0926fd1, type: 3}
+    backgroundImage: {fileID: 21300000, guid: 3e213808c43ea40498e756a762e01ffc, type: 3}
   - dialogueCharacter: {fileID: 11400000, guid: 5b82f9e8235b5924bb88377f7e49f036, type: 2}
     dialogueText: "(\u252C\u252C_\u252C\u252C) b-baik"
     dialogueDisplayDelay: 0
     dialogueDisplayDuration: 2
     displayMode: 0
-    backgroundImage: {fileID: 21300000, guid: 951669eb5e994e2409ffbc17c0926fd1, type: 3}
+    backgroundImage: {fileID: 21300000, guid: 3e213808c43ea40498e756a762e01ffc, type: 3}

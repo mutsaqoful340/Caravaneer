@@ -1,13 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class Comic : MonoBehaviour
 {
     public ComicPanel[] comicPanels;
     public Animator animator;
     public Image backrgoundSprite;
+    public bool playOnStart;
     private int currentPanelIndex;
     private bool hasShown;
+    public UnityEvent onComicOver;
 
     private void Start()
     {
@@ -16,7 +19,10 @@ public class Comic : MonoBehaviour
             animator = GetComponent<Animator>();
         }
         animator.SetTrigger("Show");
-        OnPlayComic();
+        if (playOnStart)
+        {
+            OnPlayComic();
+        }
     }
 
     public void OnPlayComic()
@@ -50,6 +56,7 @@ public class Comic : MonoBehaviour
                 animator.SetTrigger("Hide");
             }
         }
+        onComicOver?.Invoke();
     }
 
     public void OnComicDisable()

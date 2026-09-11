@@ -374,7 +374,6 @@ public class PlayerComponent : MonoBehaviour
         audioInvoker.OnPlaySFXLocal("ImpactFlesh", SFXType.OneShot);
         Debug.Log($"{gameObject.name} took {damage} damage! Remaining HP: {currHP}");
         AnimateLostHearts(previousHP - Mathf.Max(0, currHP));
-        Manager_GameLocal.Instance.OnCheckEntity();
 
         if (currHP <= 0)
         {
@@ -383,6 +382,9 @@ public class PlayerComponent : MonoBehaviour
                 OnKnockOut();
             }
         }
+
+        // Check after currentHPStage is finalized, otherwise a fresh knockout is missed
+        Manager_GameLocal.Instance.OnCheckEntity();
     }
 
     private void OnKnockOut()

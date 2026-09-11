@@ -12,7 +12,7 @@ public class UI_Panel : MonoBehaviour
 
     public void OnSubmit()
     {
-        UI_UnivConfirmPanel.Instance.OnShow("Confirm Action", "Are you sure you want to perform this action?", ConfirmAction);
+        UI_UnivConfirmPanel.Instance.OnShow(ConfirmAction);
     }
 
     private void ConfirmAction()

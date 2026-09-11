@@ -819,17 +819,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VNDialogueSystem
   characterDatas:
-  - characterData: {fileID: 11400000, guid: 56634d6766626a145ac939ae1ac240e4, type: 2}
-    dialogueText: urgghh mereka mau ngerusak kereta kita
+  - characterData: {fileID: 11400000, guid: 5b82f9e8235b5924bb88377f7e49f036, type: 2}
+    dialogueText: Urgghh mereka mau ngerusak kereta kita
     displayMode: 0
     dialogueDelay: 0
     dialogueDuration: 1
-  - characterData: {fileID: 11400000, guid: 79db6588c8ca21e4183b74ab465bd1cb, type: 2}
+  - characterData: {fileID: 11400000, guid: 60ce59e1397105c4981fcd14d6f091b3, type: 2}
     dialogueText: "\xB0\u25BD\xB0) Turun terus benerin lah.."
     displayMode: 1
     dialogueDelay: 0.5
     dialogueDuration: 2
-  - characterData: {fileID: 11400000, guid: 56634d6766626a145ac939ae1ac240e4, type: 2}
+  - characterData: {fileID: 11400000, guid: 5b82f9e8235b5924bb88377f7e49f036, type: 2}
     dialogueText: Weee jagain dong kalo gituu
     displayMode: 0
     dialogueDelay: 0.5
